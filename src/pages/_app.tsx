@@ -1,6 +1,17 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
+import { Toaster } from "@/components/ui/sonner";
 
 export default function App({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />;
+  return (
+    <>
+      <Component {...pageProps} />
+      <Toaster
+        closeButton={true}
+        richColors={true}
+        theme={`light`}
+        position={`top-right`}
+      />
+    </>
+  );
 }
