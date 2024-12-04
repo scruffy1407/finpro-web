@@ -10,7 +10,7 @@ import FooterComponent from "@/components/FooterComponent";
 
 function Home() {
 	return (
-		<div>
+		<div className="overflow-hidden">
 			<div className="mx-4 md:m-0 w-auto">
 				<NavbarComponent
 					findJobs="Find Jobs"
