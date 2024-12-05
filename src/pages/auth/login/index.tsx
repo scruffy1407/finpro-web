@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { router } from "next/client";
+import { useRouter } from "next/router";
 
 // NOTES FOR NEXT PHASE
 // 1. Connect to API after the backend is complete
@@ -16,14 +16,15 @@ interface LoginFormData {
   password: string;
 }
 
-function index() {
+function LoginPage() {
+  const router = useRouter();
   // DATA BELOW IS USE TO SIMULATE SOME SCENARIO, DELETE IT IF ITS READY
-  let form = false;
-  let isLogin = true;
+  const form: boolean = false;
+  const isLogin: boolean = false;
   //
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  let [btnDisable, setBtnDisable] = useState(true);
-  let [loginForm, setLoginForm] = useState<LoginFormData>({
+  const [btnDisable, setBtnDisable] = useState(true);
+  const [loginForm, setLoginForm] = useState<LoginFormData>({
     email: "",
     password: "",
   });
@@ -67,26 +68,28 @@ function index() {
 
   return (
     <>
-      {/* NAVIGATION BAR COMPONENT */}
       {isLogin ? (
         ""
       ) : (
         <section className="w-full p-4 md:p-0 md:h-screen md:flex md:w-full">
           <div className="hidden md:min-w[350px] md:relative md:max-w-[35%] md:h-full md:p-8 md:flex md:items-end">
-            <Image
-              src="/loginAsset/login_hero-min.webp"
-              alt="Image of building"
-              width={654.72}
-              height={1000}
-              className="absolute top-0 left-0 h-full w-full object-cover  "
-            />
+            <a href="/">
+              <Image
+                src="/loginAsset/login_hero-min.webp"
+                alt="Image of building"
+                width={654.72}
+                height={1000}
+                className="absolute top-0 left-0 h-full w-full object-cover cursor-pointer "
+              />
+            </a>
+
             <div className="w-full rounded-2xl bg-gray-100/13 backdrop-blur-sm p-4">
               <h2 className="text-xl text-white font-bold mb-3">
                 Discover 50K+ Jobs and 300+ Companies
               </h2>
               <p className="text-sm text-white font-normal text-opacity-90">
-                We've helped over 150,000 candidates find their dream jobs.
-                Start your career journey here.
+                {`We've helped over 150,000 candidates find their dream jobs.
+                Start your career journey here.`}
               </p>
               <div>{/* Component image goes here */}</div>
             </div>
@@ -184,4 +187,4 @@ function index() {
   );
 }
 
-export default index;
+export default LoginPage;
