@@ -21,7 +21,7 @@ function CompanyMappingComponent() {
 					</div>
 				))}
 			</div>
-			<div className="hidden max-w-screen-xl mx-auto lg:grid grid-cols-4 gap-4 justify-center overflow-hidden rounded-xl">
+			<div className="hidden max-w-screen-xl mx-auto lg:grid grid-cols-4 gap-4 justify-center rounded-xl">
 				{/* Map through dummyCompanies and render CompanyComponent for each company */}
 				{dummyCompanies.slice(0, 8).map(
 					(

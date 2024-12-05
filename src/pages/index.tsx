@@ -51,7 +51,7 @@ function Home() {
 				/>
 			</div>
 
-			<div className=" mx-4 w-full mt-6">
+			<div className=" mx-4 mt-6">
 				<CompanyMappingComponent />
 			</div>
 
@@ -60,7 +60,7 @@ function Home() {
 				<ButtonComponent type="ButtonBorderCustom" container="Explore More" />
 			</div>
 
-			<div className="mx-4 w-auto mt-20 mb-5">
+			<div className="mx-4 mt-20 mb-5">
 				<FooterComponent
 					findJobs="Find Jobs"
 					skillAssessment="Skill Assessment"
@@ -68,7 +68,7 @@ function Home() {
 				/>
 			</div>
 		</div>
-	);
+	);	
 }
 
 export default Home;
