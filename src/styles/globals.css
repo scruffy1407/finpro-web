@@ -20,7 +20,8 @@ h3 {
 }
 
 p,
-span {
+
+span,a,label {
 
   font-family: "Inter", sans-serif;
 }
