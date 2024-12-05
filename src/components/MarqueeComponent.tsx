@@ -4,14 +4,14 @@ import Marquee from "react-fast-marquee";
 
 function MarqueeComponent() {
 	return (
-		<div className="max-w-screen-xl mx-auto mt-10">
+		<div className="max-w-screen-xl mx-auto mt-12">
 			<div className="w-full flex flex-col md:flex md:flex-row">
 				<div className="w-full flex justify-center mb-6 md:mb-0 md:w-[30%]">
 					<p className="text-sm text-neutral-600">
 						Employed by Companies Worldwide
 					</p>
 				</div>
-				<div className="width">
+				<div className="width ">
 					<Marquee
 						speed={50}
 						gradient={true}

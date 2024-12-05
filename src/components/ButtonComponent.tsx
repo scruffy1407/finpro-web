@@ -19,6 +19,16 @@ function ButtonComponent({ container, type, onClick }: ButtonProps) {
 					{container}
 				</button>
 			);
+		case "ButtonBorderCustom":
+			return (
+				<button
+					className="h-fit w-full p-3 border border-neutral-900 font-semibold rounded-xl hover:bg-blue-500 hover:border-blue-500"
+					onClick={onClick}
+				>
+					{container}
+				</button>
+			);
+
 		case "ButtonText":
 			return (
 				<button
@@ -42,6 +52,15 @@ function ButtonComponent({ container, type, onClick }: ButtonProps) {
 			return (
 				<button
 					className="h-fit w-fit p-3 border text-white border-white font-semibold bg-blue-500 rounded-xl hover:bg-blue-500"
+					onClick={onClick}
+				>
+					{container}
+				</button>
+			);
+		case "ButtonFilledCustom":
+			return (
+				<button
+					className="h-fit w-full p-3 border text-white border-white font-semibold bg-blue-500 rounded-xl hover:bg-blue-500"
 					onClick={onClick}
 				>
 					{container}

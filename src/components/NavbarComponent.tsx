@@ -1,4 +1,8 @@
 import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "@/store";
+import { login, logout } from "@/store/slices/authSlice";
+import { toggleMobileMenu } from "@/store/slices/mobileMenuSlice";
 import { NavProps } from "@/utils/interface";
 import Image from "next/image";
 import LinksComponents from "./LinksComponents";
@@ -14,24 +18,12 @@ import Link from "next/link";
 import ButtonComponent from "./ButtonComponent";
 
 function NavbarComponent({ loginJobHunter, loginCompanies }: NavProps) {
-	const [isLoggedIn, setIsLoggedIn] = useState(false);
-	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // State for mobile menu
-
-	const handleLogin = () => {
-		setIsLoggedIn(true);
-	};
-
-	const handleLogout = () => {
-		setIsLoggedIn(false);
-	};
-
-	const handleMobileMenuToggle = () => {
-		setIsMobileMenuOpen(!isMobileMenuOpen);
-	};
+	const dispatch = useDispatch();
+	const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
 
 	return (
 		<div className="max-w-screen-xl mx-auto">
-			<div className="bg-white flex justify-between border rounded-xl mt-5 py-5 px-4">
+			<div className="bg-white flex justify-between border rounded-xl py-5 px-4 pr-5">
 				<div className="flex justify-between gap-9 items-center">
 					<div className="flex">
 						<Image
@@ -41,7 +33,6 @@ function NavbarComponent({ loginJobHunter, loginCompanies }: NavProps) {
 							height={24}
 						/>
 					</div>
-
 					<LinksComponents />
 				</div>
 
@@ -51,12 +42,12 @@ function NavbarComponent({ loginJobHunter, loginCompanies }: NavProps) {
 						<ButtonComponent
 							container={loginJobHunter}
 							type="ButtonBorder"
-							onClick={handleLogin}
+							onClick={() => dispatch(login())}
 						/>
 						<ButtonComponent
 							container={loginCompanies}
 							type="ButtonText"
-							onClick={handleLogin}
+							onClick={() => dispatch(login())}
 						/>
 					</div>
 				) : (
@@ -92,7 +83,10 @@ function NavbarComponent({ loginJobHunter, loginCompanies }: NavProps) {
 								</Link>
 							</DropdownMenuItem>
 							<DropdownMenuItem>
-								<button onClick={handleLogout} className="text-base">
+								<button
+									onClick={() => dispatch(logout())}
+									className="text-base"
+								>
 									Log Out
 								</button>
 							</DropdownMenuItem>
@@ -104,7 +98,7 @@ function NavbarComponent({ loginJobHunter, loginCompanies }: NavProps) {
 				{!isLoggedIn ? (
 					<div
 						className="sm:hidden flex items-center"
-						onClick={handleMobileMenuToggle}
+						onClick={() => dispatch(toggleMobileMenu())}
 					>
 						<DropdownMenu>
 							<DropdownMenuTrigger>
@@ -117,19 +111,22 @@ function NavbarComponent({ loginJobHunter, loginCompanies }: NavProps) {
 							</DropdownMenuTrigger>
 
 							<DropdownMenuContent>
-								<div className="p-2">
+								<div className="p-1">
 									<ButtonComponent
 										container={loginJobHunter}
 										type="ButtonBorder"
-										onClick={handleLogin}
+										onClick={() => dispatch(login())}
 									/>
 								</div>
 
-								<ButtonComponent
-									container={loginCompanies}
-									type="ButtonText"
-									onClick={handleLogin}
-								/>
+								<div className="p-2" >
+									<ButtonComponent
+										container={loginCompanies}
+										type="ButtonText"
+										onClick={() => dispatch(login())}
+									/>
+								</div>
+
 								<DropdownMenuSeparator />
 
 								<DropdownMenuItem>
@@ -151,7 +148,7 @@ function NavbarComponent({ loginJobHunter, loginCompanies }: NavProps) {
 						</DropdownMenu>
 					</div>
 				) : (
-					<div className="hidden" onClick={handleMobileMenuToggle}>
+					<div className="hidden" onClick={() => dispatch(toggleMobileMenu())}>
 						<DropdownMenu>
 							<DropdownMenuTrigger>
 								<Image
@@ -167,14 +164,14 @@ function NavbarComponent({ loginJobHunter, loginCompanies }: NavProps) {
 									<ButtonComponent
 										container={loginJobHunter}
 										type="ButtonBorder"
-										onClick={handleLogin}
+										onClick={() => dispatch(login())}
 									/>
 								</div>
 
 								<ButtonComponent
 									container={loginCompanies}
 									type="ButtonText"
-									onClick={handleLogin}
+									onClick={() => dispatch(login())}
 								/>
 								<DropdownMenuSeparator />
 

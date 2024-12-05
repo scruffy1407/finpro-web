@@ -4,7 +4,7 @@ import { HeadingProps } from "@/utils/interface";
 
 function HeadingComponent({ heading, paragraph }: HeadingProps) {
 	return (
-		<div className="max-w-screen-xl mx-auto mt-10">
+		<div className="max-w-screen-xl mx-auto px-4 md:px-0 ">
 			<div className="flex justify-between">
 				<div className="flex flex-col gap-5">
 					<div>

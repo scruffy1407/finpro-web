@@ -10,7 +10,7 @@ import FooterComponent from "@/components/FooterComponent";
 
 function Home() {
 	return (
-		<div className="overflow-hidden">
+		<div className="overflow-hidden mt-5">
 			<div className="mx-4 md:m-0 w-auto">
 				<NavbarComponent
 					findJobs="Find Jobs"
@@ -28,7 +28,7 @@ function Home() {
 				<MarqueeComponent />
 			</div>
 
-			<div className=" mx-4 ">
+			<div className=" mx-4 mt-20">
 				<HeadingComponent
 					heading="We found Jobs that nears you"
 					paragraph="Check job that we found"
@@ -40,27 +40,27 @@ function Home() {
 			</div>
 
 			{/* NOTE THAT THIS BUTTON PART IS CONDITIONAL ONLY AND ONLY SHOWS ON MOBILE VIEW! */}
-			<div className="flex mt-5 items-center justify-center md:hidden ">
-				<ButtonComponent type="ButtonBorder" container="Explore More" />
+			<div className="flex mt-5 items-center justify-center md:hidden px-8">
+				<ButtonComponent type="ButtonBorderCustom" container="Explore More" />
 			</div>
 
-			<div className=" mx-4 ">
+			<div className=" mx-4 mt-20">
 				<HeadingComponent
 					heading="It might be your next company"
 					paragraph="Check out our companies & What are the jobs that currently open"
 				/>
 			</div>
 
-			<div className=" ml-4 md:ml-0 w-full mt-14">
+			<div className=" ml-4 md:ml-0 w-full mt-6">
 				<CompanyMappingComponent />
 			</div>
 
 			{/* NOTE THAT THIS BUTTON PART IS CONDITIONAL ONLY AND ONLY SHOWS ON MOBILE VIEW! */}
-			<div className="flex mt-5 items-center justify-center md:hidden ">
-				<ButtonComponent type="ButtonBorder" container="Explore More" />
+			<div className="flex mt-5 items-center justify-center md:hidden px-8">
+				<ButtonComponent type="ButtonBorderCustom" container="Explore More" />
 			</div>
 
-			<div className=" mx-4 w-auto mt-14">
+			<div className="mx-4 w-auto mt-20 mb-5">
 				<FooterComponent
 					findJobs="Find Jobs"
 					skillAssessment="Skill Assessment"

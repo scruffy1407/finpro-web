@@ -27,7 +27,7 @@ function JobPostComponent({
 			href={""}
 			className="bg-white w-[410] h-fit "
 		>
-			<div className="p-5">
+			<div className="p-4">
 				<div className="flex gap-3">
 					<Image src={logo} alt="Pic" width={50} height={50} />
 					<div className="flex w-full justify-between items-center">

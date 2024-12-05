@@ -12,7 +12,10 @@ type ButtonType =
 	| "ButtonText"
 	| "ButtonSearch"
 	| "ButtonBookmark"
-	| "ButtonFilled";
+	| "ButtonFilled"
+	| "ButtonFilledCustom"
+	| "ButtonTextCustom"
+	| "ButtonBorderCustom"
 
 export interface ButtonProps {
 	container?: string;
@@ -50,7 +53,6 @@ export interface JobPostProps {
 	created_at: Date;
 	salaryMin: number;
 	salaryMax: number;
-
 }
 
 export interface ProfilePropsDummy {

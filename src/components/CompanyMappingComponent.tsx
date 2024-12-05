@@ -4,13 +4,13 @@ import { dummyCompanies } from "@/utils/datadummy";
 
 function CompanyMappingComponent() {
 	return (
-		<div>
-			<div className="max-w-screen-xl mx-auto overflow-x-auto flex gap-4 justify-start snap-x px-4 md:hidden">
+		<div className="">
+			<div className="max-w-screen-xl rounded-xl mx-auto overflow-x-auto flex gap-4 justify-start snap-x px-4 md:hidden">
 				{/* Map through dummyCompanies and render CompanyComponent for each company */}
 				{dummyCompanies.map((company, index) => (
 					<div
 						key={index}
-						className="flex-shrink-0 w-full sm:w-[410px] snap-start bg-white rounded-xl hover:shadow-lg"
+						className="flex-shrink-0 w-full rounded-xl sm:w-[410px] snap-start bg-white  hover:shadow-lg"
 					>
 						<CompanyComponent
 							key={index}
@@ -21,17 +21,25 @@ function CompanyMappingComponent() {
 					</div>
 				))}
 			</div>
-
-			<div className="hidden max-w-screen-xl mx-auto md:flex flex-wrap gap-4 justify-center">
+			<div className="hidden max-w-screen-xl mx-auto md:grid grid-cols-4 gap-4 justify-center overflow-hidden rounded-xl">
 				{/* Map through dummyCompanies and render CompanyComponent for each company */}
-				{dummyCompanies.map((company, index) => (
-					<CompanyComponent
-						key={index}
-						logo={company.logo}
-						companyName={company.companyName}
-						jobsOpen={company.jobsOpen}
-					/>
-				))}
+				{dummyCompanies.slice(0, 8).map(
+					(
+						company,
+						index // Limit to 8 companies for 2 rows of 4
+					) => (
+						<div
+							key={index}
+							className="bg-white rounded-xl hover:shadow-lg"
+						>
+							<CompanyComponent
+								logo={company.logo}
+								companyName={company.companyName}
+								jobsOpen={company.jobsOpen}
+							/>
+						</div>
+					)
+				)}
 			</div>
 		</div>
 	);

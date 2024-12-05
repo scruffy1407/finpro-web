@@ -13,6 +13,13 @@ import AsyncSelect from "react-select/async";
 import { locationOptions } from "@/utils/datadummy";
 import { LocationOption } from "@/utils/interface";
 
+const customStyles = {
+	control: (provided: any) => ({
+	  ...provided,
+	  borderRadius: '10px',
+	  padding : '1px'  // Adjust the value for the border radius
+	}),
+  };
 // data.ts
 
 const filterLocations = (inputValue: string) => {
@@ -30,7 +37,7 @@ const promiseLocationOptions = (inputValue: string) =>
 
 function SearchBarComponent() {
 	return (
-		<div className="flex flex-col md:flex md:flex-row gap-5 items-center md:items-end">
+		<div className="flex flex-col md:flex md:flex-row gap-5 items-center md:items-end mt-2">
 			<div className="w-full md:w-[35%]">
 				<Label className="font-semibold text-neutral-950" htmlFor="position">
 					Position :{" "}
@@ -59,7 +66,7 @@ function SearchBarComponent() {
 					</SelectContent>
 				</Select>
 			</div>
-			<div className="w-full md:w-[35%]">
+			<div className="w-full md:w-[35%] rounded-xl">
 				<Label className="font-semibold text-neutral-950" htmlFor="location">
 					Location :{" "}
 				</Label>
@@ -68,13 +75,14 @@ function SearchBarComponent() {
 					defaultOptions
 					loadOptions={promiseLocationOptions}
 					placeholder="Search Location"
+					styles={customStyles}  // Apply custom styles here
 				/>
 			</div>
 			<div className="hidden md:w-[15%] md:block">
 				<ButtonComponent type="ButtonSearch" />
 			</div>
-			<div className="block md:hidden md:w-[15%]">
-				<ButtonComponent type="ButtonFilled" container="search" />
+			<div className="block w-full md:hidden md:w-[15%] mt-0">
+				<ButtonComponent type="ButtonFilledCustom" container="search" />
 			</div>
 		</div>
 	);
