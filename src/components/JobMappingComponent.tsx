@@ -5,7 +5,7 @@ import { JobPostProps } from "@/utils/interface";
 
 const JobPostSection: React.FC = () => {
 	return (
-		<div className="max-w-screen-xl mx-auto overflow-x-auto sm:overflow-visible flex gap-6 justify-start sm:justify-start snap-x sm:snap-none px-4 sm:px-0">
+		<div className="max-w-screen-xl mx-auto overflow-x-auto lg:overflow-visible flex gap-6 justify-start sm:justify-start snap-x sm:snap-none px-4 sm:px-0">
 			{/* Map through dummyData and render JobPostComponent for each item */}
 			{jobPosts.map((jobPost: JobPostProps, index: number) => (
 				<div

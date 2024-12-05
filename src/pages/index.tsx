@@ -11,7 +11,7 @@ import FooterComponent from "@/components/FooterComponent";
 function Home() {
 	return (
 		<div className="overflow-hidden mt-5">
-			<div className="mx-4 md:m-0 w-auto">
+			<div className="mx-4 w-auto">
 				<NavbarComponent
 					findJobs="Find Jobs"
 					skillAssessment="Skill Assessment"
@@ -24,18 +24,18 @@ function Home() {
 			<div className="mx-4 md:w-auto">
 				<HeroComponent />
 			</div>
-			<div className="w-full">
+			<div className="mx-4">
 				<MarqueeComponent />
 			</div>
 
-			<div className=" mx-4 mt-20">
+			<div className=" mx-4 mt-20 ">
 				<HeadingComponent
 					heading="We found Jobs that nears you"
 					paragraph="Check job that we found"
 				/>
 			</div>
 
-			<div className="ml-4 md:ml-0 mt-6">
+			<div className="mx-4 mt-6">
 				<JobMappingComponent />
 			</div>
 
@@ -51,7 +51,7 @@ function Home() {
 				/>
 			</div>
 
-			<div className=" ml-4 md:ml-0 w-full mt-6">
+			<div className=" mx-4 w-full mt-6">
 				<CompanyMappingComponent />
 			</div>
 
