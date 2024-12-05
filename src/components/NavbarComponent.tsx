@@ -90,6 +90,22 @@ function NavbarComponent({ loginJobHunter, loginCompanies }: NavProps) {
 									Log Out
 								</button>
 							</DropdownMenuItem>
+							<DropdownMenuSeparator />
+							<DropdownMenuItem>
+								<Link className="hover:text-blue-500" href={""}>
+									Find Jobs
+								</Link>
+							</DropdownMenuItem>
+							<DropdownMenuItem>
+								<Link className="hover:text-blue-500" href={""}>
+									Skill Assessment
+								</Link>
+							</DropdownMenuItem>
+							<DropdownMenuItem>
+								<Link className="hover:text-blue-500" href={""}>
+									Explore Companies
+								</Link>
+							</DropdownMenuItem>
 						</DropdownMenuContent>
 					</DropdownMenu>
 				)}
@@ -119,7 +135,7 @@ function NavbarComponent({ loginJobHunter, loginCompanies }: NavProps) {
 									/>
 								</div>
 
-								<div className="p-2" >
+								<div className="p-2">
 									<ButtonComponent
 										container={loginCompanies}
 										type="ButtonText"
