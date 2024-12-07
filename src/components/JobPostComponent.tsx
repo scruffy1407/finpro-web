@@ -14,6 +14,7 @@ function JobPostComponent({
 	created_at,
 	salaryMin,
 	salaryMax,
+	salaryShow,
 }: JobPostProps) {
 	const timeAgo = formatDistanceToNow(new Date(created_at), {
 		addSuffix: true,
@@ -23,10 +24,7 @@ function JobPostComponent({
 	};
 
 	return (
-		<Link
-			href={""}
-			className="bg-white w-[410] h-fit "
-		>
+		<Link href={""} className="bg-white w-[410] h-fit ">
 			<div className="p-4">
 				<div className="flex gap-3">
 					<Image src={logo} alt="Pic" width={50} height={50} />
@@ -57,7 +55,11 @@ function JobPostComponent({
 				<div className="flex justify-between mt-3 ">
 					<p className="text-neutral-400">{timeAgo}</p>
 					<p className="text-sky-600 font-semibold">
-						{formatSalary(salaryMin)} - {formatSalary(salaryMax)}
+						{salaryShow ? (
+							`${formatSalary(salaryMin)} - ${formatSalary(salaryMax)}`
+						) : (
+							<span className="text-neutral-600" >Salary not disclosed</span>
+						)}
 					</p>
 				</div>
 			</div>

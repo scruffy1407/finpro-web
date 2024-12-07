@@ -35,12 +35,12 @@ const promiseLocationOptions = (inputValue: string) =>
 		}, 1000);
 	});
 
-function SearchBarComponent() {
+function SearchBarCompanyListComponent() {
 	return (
-		<div className="flex flex-col md:flex md:flex-row gap-5 items-center md:items-end mt-2">
-			<div className="w-full md:w-[35%]">
+		<div className=" max-w-screen-xl mx-auto flex flex-col md:flex md:flex-row gap-5 items-center md:items-end mt-2">
+			<div className="w-full md:w-[45%]">
 				<Label className="font-semibold text-neutral-950" htmlFor="position">
-					Position :{" "}
+					Search :{" "}
 				</Label>
 				<Input
 					className="rounded-xl "
@@ -49,26 +49,9 @@ function SearchBarComponent() {
 					placeholder="Ex : Web Developer"
 				/>
 			</div>
-			<div className="w-full md:w-[40%]">
-				<Label className="font-semibold text-neutral-950" htmlFor="position">
-					Job Category :{" "}
-				</Label>
-				<Select>
-					<SelectTrigger className=" w-full md:w-full rounded-xl">
-						<div className="text-slate-500">
-							<SelectValue placeholder="Select Job Category" />
-						</div>
-					</SelectTrigger>
-					<SelectContent>
-						<SelectItem value="light">Digital Marketing</SelectItem>
-						<SelectItem value="dark">Web Developer</SelectItem>
-						<SelectItem value="system">Back-End Developer</SelectItem>
-					</SelectContent>
-				</Select>
-			</div>
-			<div className="w-full md:w-[35%] rounded-xl">
+			<div className="w-full md:w-[45%] rounded-xl">
 				<Label className="font-semibold text-neutral-950" htmlFor="location">
-					Location :{" "}
+					All Location :{" "}
 				</Label>
 				<AsyncSelect
 					cacheOptions
@@ -78,7 +61,7 @@ function SearchBarComponent() {
 					styles={customStyles}  // Apply custom styles here
 				/>
 			</div>
-			<div className="hidden md:w-[15%] md:block">
+			<div className="hidden md:w-[10%] md:block">
 				<ButtonComponent type="ButtonSearch" />
 			</div>
 			<div className="block w-full md:hidden md:w-[15%] mt-0">
@@ -88,4 +71,4 @@ function SearchBarComponent() {
 	);
 }
 
-export default SearchBarComponent;
+export default SearchBarCompanyListComponent;

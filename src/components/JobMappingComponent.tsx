@@ -21,6 +21,7 @@ const JobPostSection: React.FC = () => {
 						created_at={jobPost.created_at}
 						salaryMin={jobPost.salaryMin}
 						salaryMax={jobPost.salaryMax}
+						salaryShow={jobPost.salaryShow}
 					/>
 				</div>
 			))}

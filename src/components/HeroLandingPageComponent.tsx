@@ -1,5 +1,4 @@
 import React from "react";
-import { HeroProps } from "@/utils/interface";
 import Image from "next/image";
 import SearchBarComponent from "./SearchBarComponent";
 

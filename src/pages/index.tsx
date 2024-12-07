@@ -1,12 +1,13 @@
 import React from "react";
 import NavbarComponent from "@/components/NavbarComponent";
-import HeroComponent from "@/components/HeroComponent";
+import HeroComponent from "@/components/HeroLandingPageComponent";
 import MarqueeComponent from "@/components/MarqueeComponent";
 import HeadingComponent from "@/components/HeadingComponent";
 import JobMappingComponent from "@/components/JobMappingComponent";
 import ButtonComponent from "@/components/ButtonComponent";
 import CompanyMappingComponent from "@/components/CompanyMappingComponent";
 import FooterComponent from "@/components/FooterComponent";
+
 
 function Home() {
 	return (
