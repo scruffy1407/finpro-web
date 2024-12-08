@@ -10,7 +10,11 @@ const RoleType = {
 export const registerSchema = validate.object({
   name: validate.string().min(4, "Name is required"),
   email: validate.string().email("Invalid email address"),
-  phone_number: validate.string().min(6, "Phone number is required").optional(),
+  phone_number: validate
+    .string()
+    .min(6, "Phone number is required")
+    .regex(/^\d+$/, "Phone number must contain only digits")
+    .optional(),
   password: validate
     .string()
     .min(6, { message: "Password must be at least 6 characters long" })

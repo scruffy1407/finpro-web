@@ -150,7 +150,7 @@ function JobHunterLogin() {
 
                 <p className="text-center text-sm">
                   Don&apos;t have an account? <></>
-                  <Link href="#" className="text-blue-500 hover:underline">
+                  <Link href="/auth/register/jobhunter" className="text-blue-500 hover:underline">
                     Sign up now
                   </Link>
                 </p>
