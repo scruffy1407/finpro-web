@@ -148,7 +148,7 @@ function LoginPage() {
                   <div className="ml-auto">
                     <Link
                       className="block text-sm text-blue-500 hover:text-blue-700"
-                      href={"#"}
+                      href={"/auth/forgot"}
                     >
                       Forgot Password?
                     </Link>

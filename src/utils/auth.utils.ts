@@ -1,8 +1,9 @@
 import { LoginAuth, RegisterAuth } from "@/models/auth.model";
 import { dummyUser } from "@/models/dummyData";
-import axios from "axios";
+import api from "@/pages/api/api";
 
 import AuthorizeUser from "@/utils/authorizePage";
+import axios, { AxiosResponse } from "axios";
 
 export class AuthHandler {
   // Fungsi untuk validasi form login
@@ -75,7 +76,7 @@ export class AuthHandler {
 
   async handleUserLogout(token: string) {
     try {
-      await axios.put(
+      await api.put(
         "/api/auth/logout-user",
         {},
         {
@@ -94,7 +95,7 @@ export class AuthHandler {
     formType: "jobhunter" | "company",
   ) {
     try {
-      const response = await axios.post("/api/auth/register-user", {
+      const response = await api.post("/api/auth/register-user", {
         name: formData.name, // Mengirim nama dari form
         email: formData.email, // Mengirim email dari form
         password: formData.password, // Mengirim password dari form
@@ -186,6 +187,70 @@ export class AuthHandler {
   //     return error;
   //   }
   // }
+
+  async validateResetToken(token: string | undefined) {
+    if (token === undefined) {
+      return 400;
+    }
+    try {
+      const response: AxiosResponse = await api.get(
+        "/api/user/auth/verify-reset-token",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      if (response.status === 200) {
+        console.log(response.status);
+        return response.status;
+      } else {
+        return response.status;
+      }
+    } catch (e) {
+      return e;
+      console.log(e);
+    }
+  }
+
+  async setNewPassword(newPassword: string, token: string) {
+    try {
+      const response: AxiosResponse = await api.put(
+        "api/user/auth/reset-password",
+        {
+          newPassword: newPassword,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      if (response.status === 200) {
+        return response.status;
+      } else {
+        return response.status;
+      }
+    } catch (e) {
+      console.log(e);
+      return e;
+    }
+  }
+
+  async sendResetEmail(email: string) {
+    try {
+      const response: AxiosResponse = await api.put("/auth/request-reset", {
+        email: email,
+      });
+      if (response.status === 200) {
+        return response.status;
+      } else {
+        return response.status;
+      }
+    } catch (e) {
+      return e;
+    }
+  }
 
   authorizeUser(
     token: string | null,
