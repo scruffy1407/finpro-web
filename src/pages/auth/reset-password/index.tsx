@@ -16,11 +16,12 @@ function ResetPassword() {
   const router = useRouter();
   const autHandler = new AuthHandler();
   const initialRender = useRef(true);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [resetToken, setResetToken] = useState<string>("");
   const [isValid, setIsValid] = useState<boolean>(false);
   const dispatch = useDispatch();
-  const { newPassword } = useSelector(
+  const { newPassword, isDisable, validationMessage } = useSelector(
     (state: RootState) => state.passwordReset,
   );
 
@@ -49,7 +50,7 @@ function ResetPassword() {
 
     const token = router.query.token as string;
     if (!initialRender.current) {
-      token ? validateResetToken(token) : null;
+      (token as string) ? validateResetToken(token) : null;
     }
 
     initialRender.current = false;
@@ -98,7 +99,7 @@ function ResetPassword() {
                 Set new password
               </h2>
               <p className={`text-neutral-600 leading-[120%]`}>
-                {`Please enter your new password, minimum 6 character`}
+                {`Please enter your new password, With minimun 6 character, contain 1 number,unique character, and uppercase letter`}
               </p>
             </div>
 
@@ -107,26 +108,42 @@ function ResetPassword() {
               className="flex flex-col gap-8"
             >
               <div className={`flex flex-col gap-2`}>
-                <Label
-                  className="font-semibold text-neutral-950"
-                  htmlFor="password"
-                >
-                  New Password
-                </Label>
+                <div className={`flex item-center justify-between`}>
+                  <Label
+                    className="font-semibold text-neutral-950"
+                    htmlFor="password"
+                  >
+                    New Password
+                  </Label>
+                  <p
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="text-sm underline text-neutral-600 cursor-pointer"
+                  >
+                    {showPassword ? "Hide Passowrd" : "Show Password"}
+                  </p>
+                </div>
                 <Input
                   className="rounded-xl text-sm text-neutral-950"
                   name={`password`}
                   id="password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   placeholder="Enter your password"
                   value={newPassword}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     dispatch(newPasswordChange(e.target.value))
                   }
                 />
+                {isDisable ? (
+                  <Label className="text-sm text-red-500">
+                    {validationMessage}
+                  </Label>
+                ) : (
+                  ""
+                )}
               </div>
 
               <ButtonComponent
+                isDisabled={isDisable}
                 isSubmit={true}
                 type={"ButtonFilled"}
                 container={`Reset Your Password`}

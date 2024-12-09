@@ -10,23 +10,29 @@ import ButtonComponent from "@/components/ButtonComponent";
 import { emailChange } from "@/store/slices/resetPasswordSlice";
 import { AuthHandler } from "@/utils/auth.utils";
 import SuccessSendEmailSection from "@/components/SuccessSendEmailSection";
+import { toast } from "sonner";
 
 function ForgotPassword() {
   const authHandler = new AuthHandler();
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [success, setSuccess] = useState<boolean>(false);
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
-  const { email, isDisable, isSuccess } = useSelector(
+  const { email, isDisable } = useSelector(
     (state: RootState) => state.passwordReset,
   );
 
   async function handleSendEmailReset(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setIsLoading(true);
-    await authHandler.sendResetEmail(email);
-    setSuccess(true);
+    const response: string | number = await authHandler.sendResetEmail(email);
+    console.log(response);
+    if (response === 200) {
+      setSuccess(true);
+    } else if (response === "GOOGLE") {
+      setIsLoading(false);
+      toast.error("Your email is registered by google");
+    }
   }
 
   return (

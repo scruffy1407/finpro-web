@@ -5,6 +5,7 @@ interface ResetPasswordState {
   newPassword: string;
   isSuccess: boolean;
   isDisable: boolean;
+  validationMessage: string;
 }
 
 // ACTION
@@ -14,14 +15,62 @@ const validateEmail = (email: string) => {
   return emailRegex.test(email);
 };
 
-const validateNewPassword = (password: string) => {};
+const validateNewPassword = (password: string) => {
+  // Basic length check
+  if (password.length < 6) {
+    return {
+      valid: false,
+      message: "Password must be at least 6 characters long",
+    };
+  }
 
+  // Regex-based checks
+  const lowercaseRegex = /[a-z]/;
+  const uppercaseRegex = /[A-Z]/;
+  const numberRegex = /\d/;
+  const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
+
+  if (!lowercaseRegex.test(password)) {
+    return {
+      valid: false,
+      message: "Password must include at least one lowercase letter",
+    };
+  }
+
+  if (!uppercaseRegex.test(password)) {
+    return {
+      valid: false,
+      message: "Password must include at least one uppercase letter",
+    };
+  }
+
+  if (!numberRegex.test(password)) {
+    return {
+      valid: false,
+      message: "Password must include at least one number",
+    };
+  }
+
+  if (!specialCharRegex.test(password)) {
+    return {
+      valid: false,
+      message: "Password must include at least one special character",
+    };
+  }
+
+  // If all checks pass, password is valid
+  return {
+    valid: true,
+    message: "Password is valid",
+  };
+};
 // REDUCERS
 const initialState: ResetPasswordState = {
   email: "",
   newPassword: "",
   isSuccess: false,
   isDisable: true,
+  validationMessage: "",
 };
 
 const passwordResetSlice = createSlice({
@@ -37,7 +86,10 @@ const passwordResetSlice = createSlice({
       state.isSuccess = action.payload;
     },
     newPasswordChange: (state, action) => {
+      const { valid, message } = validateNewPassword(action.payload);
+      state.validationMessage = message;
       state.newPassword = action.payload;
+      state.isDisable = !valid;
     },
   },
 });

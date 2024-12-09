@@ -3,7 +3,7 @@ import { dummyUser } from "@/models/dummyData";
 import api from "@/pages/api/api";
 
 import AuthorizeUser from "@/utils/authorizePage";
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 
 export class AuthHandler {
   // Fungsi untuk validasi form login
@@ -238,6 +238,7 @@ export class AuthHandler {
   }
 
   async sendResetEmail(email: string) {
+    console.log(email);
     try {
       const response: AxiosResponse = await api.put("/auth/request-reset", {
         email: email,
@@ -245,10 +246,10 @@ export class AuthHandler {
       if (response.status === 200) {
         return response.status;
       } else {
-        return response.status;
+        return response.data.message;
       }
-    } catch (e) {
-      return e;
+    } catch (e: any) {
+      return e.response.data.message;
     }
   }
 
