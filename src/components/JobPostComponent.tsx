@@ -16,12 +16,12 @@ function JobPostComponent({
 	salaryMax,
 	salaryShow,
 }: JobPostProps) {
-	const timeAgo = formatDistanceToNow(new Date(created_at), {
-		addSuffix: true,
-	});
-	const formatSalary = (salary: number) => {
-		return `${(salary / 1000000).toFixed(1)} jt`; // Format to 1 decimal place
-	};
+  const timeAgo = formatDistanceToNow(new Date(created_at), {
+    addSuffix: true,
+  });
+  const formatSalary = (salary: number) => {
+    return `${(salary / 1000000).toFixed(1)} jt`; // Format to 1 decimal place
+  };
 
 	return (
 		<Link href={""} className="bg-white w-[410] h-fit ">

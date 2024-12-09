@@ -2,11 +2,11 @@ import React from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import ButtonComponent from "./ButtonComponent";
 import AsyncSelect from "react-select/async";
@@ -14,26 +14,27 @@ import { locationOptions } from "@/utils/datadummy";
 import { LocationOption } from "@/utils/interface";
 
 const customStyles = {
-	control: (provided: any) => ({
-	  ...provided,
-	  borderRadius: '10px',
-	  padding : '1px'  // Adjust the value for the border radius
-	}),
-  };
+  control: (provided: any) => ({
+    ...provided,
+    borderRadius: "12px",
+    padding: "1px", // Adjust the value for the border radius
+    borderColor: "rgb(228 228 261)",
+  }),
+};
 // data.ts
 
 const filterLocations = (inputValue: string) => {
-	return locationOptions.filter((i) =>
-		i.label.toLowerCase().includes(inputValue.toLowerCase())
-	);
+  return locationOptions.filter((i) =>
+    i.label.toLowerCase().includes(inputValue.toLowerCase()),
+  );
 };
 
 const promiseLocationOptions = (inputValue: string) =>
-	new Promise<LocationOption[]>((resolve) => {
-		setTimeout(() => {
-			resolve(filterLocations(inputValue));
-		}, 1000);
-	});
+  new Promise<LocationOption[]>((resolve) => {
+    setTimeout(() => {
+      resolve(filterLocations(inputValue));
+    }, 1000);
+  });
 
 function SearchBarComponent() {
 	return (
