@@ -3,16 +3,21 @@ import authReducer from "./slices/authSlice";
 import mobileMenuReducer from "@/store/slices/mobileMenuSlice";
 import loginReducer from "@/store/slices/loginSlice";
 import registerReducer from "@/store/slices/registerSlice";
+import paginationReducer from "@/store/slices/jobPaginationSlice";
+import companyPaginationReducer from "@/store/slices/companyPaginationSlice";
 import resetPasswordReducer from "@/store/slices/resetPasswordSlice";
 
 
 const store = configureStore({
   reducer: {
     auth: authReducer,
-    mobileMenu: mobileMenuReducer,
-    passwordReset: resetPasswordReducer,
+    mobileMenu : mobileMenuReducer,
     login: loginReducer,
-    register: registerReducer,  },
+    register: registerReducer,
+    pagination: paginationReducer,
+    companyPagination: companyPaginationReducer,
+    passwordReset: resetPasswordReducer
+  },
 
 });
 

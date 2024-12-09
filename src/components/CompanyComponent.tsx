@@ -5,7 +5,7 @@ import Link from "next/link";
 interface CompanyShortProps {
 	logo: string;
 	companyName: string;
-	jobsOpen: number;
+	jobsOpen?: number;
 }
 
 function CompanyComponent({ logo, companyName, jobsOpen }: CompanyShortProps) {
