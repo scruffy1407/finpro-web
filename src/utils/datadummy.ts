@@ -18,7 +18,7 @@ export const profileDummy: ProfilePropsDummy = {
 // Dummy data for job posts
 export const jobPosts: JobPostProps[] = [
   {
-    logo: "/companies/Netflix.svg",
+    logo: "/company/Netflix.svg",
     companyName: "Tech Innovators",
     job_title: "Software Engineer",
     company_province: "Jakarta",
@@ -30,7 +30,7 @@ export const jobPosts: JobPostProps[] = [
   },
 
   {
-    logo: "/companies/Twitch.svg",
+    logo: "/company/Twitch.svg",
     companyName: "Twitch",
     job_title: "Graphic Designer",
     company_province: "Bali",
@@ -41,7 +41,7 @@ export const jobPosts: JobPostProps[] = [
     salaryShow: false,
   },
   {
-    logo: "/companies/Oracle.svg",
+    logo: "/company/Oracle.svg",
     companyName: "Remote Solutions",
     job_title: "Product Manager",
     company_province: "Surabaya",
@@ -55,37 +55,37 @@ export const jobPosts: JobPostProps[] = [
 
 export const dummyCompanies: CompanyShortPropsDummy[] = [
   {
-    logo: "/companies/Twitch.svg", // Replace with actual image paths
+    logo: "/company/Twitch.svg", // Replace with actual image paths
     companyName: "TechCorp",
     jobsOpen: 5,
   },
   {
-    logo: "/companies/Google.svg",
+    logo: "/company/Google.svg",
     companyName: "DesignHub",
     jobsOpen: 3,
   },
   {
-    logo: "/companies/Netflix.svg",
+    logo: "/company/Netflix.svg",
     companyName: "NextGen Solutions",
     jobsOpen: 8,
   },
   {
-    logo: "/companies/Spotify.svg",
+    logo: "/company/Spotify.svg",
     companyName: "DataWorks",
     jobsOpen: 12,
   },
   {
-    logo: "/companies/Uber.svg",
+    logo: "/company/Uber.svg",
     companyName: "DevStudio",
     jobsOpen: 7,
   },
   {
-    logo: "/companies/Uber.svg",
+    logo: "/company/Uber.svg",
     companyName: "Creative Minds",
     jobsOpen: 4,
   },
   {
-    logo: "/companies/pertanian.png",
+    logo: "/company/pertanian.png",
     companyName: "InnoTech",
     jobsOpen: 9,
   },

@@ -8,7 +8,6 @@ import ButtonComponent from "@/components/ButtonComponent";
 import CompanyMappingComponent from "@/components/CompanyMappingComponent";
 import FooterComponent from "@/components/FooterComponent";
 
-
 function Home() {
   return (
     <div className="overflow-hidden mt-5">
@@ -30,14 +29,14 @@ function Home() {
         <MarqueeComponent />
       </section>
 
-      <section className=" mx-4 mt-20 ">
+      <section className=" mx-4 mt-24 ">
         <HeadingComponent
           heading="We found Jobs that nears you"
           paragraph="Check job that we found"
         />
       </section>
 
-      <div className="mx-4 mt-6">
+      <div className="mx-4 mt-5">
         <JobMappingComponent />
       </div>
 
@@ -46,14 +45,14 @@ function Home() {
         <ButtonComponent type="ButtonBorderCustom" container="Explore More" />
       </div>
 
-      <div className=" mx-4 mt-20">
+      <div className=" mx-4 mt-24">
         <HeadingComponent
           heading="It might be your next company"
           paragraph="Check out our companies & What are the jobs that currently open"
         />
       </div>
 
-      <div className=" mx-4 mt-6">
+      <div className=" mx-4 mt-5">
         <CompanyMappingComponent />
       </div>
 
@@ -62,7 +61,7 @@ function Home() {
         <ButtonComponent type="ButtonBorderCustom" container="Explore More" />
       </div>
 
-      <div className="mx-4 mt-20 mb-5">
+      <div className="mx-4 mt-24 mb-5">
         <FooterComponent
           findJobs="Find Jobs"
           skillAssessment="Skill Assessment"

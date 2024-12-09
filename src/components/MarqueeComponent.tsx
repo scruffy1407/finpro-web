@@ -21,7 +21,7 @@ function MarqueeComponent() {
             <div className="flex space-x-12 justify-center items-center">
               <div>
                 <Image
-                  src="/companies/Spotify.svg"
+                  src="/company/Spotify.svg"
                   alt="Spotify"
                   width={80}
                   height={24}
@@ -29,7 +29,7 @@ function MarqueeComponent() {
               </div>
               <div>
                 <Image
-                  src="/companies/Google.svg"
+                  src="/company/Google.svg"
                   alt="Spotify"
                   width={80}
                   height={24}
@@ -37,7 +37,7 @@ function MarqueeComponent() {
               </div>
               <div>
                 <Image
-                  src="/companies/Twitch.svg"
+                  src="/company/Twitch.svg"
                   alt="Spotify"
                   width={80}
                   height={24}
@@ -45,7 +45,7 @@ function MarqueeComponent() {
               </div>
               <div>
                 <Image
-                  src="/companies/Netflix.svg"
+                  src="/company/Netflix.svg"
                   alt="Spotify"
                   width={80}
                   height={24}
@@ -53,7 +53,7 @@ function MarqueeComponent() {
               </div>
               <div>
                 <Image
-                  src="/companies/Apple.svg"
+                  src="/company/Apple.svg"
                   alt="Spotify"
                   width={24}
                   height={24}
@@ -61,7 +61,7 @@ function MarqueeComponent() {
               </div>
               <div>
                 <Image
-                  src="/companies/Adobe.svg"
+                  src="/company/Adobe.svg"
                   alt="Spotify"
                   width={80}
                   height={24}
@@ -69,7 +69,7 @@ function MarqueeComponent() {
               </div>
               <div>
                 <Image
-                  src="/companies/Amazon.svg"
+                  src="/company/Amazon.svg"
                   alt="Spotify"
                   width={80}
                   height={24}
@@ -77,7 +77,7 @@ function MarqueeComponent() {
               </div>
               <div>
                 <Image
-                  src="/companies/Uber.svg"
+                  src="/company/Uber.svg"
                   alt="Spotify"
                   width={80}
                   height={24}
@@ -85,7 +85,7 @@ function MarqueeComponent() {
               </div>
               <div>
                 <Image
-                  src="/companies/Oracle.svg"
+                  src="/company/Oracle.svg"
                   alt="Spotify"
                   width={80}
                   height={24}

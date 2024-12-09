@@ -6,7 +6,7 @@ function HeadingComponent({ heading, paragraph }: HeadingProps) {
   return (
     <div className="max-w-screen-xl mx-auto px-4 md:px-0 ">
       <div className="flex justify-between">
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col gap-3">
           <h2 className="text-2xl font-semibold text-neutral-900">{heading}</h2>
 
           <p className={`text-neutral-600`}>{paragraph}</p>

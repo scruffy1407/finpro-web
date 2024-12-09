@@ -43,7 +43,7 @@ function CompanyListMappingComponent() {
         {currentCompanies.map(
           (
             company,
-            index, // Limit to 8 companies for 2 rows of 4
+            index, // Limit to 8 company for 2 rows of 4
           ) => (
             <div key={index} className="bg-white rounded-xl hover:shadow-lg">
               <CompanyComponent
