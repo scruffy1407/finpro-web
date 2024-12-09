@@ -1,6 +1,7 @@
 export interface LoginAuth {
   email: string;
   password: string;
+  user_role: string;
 }
 
 export interface RegisterAuth {

@@ -3,98 +3,60 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { toast } from "sonner";
 import { useRouter } from "next/router";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "@/store";
+import {
+  handleFormChange,
+  handleLogin,
+  handleLoginEffect,
+} from "@/utils/login.utils";
 
-// NOTES FOR NEXT PHASE
-// 1. Connect to API after the backend is complete
-// 2. Connect to OAuth after the backend is complete
-// 3. Create in separate folder, create an Auth folder to handle all function relate to auth
-
-interface LoginFormData {
-  email: string;
-  password: string;
-}
-
-function LoginPage() {
+function CompanyLogin() {
+  const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
-  // DATA BELOW IS USE TO SIMULATE SOME SCENARIO, DELETE IT IF ITS READY
-  const form: boolean = false;
-  const isLogin: boolean = false;
-  //
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const [btnDisable, setBtnDisable] = useState(true);
-  const [loginForm, setLoginForm] = useState<LoginFormData>({
+
+  const { isLoggedIn, error } = useSelector((state: RootState) => state.login);
+
+  const [loginForm, setLoginForm] = useState({
     email: "",
     password: "",
+    user_role: "company",
   });
 
-  function handleLoginData(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setBtnDisable(true);
-
-    // SIMULATE THE RESULT OF THE API
-    setTimeout(() => {
-      if (form) {
-        toast.success("Login Success");
-      } else {
-        toast.error("Email or password invalid");
-        setBtnDisable(false);
-      }
-    }, 2000);
-  }
-
-  function handleFormChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const { name, value } = e.target;
-    setLoginForm((prevForm) => ({ ...prevForm, [name]: value }));
-  }
+  const [btnDisable, setBtnDisable] = useState(false);
 
   useEffect(() => {
-    setBtnDisable(true);
-    if (
-      loginForm.email !== "" &&
-      loginForm.password !== "" &&
-      emailRegex.test(loginForm.email)
-    ) {
-      setBtnDisable(false);
-    }
-  }, [loginForm.password, loginForm.email]);
-
-  useEffect(() => {
-    if (isLogin) {
-      router.push("/"); // Redirect user to home if already login
-    }
-  }, [isLogin]);
+    handleLoginEffect(isLoggedIn, error, router, dispatch);
+  }, [isLoggedIn, error, router, dispatch]);
 
   return (
     <>
-      {isLogin ? (
+      {isLoggedIn ? (
         ""
       ) : (
         <section className="w-full p-4 md:p-0 md:h-screen md:flex md:w-full">
           <div className="hidden md:min-w[350px] md:relative md:max-w-[35%] md:h-full md:p-8 md:flex md:items-end">
-            <a href="/">
+            <Link href="/">
               <Image
                 src="/loginAsset/login_hero-min.webp"
                 alt="Image of building"
                 width={654.72}
                 height={1000}
-                className="absolute top-0 left-0 h-full w-full object-cover cursor-pointer "
+                className="absolute top-0 left-0 h-full w-full object-cover cursor-pointer"
               />
-            </a>
+            </Link>
 
             <div className="w-full rounded-2xl bg-gray-100/13 backdrop-blur-sm p-4">
               <h2 className="text-xl text-white font-bold mb-3">
-                Discover 50K+ Jobs and 300+ Companies
+                Hire Top Talent for Your Company
               </h2>
               <p className="text-sm text-white font-normal text-opacity-90">
-                {`We've helped over 150,000 candidates find their dream jobs.
-                Start your career journey here.`}
+                {`Join thousands of companies finding the best candidates for their roles. Create a job listing and manage applications efficiently.`}
               </p>
-              <div>{/* Component image goes here */}</div>
             </div>
           </div>
-          <div className="w-full md:w-[65%]  md:p-12 md:flex md:items-center">
+          <div className="w-full md:w-[65%] md:p-12 md:flex md:items-center">
             <div className="bg-white p-6 md:w-full md:max-w-[500px] md:p-8 md:rounded-3xl">
               <div className="flex items-center justify-between w-full mb-12">
                 <Image
@@ -105,10 +67,10 @@ function LoginPage() {
                   className="h-6"
                 />
                 <Link
-                  href={`#`}
+                  href={`/auth/login/jobhunter`}
                   className="text-xs underline text-neutral-950 hover:text-blue-500 md:text-sm"
                 >
-                  Looking for candidate?
+                  Looking for a job?
                 </Link>
               </div>
               <div className="flex flex-col gap-8">
@@ -116,7 +78,9 @@ function LoginPage() {
                   Login to your account
                 </h2>
                 <form
-                  onSubmit={handleLoginData}
+                  onSubmit={(e) =>
+                    handleLogin(e, loginForm, dispatch, setBtnDisable)
+                  }
                   className="flex flex-col gap-4"
                 >
                   <div>
@@ -125,7 +89,7 @@ function LoginPage() {
                     </Label>
                     <Input
                       name={`email`}
-                      onChange={handleFormChange}
+                      onChange={(e) => handleFormChange(e, setLoginForm)}
                       value={loginForm.email}
                       type="email"
                       placeholder="Enter your email address"
@@ -138,7 +102,7 @@ function LoginPage() {
                     </Label>
                     <Input
                       name={`password`}
-                      onChange={handleFormChange}
+                      onChange={(e) => handleFormChange(e, setLoginForm)}
                       value={loginForm.password}
                       type="password"
                       placeholder="Enter your password"
@@ -148,7 +112,7 @@ function LoginPage() {
                   <div className="ml-auto">
                     <Link
                       className="block text-sm text-blue-500 hover:text-blue-700"
-                      href={"/auth/forgot"}
+                      href={"#"}
                     >
                       Forgot Password?
                     </Link>
@@ -156,9 +120,11 @@ function LoginPage() {
                   <button
                     type={"submit"}
                     disabled={btnDisable}
-                    className={`w-full p-2 text-white rounded-lg ${btnDisable ? `bg-neutral-400` : `bg-blue-500`} `}
+                    className={`w-full p-2 text-white rounded-lg font-semibold ${
+                      btnDisable ? `bg-neutral-400` : `bg-blue-500`
+                    }`}
                   >
-                    Login
+                    Sign In
                   </button>
                 </form>
                 <div className={`flex gap-4 items-center`}>
@@ -167,6 +133,9 @@ function LoginPage() {
                   <div className={`border-t border-zinc-200 w-full`}></div>
                 </div>
                 <button
+                  onClick={() =>
+                    (window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/google/company`)
+                  }
                   className={`w-full p-2 bg-neutral-950 text-white rounded-lg flex items-center gap-3 justify-center hover:bg-neutral-800`}
                 >
                   <Image
@@ -178,6 +147,13 @@ function LoginPage() {
                   />
                   Sign in with Google
                 </button>
+
+                <p className="text-center text-sm">
+                  Don&apos;t have an account? <></>
+                  <Link href="/auth/register/company" className="text-blue-500 hover:underline">
+                    Sign up now
+                  </Link>
+                </p>
               </div>
             </div>
           </div>
@@ -187,4 +163,4 @@ function LoginPage() {
   );
 }
 
-export default LoginPage;
+export default CompanyLogin;
