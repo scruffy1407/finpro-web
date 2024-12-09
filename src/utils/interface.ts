@@ -53,6 +53,7 @@ export interface JobPostProps {
 	created_at: Date;
 	salaryMin: number;
 	salaryMax: number;
+	salaryShow ?: boolean;
 }
 
 export interface ProfilePropsDummy {
@@ -65,3 +66,52 @@ export interface CompanyShortPropsDummy {
 	companyName: string;
 	jobsOpen: number;
 }
+
+
+export interface CompanyDummy {
+	companyName: string;
+	companyDescription: string;
+	logo: string;
+	companyCity: string;
+	companyProvince: string;
+	addressDetails: string;
+	companyIndustry: string;
+	companySize: string;
+	review: string[];
+  }
+  
+  export interface JobPostDummy {
+	preSelectionTestId: number;
+	company: CompanyDummy;
+	categoryId: number;
+	selectionTextActive: boolean;
+	jobTitle: string;
+	salaryShow: boolean;
+	salaryMin: number;
+	salaryMax: number;
+	jobDescription: string;
+	jobExperienceMin: number;
+	jobExperienceMax: number;
+	expiredDate: string;
+	status: boolean;
+	jobType: string[];
+	jobSpace: string[];
+	createdAt: string;
+	updatedAt: string;
+	jobId: string;
+  }
+
+  export interface CompanyPostDummy {
+	companyId: number;
+	companyName: string;
+	companyDescription: string;
+	logo: string;
+	companyCity: string;
+	companyProvince: string;
+	addressDetails: string;
+	companyIndustry: string;
+	companySize: string;
+	review: string[];
+  }
+  
+  

@@ -1,7 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import LinksComponents from "./LinksComponents";
+import LinksComponents from "./LinksComponent";
 
 interface FooterProps {
 	findJobs: string;
@@ -17,7 +17,7 @@ function FooterComponent({
 	return (
 		<div className="max-w-screen-xl mx-auto bg-sky-950 border rounded-xl mb-16">
 			<div className="">
-				<div className="md:flex justify-between p-6">
+				<div className="md:flex justify-between p-8 ml-10 sm:ml-0">
 					<div className="ml-24 md:ml-0">
 						<Image
 							src="/footer/logoFooter.svg"
