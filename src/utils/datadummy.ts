@@ -747,7 +747,7 @@ export const jobListPostDummy: JobPostDummy[] = [
 
 export const CompanyListPostDummy: CompanyPostDummy[] = [
 	{
-		companyId: 1,
+		companyId: 1, 
 		companyName: "SmartRetail Solutions",
 		companyDescription: "Leading retail technology provider.",
 		logo: "",
