@@ -15,43 +15,43 @@ export const profileDummy: ProfilePropsDummy = {
   name: "Sephiroth",
 };
 
-// Dummy data for job posts
-export const jobPosts: JobPostProps[] = [
-  {
-    logo: "/company/Netflix.svg",
-    companyName: "Tech Innovators",
-    job_title: "Software Engineer",
-    company_province: "Jakarta",
-    jobType: ["Full-Time", "1-3 Years Experience", "Part-Time"],
-    created_at: new Date("2024-11-15T09:30:00Z"),
-    salaryMin: 5000000,
-    salaryMax: 7000000,
-    salaryShow: true,
-  },
+// // Dummy data for job posts
+// export const jobPosts: JobPostProps[] = [
+//   {
+//     logo: "/company/Netflix.svg",
+//     companyName: "Tech Innovators",
+//     job_title: "Software Engineer",
+//     company_province: "Jakarta",
+//     jobType: ["Full-Time", "1-3 Years Experience", "Part-Time"],
+//     created_at: new Date("2024-11-15T09:30:00Z"),
+//     salaryMin: 5000000,
+//     salaryMax: 7000000,
+//     salaryShow: true,
+//   },
 
-  {
-    logo: "/company/Twitch.svg",
-    companyName: "Twitch",
-    job_title: "Graphic Designer",
-    company_province: "Bali",
-    jobType: ["Part-Time", "Fresh Graduate"],
-    created_at: new Date("2024-11-20T14:00:00Z"),
-    salaryMin: 3000000,
-    salaryMax: 4000000,
-    salaryShow: false,
-  },
-  {
-    logo: "/company/Oracle.svg",
-    companyName: "Remote Solutions",
-    job_title: "Product Manager",
-    company_province: "Surabaya",
-    jobType: ["Remote Working", "Full-Time", "1-3 Years Experience"],
-    created_at: new Date("2024-11-25T08:00:00Z"),
-    salaryMin: 8000000,
-    salaryMax: 12000000,
-    salaryShow: true,
-  },
-];
+//   {
+//     logo: "/company/Twitch.svg",
+//     companyName: "Twitch",
+//     job_title: "Graphic Designer",
+//     company_province: "Bali",
+//     jobType: ["Part-Time", "Fresh Graduate"],
+//     created_at: new Date("2024-11-20T14:00:00Z"),
+//     salaryMin: 3000000,
+//     salaryMax: 4000000,
+//     salaryShow: false,
+//   },
+//   {
+//     logo: "/company/Oracle.svg",
+//     companyName: "Remote Solutions",
+//     job_title: "Product Manager",
+//     company_province: "Surabaya",
+//     jobType: ["Remote Working", "Full-Time", "1-3 Years Experience"],
+//     created_at: new Date("2024-11-25T08:00:00Z"),
+//     salaryMin: 8000000,
+//     salaryMax: 12000000,
+//     salaryShow: true,
+//   },
+// ];
 
 export const dummyCompanies: CompanyShortPropsDummy[] = [
   {

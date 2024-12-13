@@ -6,6 +6,7 @@ import registerReducer from "@/store/slices/registerSlice";
 import paginationReducer from "@/store/slices/jobPaginationSlice";
 import companyPaginationReducer from "@/store/slices/companyPaginationSlice";
 import resetPasswordReducer from "@/store/slices/resetPasswordSlice";
+import searchQueryReducer from "@/store/slices/searchQuerySlice"
 
 
 const store = configureStore({
@@ -16,7 +17,8 @@ const store = configureStore({
     register: registerReducer,
     pagination: paginationReducer,
     companyPagination: companyPaginationReducer,
-    passwordReset: resetPasswordReducer
+    passwordReset: resetPasswordReducer,
+    searchQuery: searchQueryReducer,
   },
 
 });

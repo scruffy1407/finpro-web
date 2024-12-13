@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import NavbarComponent from "@/components/NavbarComponent";
 import HeroJobListPageComponent from "@/components/HeroJobListPageComponent";
 import SelectionJobsComponents from "@/components/SelectionJobsComponent";
@@ -12,15 +12,75 @@ import {
 	PaginationPrevious,
 } from "@/components/ui/pagination"; // Shadcn UI pagination
 import FooterComponent from "@/components/FooterComponent";
-import { setCurrentPage } from "@/store/slices/jobPaginationSlice";
+import {
+	setCurrentPage,
+	setPaginationData,
+} from "@/store/slices/jobPaginationSlice";
 import { RootState } from "@/store";
 import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
+import { job } from "@/utils/axiosInterface";
+import { getJobPost } from "../api/api";
 
 const JobPostPage: React.FC = () => {
+	const [jobPosts, setJobPosts] = useState<any[]>([]);
+	const [loading, setLoading] = useState<boolean>(false);
+	const [searchQuery, setSearchQuery] = useState({
+		jobTitle: "",
+		categoryId: "",
+		jobType: "",
+		dateRange: "",
+		sortOrder: "",
+	});
+
 	const { currentPage, totalPages } = useSelector(
 		(state: RootState) => state.pagination
 	);
+	const { jobTitle, categoryId, jobType, dateRange, sortOrder } = useSelector(
+		(state: RootState) => state.searchQuery
+	); // Access searchQuery from the store
+
 	const dispatch = useDispatch();
+
+	useEffect(() => {
+		const fetchJobPosts = async () => {
+		  setLoading(true);
+		  try {
+			const response = await getJobPost(currentPage, {
+			  jobTitle,
+			  categoryId,
+			  jobType,
+			  dateRange,
+			  sortOrder,
+			});
+	
+			// Check if response is valid and set job posts
+			if (response?.data?.data) {
+			  setJobPosts(response.data.data);
+	
+			  // Update pagination state in Redux
+			  const { totalJobPosts, totalPages } = response.data;
+			  dispatch(setPaginationData({ totalJobPosts, totalPages }));
+			} else {
+			  console.error("Invalid job posts data:", response);
+			}
+		  } catch (error) {
+			console.error("Error fetching job posts:", error);
+		  } finally {
+			setLoading(false);
+		  }
+		};
+	
+		fetchJobPosts();
+	  }, [
+		currentPage,
+		jobTitle,
+		categoryId,
+		jobType,
+		dateRange,
+		sortOrder,
+		dispatch,
+	  ]);
 
 	// Handle page change
 	const handlePageChange = (page: number) => {
@@ -51,7 +111,7 @@ const JobPostPage: React.FC = () => {
 				</div>
 
 				<div className="w-full mt-5 mb-10">
-					<JobListMappingComponent />
+					<JobListMappingComponent jobPosts={jobPosts} />
 				</div>
 
 				<Pagination>
