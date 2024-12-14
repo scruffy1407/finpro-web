@@ -7,8 +7,12 @@ import JobMappingComponent from "@/components/JobMappingComponent";
 import ButtonComponent from "@/components/ButtonComponent";
 import CompanyMappingComponent from "@/components/CompanyMappingComponent";
 import FooterComponent from "@/components/FooterComponent";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 
 function Home() {
+  const { name } = useSelector((state: RootState) => state.auth);
+  console.log(name);
   return (
     <div className="overflow-hidden mt-5">
       <header className="mx-4 w-auto">

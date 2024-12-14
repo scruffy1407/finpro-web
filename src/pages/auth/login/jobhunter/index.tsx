@@ -16,7 +16,7 @@ function JobHunterLogin() {
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
 
-  const { isLoggedIn, error } = useSelector((state: RootState) => state.login);
+  const { isLoggedIn, error } = useSelector((state: RootState) => state.auth);
 
   const [loginForm, setLoginForm] = useState({
     email: "",
@@ -27,7 +27,7 @@ function JobHunterLogin() {
   const [btnDisable, setBtnDisable] = useState(false);
 
   useEffect(() => {
-    handleLoginEffect(isLoggedIn, error, router, dispatch);
+    handleLoginEffect(isLoggedIn, error as null, router, dispatch);
   }, [isLoggedIn, error, router, dispatch]);
 
   return (
@@ -150,7 +150,10 @@ function JobHunterLogin() {
 
                 <p className="text-center text-sm">
                   Don&apos;t have an account? <></>
-                  <Link href="/auth/register/jobhunter" className="text-blue-500 hover:underline">
+                  <Link
+                    href="/auth/register/jobhunter"
+                    className="text-blue-500 hover:underline"
+                  >
                     Sign up now
                   </Link>
                 </p>

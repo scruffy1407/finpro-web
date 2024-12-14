@@ -1,46 +1,55 @@
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { AuthHandler } from "@/utils/auth.utils";
+import Cookies from "js-cookie";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "@/store";
+import { validateUserToken } from "@/store/slices/authSlice";
 
 function AuthorizeUser(
-  token: string | null,
   pagePermission: "jobhunter" | "company",
-  owned?: string,
+  owned?: string, // comparison data
 ) {
   const router = useRouter();
-  const authHandler = new AuthHandler();
+  const dispatch = useDispatch<AppDispatch>();
+  const { isLoggedIn, user_role, name } = useSelector(
+    (state: RootState) => state.auth,
+  );
 
-  async function handleAuthrorize(token: string | null) {
+  async function handleAuthrorize() {
     // Check the user have token or not when it access the page
-    if (!token) {
-      router.push("/");
+    const accessToken = Cookies.get("accessToken");
+
+    if (!accessToken) {
+      router.push("/auth/login/jobhunter");
       return;
     }
+    try {
+      await dispatch(validateUserToken(accessToken as string));
 
-    // Change any to a valid user response interface
-    const response: any = await authHandler.validateUserToken(token);
-    const user = response[0];
-
-    if (response.length === 0) {
-      router.push("/");
-      return;
-    }
-    if (user.role_type !== pagePermission) {
-      router.push("/");
-      return;
-    }
-
-    if (owned) {
-      if (user.id !== owned) {
+      if (!isLoggedIn) {
         router.push("/");
         return;
       }
+      if (user_role !== pagePermission) {
+        router.push("/");
+        return;
+      }
+      //
+      // if (owned) {
+      //   if (user.id !== owned) {
+      //     router.push("/");
+      //     return;
+      //   }
+      // }
+    } catch (e: unknown) {
+      router.push("/");
+      return;
     }
-
-    console.log(user);
+    // Change any to a valid user response interface
   }
   useEffect(() => {
-    handleAuthrorize(token);
+    handleAuthrorize();
   }, [router]);
 }
 

@@ -1,3 +1,5 @@
+import { EducationDegree } from "@/models/educationDegree";
+
 export interface LoginAuth {
   email: string;
   password: string;
@@ -12,4 +14,19 @@ export interface RegisterAuth {
 }
 export interface userProfile {
   name: string;
+}
+
+export interface WorkForm {
+  workingHistoryId?: number;
+  companyId?: number;
+  companyName: string;
+  position: string;
+  description: string;
+}
+export interface EducationForm {
+  educationId?: number;
+  schoolName: string;
+  degree: EducationDegree;
+  gpa: number;
+  description: string;
 }
