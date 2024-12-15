@@ -7,7 +7,7 @@ import { setSearchQuery } from "@/store/slices/searchQuerySlice";
 function HeroJobListPageComponent() {
 	const dispatch = useDispatch();
 
-	const onSearch = (searchParams: { jobTitle: string; categoryId: string }) => {
+	const onSearch = (searchParams: { jobTitle: string; categoryId: string; companyCity : string}) => {
 		    // Adding default values for missing fields
 			const searchQuery = {
 				...searchParams,

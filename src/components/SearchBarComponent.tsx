@@ -10,10 +10,9 @@ import {
 } from "@/components/ui/select";
 import ButtonComponent from "./ButtonComponent";
 import AsyncSelect from "react-select/async";
-import { locationOptions } from "@/utils/datadummy";
-import { LocationOption } from "@/utils/interface";
+import { LocationOptionReal } from "@/utils/interface";
 import { useState, useEffect } from "react";
-import { getCategories } from "@/pages/api/api";
+import { getCategories, searchLocation } from "@/pages/api/api";
 
 const customStyles = {
 	control: (provided: any) => ({
@@ -26,33 +25,19 @@ const customStyles = {
 
 export interface SearchBarProps {
 	onSearch: (searchParams: {
-	  jobTitle: string;
-	  categoryId: string;
-	  jobType: string;
-	  dateRange: string;
-	  sortOrder: string;
+		jobTitle: string;
+		categoryId: string;
+		jobType: string;
+		dateRange: string;
+		sortOrder: string;
+		companyCity: string;
 	}) => void;
-  }
+}
 
 export interface CategoriesReal {
 	categoryId: string;
 	category_name: string;
 }
-
-// data.ts
-
-const filterLocations = (inputValue: string) => {
-	return locationOptions.filter((i) =>
-		i.label.toLowerCase().includes(inputValue.toLowerCase())
-	);
-};
-
-const promiseLocationOptions = (inputValue: string) =>
-	new Promise<LocationOption[]>((resolve) => {
-		setTimeout(() => {
-			resolve(filterLocations(inputValue));
-		}, 1000);
-	});
 
 function SearchBarComponent({ onSearch }: SearchBarProps) {
 	const [jobTitle, setJobTitle] = useState<string>("");
@@ -62,36 +47,89 @@ function SearchBarComponent({ onSearch }: SearchBarProps) {
 	const [jobType, setJobType] = useState<string>("");
 	const [dateRange, setDateRange] = useState<string>("");
 	const [sortOrder, setSortOrder] = useState<string>("");
+	const [locations, setLocations] = useState<LocationOptionReal[]>([]); // Holds all locations (provinces and cities)
+	const [companyCity, setCompanyCity] = useState<string>("");
 
+	// Fetch categories on mount
+	useEffect(() => {
+		const fetchCategories = async () => {
+			try {
+				const response = await getCategories();
+				setCategory(response.data);
+			} catch (error) {
+				console.error("Error fetching categories:", error);
+			}
+		};
+		fetchCategories();
+	}, []);
+
+	// Fetch locations on mount
+	useEffect(() => {
+		const fetchLocations = async () => {
+			try {
+				const response = await searchLocation(); // Pass an empty string to get all locations
+				console.log(response.data.data);
+				setLocations(
+					response.data.data.map((location: any) => ({
+						label: location.name,
+						value: location.city_id,
+					}))
+				);
+			} catch (error) {
+				console.error("Error fetching locations:", error);
+			}
+		};
+		fetchLocations();
+	}, []);
+
+	// Handle search
 	const handleSearch = () => {
+		const clearLocation = () => {
+			setCompanyCity(""); // Reset companyCity to empty
+		};
+
+		console.log("companyCity before search:", companyCity); // This should log the correct city name.
+
 		const searchParams = {
 			jobTitle,
 			categoryId: categoryId === "all" ? "" : categoryId, // If "all" is selected, pass an empty string
 			jobType,
 			dateRange,
 			sortOrder,
-	  
+			companyCity,
 		};
-		console.log("THIS IS ", categoryId);
+		console.log("Search Parameters:", searchParams); // This will help you debug
 		onSearch(searchParams);
+		clearLocation();
+	};
+
+	// Combined loadOptions for city search
+	const loadOptions = (inputValue: string) => {
+		return new Promise<LocationOptionReal[]>((resolve) => {
+			setTimeout(() => {
+				const filteredCities = locations.filter((location) =>
+					location.label.toLowerCase().includes(inputValue.toLowerCase())
+				);
+				resolve(filteredCities);
+			}, 500); // Simulate async loading
+		});
 	};
 
 	useEffect(() => {
-		const fetchdata = async () => {
-			try {
-				const response = await getCategories();
-				console.log("Ini response only", response);
-				console.log("ini response.data", response.data);
-				setCategory(response.data);
-				console.log("LOOK AT THIS SHIT ", category);
-				console.log(category);
-			} catch (error) {
-				const err = error as Error;
-				return err.message;
-			}
-		};
-		fetchdata();
-	}, []);
+		if (companyCity) {
+			console.log("companyCity has been updated to:", companyCity);
+		}
+	}, [companyCity]); // This hook will run when companyCity changes
+
+	// Handle location changes
+	const handleLocationChange = (selectedOption: any) => {
+		if (selectedOption) {
+			setCompanyCity(selectedOption.label); // Set the cityName
+		} else {
+			setCompanyCity(""); // Reset if nothing is selected
+		}
+		console.log("Selected Location:", selectedOption);
+	};
 
 	return (
 		<div className="flex flex-col md:flex md:flex-row gap-5 items-center md:items-end mt-2">
@@ -119,13 +157,13 @@ function SearchBarComponent({ onSearch }: SearchBarProps) {
 						</div>
 					</SelectTrigger>
 					<SelectContent>
-					<SelectItem value="all">All categories</SelectItem>
+						<SelectItem value="all">All categories</SelectItem>
 						{/* Dynamically generate SelectItem for each category */}
 						{category.length > 0 ? (
 							category.map((categoryItem, index) => (
 								<SelectItem
 									key={categoryItem.categoryId}
-									value={`${index}`}
+									value={`${index + 1}`}
 								>
 									{categoryItem.category_name} {/* Display category name */}
 								</SelectItem>
@@ -145,9 +183,13 @@ function SearchBarComponent({ onSearch }: SearchBarProps) {
 				<AsyncSelect
 					cacheOptions
 					defaultOptions
-					loadOptions={promiseLocationOptions}
+					loadOptions={loadOptions} // Load cities based on search term
 					placeholder="Search Location"
 					styles={customStyles} // Apply custom styles here
+					value={
+						companyCity ? { label: companyCity, value: companyCity } : null
+					} // Set to null if location is cleared
+					onChange={handleLocationChange}
 				/>
 			</div>
 			<div className="hidden md:w-[15%] md:block">

@@ -1,12 +1,12 @@
 import axios, { InternalAxiosRequestConfig } from "axios";
+import { job } from "@/utils/axiosInterface";
+import { location } from "@/utils/axiosInterface";
 
 const baseURL = "http://localhost:8000";
 
 const api = axios.create({
 	baseURL,
 });
-
-import { job } from "@/utils/axiosInterface";
 
 interface GetJobPosts {
 	page: number;
@@ -32,9 +32,11 @@ export async function getJobPost(
 		jobType?: string;
 		dateRange?: string;
 		sortOrder?: string;
+		companyCity?: string;
 	}
 ) {
-	const { jobTitle, categoryId, jobType, dateRange, sortOrder } = searchQuery;
+	const { jobTitle, categoryId, jobType, dateRange, sortOrder, companyCity } =
+		searchQuery;
 
 	// Build the query string
 	let queryString = `jobPosts?page=${currentPage}&limit=15`;
@@ -47,11 +49,13 @@ export async function getJobPost(
 		queryString += `&categoryId=${categoryId}`;
 	}
 
-	if (jobType) {
+	// Ensure empty string is passed instead of "all" for jobType
+	if (jobType !== undefined && jobType !== "all") {
 		queryString += `&jobType=${jobType}`;
 	}
 
-	if (dateRange) {
+	// Ensure empty string is passed instead of "all" for dateRange
+	if (dateRange !== undefined && dateRange !== "all") {
 		queryString += `&dateRange=${dateRange}`;
 	}
 
@@ -59,6 +63,13 @@ export async function getJobPost(
 		queryString += `&sortOrder=${sortOrder}`;
 	}
 
+	if (companyCity) {
+		// Add companyCity to the query string if provided
+		queryString += `&companyCity=${encodeURIComponent(companyCity)}`;
+	}
+
+	console.log("THIS IS QUERRY STRING ");
+	console.log(queryString);
 	try {
 		const response = await job.get(queryString); // Make the API request
 		return response; // Return the data part of the response
@@ -68,6 +79,21 @@ export async function getJobPost(
 	}
 }
 
+export const getProvince = async () => {
+	const response = await location.get("/get-province");
+	return response;
+};
+
+export const getCityByProvince = async (provinceId: number) => {
+	const response = await location.get(`/get-city/${provinceId}`);
+	return response;
+};
+
+export const searchLocation = async () => {
+	const response = await location.get("search-location");
+	return response;
+};
+
 export async function getCategories() {
 	const response = await job.get("categories");
 	return response.data;
@@ -75,7 +101,7 @@ export async function getCategories() {
 
 export default api;
 
-//backup lastest
+// backup lastest
 // export async function getJobPost(
 // 	currentPage: number,
 // 	searchQuery: { jobTitle?: string; categoryId?: string }

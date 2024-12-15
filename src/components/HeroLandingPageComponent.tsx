@@ -12,6 +12,7 @@ export default function HeroComponent() {
 	const handleSearch = (searchParams: {
 		jobTitle: string;
 		categoryId: string;
+		companyCity : string
 	}) => {
 		// Construct search query with default values
 		const searchQuery = {

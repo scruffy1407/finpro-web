@@ -7,6 +7,7 @@ interface SearchQueryState {
 	jobType: string;
 	dateRange: string;
 	sortOrder: string;
+	companyCity : string;
 }
 
 const initialState: SearchQueryState = {
@@ -15,6 +16,7 @@ const initialState: SearchQueryState = {
 	jobType: "",
 	dateRange: "",
 	sortOrder: "",
+	companyCity : "",
 };
 
 const searchQuerySlice = createSlice({
@@ -27,6 +29,7 @@ const searchQuerySlice = createSlice({
 			state.jobType = action.payload.jobType; // Update jobType
 			state.dateRange = action.payload.dateRange; // Update dateRange
 			state.sortOrder = action.payload.sortOrder; // Update sortOrder
+			state.companyCity = action.payload.companyCity
 		},
 	},
 });

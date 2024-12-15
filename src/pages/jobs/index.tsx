@@ -25,18 +25,11 @@ import { getJobPost } from "../api/api";
 const JobPostPage: React.FC = () => {
 	const [jobPosts, setJobPosts] = useState<any[]>([]);
 	const [loading, setLoading] = useState<boolean>(false);
-	const [searchQuery, setSearchQuery] = useState({
-		jobTitle: "",
-		categoryId: "",
-		jobType: "",
-		dateRange: "",
-		sortOrder: "",
-	});
 
 	const { currentPage, totalPages } = useSelector(
 		(state: RootState) => state.pagination
 	);
-	const { jobTitle, categoryId, jobType, dateRange, sortOrder } = useSelector(
+	const { jobTitle, categoryId, jobType, dateRange, sortOrder, companyCity } = useSelector(
 		(state: RootState) => state.searchQuery
 	); // Access searchQuery from the store
 
@@ -52,6 +45,7 @@ const JobPostPage: React.FC = () => {
 			  jobType,
 			  dateRange,
 			  sortOrder,
+			  companyCity
 			});
 	
 			// Check if response is valid and set job posts
@@ -70,6 +64,7 @@ const JobPostPage: React.FC = () => {
 			setLoading(false);
 		  }
 		};
+
 	
 		fetchJobPosts();
 	  }, [
@@ -79,6 +74,7 @@ const JobPostPage: React.FC = () => {
 		jobType,
 		dateRange,
 		sortOrder,
+		companyCity,
 		dispatch,
 	  ]);
 

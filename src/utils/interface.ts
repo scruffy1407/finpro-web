@@ -40,6 +40,12 @@ export interface LocationOption {
 	label: string;
 	value: string;
 }
+export interface LocationOptionReal {
+	label: string;
+	value: string;
+	type : 'province' | 'city'
+	provinceId? : string
+}
 
 export type JobType =
 	| "Full-Time"
