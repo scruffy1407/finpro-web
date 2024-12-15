@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import { AuthHandler } from "@/utils/auth.utils";
 import Cookies from "js-cookie";
@@ -12,6 +12,8 @@ function AuthorizeUser(
 ) {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
+  const initialRender = useRef(true);
+
   const { isLoggedIn, user_role, name } = useSelector(
     (state: RootState) => state.auth,
   );
@@ -25,23 +27,9 @@ function AuthorizeUser(
       return;
     }
     try {
-      await dispatch(validateUserToken(accessToken as string));
-
       if (!isLoggedIn) {
-        router.push("/");
-        return;
+        await dispatch(validateUserToken(accessToken as string));
       }
-      if (user_role !== pagePermission) {
-        router.push("/");
-        return;
-      }
-      //
-      // if (owned) {
-      //   if (user.id !== owned) {
-      //     router.push("/");
-      //     return;
-      //   }
-      // }
     } catch (e: unknown) {
       router.push("/");
       return;
@@ -51,6 +39,23 @@ function AuthorizeUser(
   useEffect(() => {
     handleAuthrorize();
   }, [router]);
+
+  useEffect(() => {
+    if (!initialRender.current) {
+      console.log("initialRender.current", initialRender.current);
+      console.log(isLoggedIn);
+      console.log(user_role);
+      if (!isLoggedIn) {
+        router.push("/");
+        return;
+      }
+      if (user_role !== pagePermission) {
+        router.push("/");
+        return;
+      }
+    }
+    initialRender.current = false;
+  }, [isLoggedIn]);
 }
 
 export default AuthorizeUser;

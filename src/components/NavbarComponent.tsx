@@ -82,7 +82,7 @@ function NavbarComponent({ loginJobHunter, loginCompanies }: NavProps) {
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuItem>
-                <Link href={"/afae"} className="text-base">
+                <Link href={"/profile/user"} className="text-base">
                   My Profile
                 </Link>
               </DropdownMenuItem>

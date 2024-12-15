@@ -6,6 +6,9 @@ import Cookies from "js-cookie";
 import { AuthHandler } from "@/utils/auth.utils";
 
 interface LoginState {
+  baseId: number | null;
+  innerId: number | null; // companyId or Job hunter Id
+  photo?: string;
   email: string;
   name?: string;
   password?: string;
@@ -19,6 +22,9 @@ interface LoginState {
 const authHandler = new AuthHandler();
 
 const initialState: LoginState = {
+  baseId: null,
+  innerId: null,
+  photo: "",
   email: "",
   name: "",
   password: "",
@@ -46,7 +52,8 @@ export const loginUser = createAsyncThunk<
       },
     );
 
-    const { access_token, refresh_token, user_role } = response.data.data;
+    const { access_token, refresh_token, user_role, user } = response.data.data;
+    console.log(response.data);
 
     Cookies.set("accessToken", access_token, { expires: 1 / 24 });
     Cookies.set("refreshToken", refresh_token, { expires: 3 });
@@ -92,6 +99,12 @@ const authSlice = createSlice({
       state.isLoggedIn = false;
       state.error = null;
     },
+    updatePhoto: (state, action) => {
+      state.photo = action.payload;
+    },
+    updateName: (state, action) => {
+      state.name = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -112,13 +125,18 @@ const authSlice = createSlice({
       })
       .addCase(validateUserToken.fulfilled, (state, action) => {
         console.log("ACTION PAYLOAD", action);
+        console.log("JOB HUNTER", action.payload.jobHunter[0]);
         state.isLoggedIn = true;
-        state.name = action.payload.name;
-        state.user_role = action.payload.user_role;
+        state.name = action.payload.jobHunter[0].name;
+        state.email = action.payload.email;
+        state.user_role = action.payload.role_type;
+        state.innerId = action.payload.jobHunter[0].job_hunter_id;
+        state.photo = action.payload.jobHunter[0].photo;
+        state.isLoading = false;
       });
   },
 });
 
-export const { resetState } = authSlice.actions;
+export const { resetState, updateName, updatePhoto } = authSlice.actions;
 
 export default authSlice.reducer;

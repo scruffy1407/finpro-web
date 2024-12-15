@@ -38,7 +38,7 @@ export interface HeadingProps {
 }
 export interface LocationOption {
   label: string;
-  value: string;
+  value: number;
 }
 
 export type JobType =
@@ -49,15 +49,15 @@ export type JobType =
   | "Remote Working";
 
 export interface JobPostProps {
-	logo: string;
-	companyName: string;
-	job_title: string;
-	company_province: string;
-	jobType: JobType[]; // This will accept an array of the predefined JobType values
-	created_at: Date;
-	salaryMin: number;
-	salaryMax: number;
-	salaryShow ?: boolean;
+  logo: string;
+  companyName: string;
+  job_title: string;
+  company_province: string;
+  jobType: JobType[]; // This will accept an array of the predefined JobType values
+  created_at: Date;
+  salaryMin: number;
+  salaryMax: number;
+  salaryShow?: boolean;
 }
 
 export interface ProfilePropsDummy {
@@ -71,50 +71,48 @@ export interface CompanyShortPropsDummy {
   jobsOpen: number;
 }
 
-
 export interface CompanyDummy {
-	companyName: string;
-	companyDescription: string;
-	logo: string;
-	companyCity: string;
-	companyProvince: string;
-	addressDetails: string;
-	companyIndustry: string;
-	companySize: string;
-	review: string[];
-  }
+  companyName: string;
+  companyDescription: string;
+  logo: string;
+  companyCity: string;
+  companyProvince: string;
+  addressDetails: string;
+  companyIndustry: string;
+  companySize: string;
+  review: string[];
+}
 
-  export interface JobPostDummy {
-	preSelectionTestId: number;
-	company: CompanyDummy;
-	categoryId: number;
-	selectionTextActive: boolean;
-	jobTitle: string;
-	salaryShow: boolean;
-	salaryMin: number;
-	salaryMax: number;
-	jobDescription: string;
-	jobExperienceMin: number;
-	jobExperienceMax: number;
-	expiredDate: string;
-	status: boolean;
-	jobType: string[];
-	jobSpace: string[];
-	createdAt: string;
-	updatedAt: string;
-	jobId: string;
-  }
+export interface JobPostDummy {
+  preSelectionTestId: number;
+  company: CompanyDummy;
+  categoryId: number;
+  selectionTextActive: boolean;
+  jobTitle: string;
+  salaryShow: boolean;
+  salaryMin: number;
+  salaryMax: number;
+  jobDescription: string;
+  jobExperienceMin: number;
+  jobExperienceMax: number;
+  expiredDate: string;
+  status: boolean;
+  jobType: string[];
+  jobSpace: string[];
+  createdAt: string;
+  updatedAt: string;
+  jobId: string;
+}
 
-  export interface CompanyPostDummy {
-	companyId: number;
-	companyName: string;
-	companyDescription: string;
-	logo: string;
-	companyCity: string;
-	companyProvince: string;
-	addressDetails: string;
-	companyIndustry: string;
-	companySize: string;
-	review: string[];
-  }
-
+export interface CompanyPostDummy {
+  companyId: number;
+  companyName: string;
+  companyDescription: string;
+  logo: string;
+  companyCity: string;
+  companyProvince: string;
+  addressDetails: string;
+  companyIndustry: string;
+  companySize: string;
+  review: string[];
+}

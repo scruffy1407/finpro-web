@@ -30,3 +30,35 @@ export interface EducationForm {
   gpa: number;
   description: string;
 }
+
+export interface JobHunterGeneralInfo {
+  jobHunterId: string | number;
+  name: string;
+  dob: string | null | Date; // date only when to hit an api
+  gender: "male" | "female" | "other" | undefined;
+  locationCity: string | null;
+  locationProvince: string | null;
+  cityId: undefined | number;
+  provinceId: undefined | number;
+  expectedSalary: string | number | null;
+  summary: string;
+}
+
+export interface ProvinceItem {
+  province_id: number;
+  name: string;
+}
+export interface CityItem {
+  city_id: number;
+  name: string;
+  provinceId: number;
+}
+
+export interface locationList {
+  value: number;
+  label: string;
+}
+export interface UpdateImage {
+  id: number; // Can be job hunter ID or Company ID
+  image: File;
+}
