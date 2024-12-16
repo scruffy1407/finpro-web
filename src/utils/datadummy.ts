@@ -87,7 +87,7 @@ export const dummyCompanies: CompanyShortPropsDummy[] = [
 		jobsOpen: 9,
 	},
 	{
-		logo: "/path/to/Uber.svg",
+		logo: "/companies/Spotify.svg",
 		companyName: "Global Innovations",
 		jobsOpen: 15,
 	},

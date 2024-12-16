@@ -16,11 +16,14 @@ type ButtonType =
 	| "ButtonFilledCustom"
 	| "ButtonTextCustom"
 	| "ButtonBorderCustom"
+	| "ButtonSocial"
+
 
 export interface ButtonProps {
 	container?: string;
 	type: ButtonType;
 	onClick?: () => void;
+	icon?: string;
 }
 
 export interface HeroProps {

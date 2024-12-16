@@ -1,26 +1,30 @@
 import React from "react";
 import Link from "next/link";
 
-interface LinkProps {
-	findJobs: string;
-	skillAssessment: string;
-	exploreCompanies: string;
+interface LinkItem {
+  label: string;
+  href: string;
 }
 
-function LinksComponents() {
-	return (
-		<div className="hidden md:flex justify-between gap-5">
-			<Link className="hover:text-blue-500" href={""}>
-				Find Jobs
-			</Link>
-			<Link className="hover:text-blue-500" href={""}>
-				Skill Assessment
-			</Link>
-			<Link className="hover:text-blue-500" href={""}>
-				Explore Companies
-			</Link>
-		</div>
-	);
+interface LinksComponentsProps {
+  navbarItems: LinkItem[];
+  textColor: string;
+}
+
+function LinksComponents({ navbarItems = [], textColor }: LinksComponentsProps) {
+  return (
+    <div className="hidden md:flex justify-between gap-5">
+      {navbarItems.map((item, index) => (
+        <Link
+          key={index}
+          href={item.href}
+          className={`hover:text-blue-500 ${textColor}`}
+        >
+          {item.label}
+        </Link>
+      ))}
+    </div>
+  );
 }
 
 export default LinksComponents;
