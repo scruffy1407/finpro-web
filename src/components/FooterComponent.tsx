@@ -1,12 +1,12 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import LinksComponents from "./LinksComponents";
+import LinksComponents from "./LinksComponent";
 
 interface FooterProps {
-	findJobs: string;
-	skillAssessment: string;
-	exploreCompanies: string;
+  findJobs: string;
+  skillAssessment: string;
+  exploreCompanies: string;
 }
 
 function FooterComponent({
@@ -57,12 +57,12 @@ function FooterComponent({
 					</div>
 				</div>
 
-				<div className="flex text-center md:text-left w-full md:w-[50%]">
-					<p className="text-white px-6">
-						Lorem ipsum dolor sit amet consectetur adipisicing elit. Sed
-						repudiandae amet iusto. Perferendis voluptatem, debitis dolor rerum,
-					</p>
-				</div>
+        <div className="flex text-center md:text-left w-full md:w-[50%]">
+          <p className="text-white px-6">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Sed
+            repudiandae amet iusto. Perferendis voluptatem, debitis dolor rerum,
+          </p>
+        </div>
 
 				<div className="flex justify-center items-center mt-6 p-3 gap-6 md:hidden ">
 					<Image
@@ -90,14 +90,14 @@ function FooterComponent({
 					<LinksComponents navbarItems={navbarItems} textColor={textColor} />
 				</div>
 
-				<div className="mb-4 md:mb-0">
-					<p className="text-white text-sm">
-						&copy; 2024 Bantu Cari Kerja Indonesia.
-					</p>
-				</div>
-			</div>
-		</div>
-	);
+        <div className="mb-4 md:mb-0">
+          <p className="text-white text-sm">
+            &copy; 2024 Bantu Cari Kerja Indonesia.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default FooterComponent;

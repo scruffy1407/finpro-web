@@ -1,6 +1,5 @@
 import React from "react";
 import JobPostComponent from "./JobPostComponent";
-import { jobPosts } from "@/utils/datadummy"; // Adjust the path based on where your datadummy.ts is stored
 import { JobPostProps } from "@/utils/interface";
 import { useState, useEffect } from "react";
 import axios from "axios";

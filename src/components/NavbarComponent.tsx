@@ -10,11 +10,11 @@ import LinksComponents from "./LinksComponents";
 import Cookies from "js-cookie";
 
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  DropdownMenuSeparator,
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+	DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
 import ButtonComponent from "./ButtonComponent";
@@ -195,24 +195,24 @@ function NavbarComponent({ loginJobHunter, loginCompanies }: NavProps) {
                 />
               </DropdownMenuTrigger>
 
-              <DropdownMenuContent>
-                <div className="p-1">
-                  <ButtonComponent
-                    container={loginJobHunter}
-                    type="ButtonBorder"
-                    onClick={() => dispatch(login())}
-                  />
-                </div>
+							<DropdownMenuContent>
+								<div className="p-1">
+									<ButtonComponent
+										container={loginJobHunter}
+										type="ButtonBorder"
+										onClick={() => dispatch(login())}
+									/>
+								</div>
 
-                <div className="p-2">
-                  <ButtonComponent
-                    container={loginCompanies}
-                    type="ButtonText"
-                    onClick={() => dispatch(login())}
-                  />
-                </div>
+								<div className="p-2">
+									<ButtonComponent
+										container={loginCompanies}
+										type="ButtonText"
+										onClick={() => dispatch(login())}
+									/>
+								</div>
 
-                <DropdownMenuSeparator />
+								<DropdownMenuSeparator />
 
                 <DropdownMenuItem>
                   <Link className="hover:text-blue-500" href={""}>
@@ -249,6 +249,19 @@ function NavbarComponent({ loginJobHunter, loginCompanies }: NavProps) {
               </DropdownMenuTrigger>
 
               <DropdownMenuContent>
+                <div className="p-2">
+                  <ButtonComponent
+                    container={loginJobHunter}
+                    type="ButtonBorder"
+                    onClick={() => dispatch(login())}
+                  />
+                </div>
+
+                <ButtonComponent
+                  container={loginCompanies}
+                  type="ButtonText"
+                  onClick={() => dispatch(login())}
+                />
                 <DropdownMenuSeparator />
 
                 {dropdownItems.map((item, index) => (
