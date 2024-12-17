@@ -61,6 +61,8 @@ const JobPostSection: React.FC = () => {
 							experienceMin={jobPost.experienceMin}
 							experienceMax={jobPost.experienceMax}
 							jobSpace={jobPost.jobSpace}
+							job_id={jobPost.job_id}
+
 						/>
 					</div>
 				))

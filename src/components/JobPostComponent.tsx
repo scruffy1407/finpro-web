@@ -18,6 +18,7 @@ function JobPostComponent({
 	salaryShow,
 	experienceMin,
 	experienceMax,
+	job_id
 }: JobPostProps) {
 	const timeAgo = formatDistanceToNow(new Date(created_at), {
 		addSuffix: true,
@@ -27,7 +28,7 @@ function JobPostComponent({
 	};
 
 	return (
-		<Link href={""} className="bg-white w-[410] h-fit ">
+		<Link href={`/jobdetail/${job_id}`} className="bg-white w-[410] h-fit ">
 			<div className="p-4 flex flex-col gap-6">
 				<div className={`flex flex-col gap-3`}>
 					<div className="flex justify-between items-center">
