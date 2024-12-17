@@ -3,6 +3,7 @@ import JobPostComponent from "./JobPostComponent";
 import { jobPosts } from "@/utils/datadummy"; // Adjust the path based on where your datadummy.ts is stored
 import { JobPostProps } from "@/utils/interface";
 
+
 const JobPostSection: React.FC = () => {
 	return (
 		<div className="max-w-screen-xl mx-auto overflow-x-auto flex gap-6 justify-start sm:justify-start snap-x sm:snap-none px-4 sm:px-0">
@@ -21,6 +22,7 @@ const JobPostSection: React.FC = () => {
 						created_at={jobPost.created_at}
 						salaryMin={jobPost.salaryMin}
 						salaryMax={jobPost.salaryMax}
+						job_id={jobPost.job_id}
 					/>
 				</div>
 			))}
