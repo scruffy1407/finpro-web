@@ -97,7 +97,7 @@ export const dummyCompanies: CompanyShortPropsDummy[] = [
 
 
 
-export const jobListPostDummy: JobPostDummy[] = [
+export const jobListPostDummy: any = [
   {
     preSelectionTestId: 8,
     company: {
@@ -745,7 +745,7 @@ export const jobListPostDummy: JobPostDummy[] = [
   },
 ];
 
-export const CompanyListPostDummy: CompanyPostDummy[] = [
+export const CompanyListPostDummy: any = [
   {
     companyId: 1,
     companyName: "SmartRetail Solutions",

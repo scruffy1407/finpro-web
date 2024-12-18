@@ -1,7 +1,7 @@
 import React from "react";
 import JobPostComponent from "./JobPostComponent";
 import { jobListPostDummy } from "@/utils/datadummy"; // Adjust the path based on where your datadummy.ts is stored
-import { JobPostDummy, JobPostPropsReal } from "@/utils/interface";
+import { JobPostPropsReal } from "@/utils/interface";
 import { useSelector } from "react-redux";
 import { JobType } from "@/utils/interface";
 import { RootState } from "@/store"; // Make sure to import RootState correctly
@@ -38,6 +38,7 @@ const JobListMappingComponent: React.FC<JobListMappingComponentProps> = ({
 						className="flex-shrink-0 w-full sm:w-[410px] snap-start bg-white rounded-xl hover:shadow-lg"
 					>
 						<JobPostComponent
+							job_id={String(jobListPostReal.job_id)}
 							logo={jobListPostReal.company.logo || "/burger.svg"}
 							companyName={
 								jobListPostReal.company.company_name || "something Wrong"

@@ -18,7 +18,7 @@ function JobPostComponent({
 	salaryShow,
 	experienceMin,
 	experienceMax,
-	job_id
+	job_id,
 }: JobPostProps) {
 	const timeAgo = formatDistanceToNow(new Date(created_at), {
 		addSuffix: true,
@@ -26,7 +26,7 @@ function JobPostComponent({
 	const formatSalary = (salary: number) => {
 		return `${(salary / 1000000).toFixed(1)} jt`; // Format to 1 decimal place
 	};
-
+	console.log(job_id);
 	return (
 		<Link href={`/jobdetail/${job_id}`} className="bg-white w-[410] h-fit ">
 			<div className="p-4 flex flex-col gap-6">
