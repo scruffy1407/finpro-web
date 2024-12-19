@@ -2,11 +2,11 @@ import React from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import ButtonComponent from "./ButtonComponent";
 import AsyncSelect from "react-select/async";
@@ -133,12 +133,12 @@ function SearchBarComponent({ onSearch }: SearchBarProps) {
 
 	return (
 		<div className="flex flex-col md:flex md:flex-row gap-5 items-center md:items-end mt-2">
-			<div className="w-full md:w-[35%]">
+			<div className="w-full">
 				<Label className="font-semibold text-neutral-950" htmlFor="position">
-					Position :{" "}
+					Position :
 				</Label>
 				<Input
-					className="rounded-xl "
+					className="rounded-xl text-sm w-full"
 					id="position"
 					type="text"
 					placeholder="Ex : Web Developer"
@@ -146,17 +146,17 @@ function SearchBarComponent({ onSearch }: SearchBarProps) {
 					onChange={(e) => setJobTitle(e.target.value)}
 				/>
 			</div>
-			<div className="w-full md:w-[40%]">
+			<div className="w-full">
 				<Label className="font-semibold text-neutral-950" htmlFor="position">
-					Job Category :{" "}
+					Job Category :
 				</Label>
 				<Select onValueChange={setCategoryId}>
-					<SelectTrigger className=" w-full md:w-full rounded-xl">
-						<div className="text-slate-500">
+					<SelectTrigger className=" w-full rounded-xl text-sm">
+						<div className="text-neutral-500">
 							<SelectValue placeholder="Select Job Category" />
 						</div>
 					</SelectTrigger>
-					<SelectContent>
+					<SelectContent className="rounded-xl">
 						<SelectItem value="all">All categories</SelectItem>
 						{/* Dynamically generate SelectItem for each category */}
 						{category.length > 0 ? (
@@ -176,15 +176,16 @@ function SearchBarComponent({ onSearch }: SearchBarProps) {
 					</SelectContent>
 				</Select>
 			</div>
-			<div className="w-full md:w-[35%] rounded-xl">
+			<div className="w-full rounded-xl z-50">
 				<Label className="font-semibold text-neutral-950" htmlFor="location">
-					Location :{" "}
+					Location :
 				</Label>
 				<AsyncSelect
 					cacheOptions
 					defaultOptions
 					loadOptions={loadOptions} // Load cities based on search term
 					placeholder="Search Location"
+					className="w-full text-sm"
 					styles={customStyles} // Apply custom styles here
 					value={
 						companyCity ? { label: companyCity, value: companyCity } : null
@@ -192,7 +193,7 @@ function SearchBarComponent({ onSearch }: SearchBarProps) {
 					onChange={handleLocationChange}
 				/>
 			</div>
-			<div className="hidden md:w-[15%] md:block">
+			<div className="hidden md:w-[33%] md:block">
 				<ButtonComponent onClick={handleSearch} type="ButtonSearch" />
 			</div>
 			<div className="block w-full md:hidden md:w-[15%] mt-0">
