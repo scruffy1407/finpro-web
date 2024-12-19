@@ -30,8 +30,8 @@ function Home() {
 
 			<div className=" mx-4 mt-20 ">
 				<HeadingComponent
-					heading="We found Jobs that nears you"
-					paragraph="Check job that we found"
+					heading="We found Jobs near you!"
+					paragraph="Explore opportunities tailored to your location and discover the perfect match for your next career move"
 				/>
 			</div>
 
@@ -46,8 +46,8 @@ function Home() {
 
 			<div className=" mx-4 mt-20">
 				<HeadingComponent
-					heading="It might be your next company"
-					paragraph="Check out our companies & What are the jobs that currently open"
+					heading="This could be your next company"
+					paragraph="Explore our partner companies and discover the exciting job openings available right now."
 				/>
 			</div>
 
