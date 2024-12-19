@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import WorkingHistoryItem from "@/components/Profile/JobHunter/WorkingHistoryItem";
 import { Button } from "@/components/ui/button";
 import { useDispatch, useSelector } from "react-redux";
@@ -6,17 +6,41 @@ import { AppDispatch, RootState } from "@/store";
 import { closeModalAction, openModalAction } from "@/store/slices/ModalSlice";
 import FormWorkingExperience from "@/components/Form/FormWorkingExperience";
 import ModalContainer from "@/components/Modal/ModalContainer";
-import FormEditWorkingExperience from "@/components/Form/FormEditWorkingExperience";
+import Cookies from "js-cookie";
+import {
+  clearSelectedItem,
+  getWorkingExperience,
+  setSelectedItem,
+} from "@/store/slices/WorkingExpSlice";
 
 function WorkingHistorySection() {
   const dispatch = useDispatch<AppDispatch>();
+  const { isLoggedIn } = useSelector((state: RootState) => state.auth);
+  const { workingExpList, pendingState } = useSelector(
+    (state: RootState) => state.workExperience,
+  );
+
   const { currentModalId } = useSelector(
     (state: RootState) => state.modalController,
   );
 
   const handleCloseModal = () => {
+    dispatch(clearSelectedItem());
     dispatch(closeModalAction());
   };
+
+  async function handleFethingExperience() {
+    const accessToken = Cookies.get("accessToken");
+    await dispatch(getWorkingExperience(accessToken as string));
+  }
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      if (!pendingState.isRender) {
+        handleFethingExperience();
+      }
+    }
+  }, [isLoggedIn]);
 
   return (
     <>
@@ -47,32 +71,30 @@ function WorkingHistorySection() {
             Add
           </Button>
         </div>
-        <div className={`grid grid-cols-1 gap-4 lg:grid-cols-2`}>
-          <WorkingHistoryItem
-            workingHistoryId={1}
-            companyName={"Tokopedia"}
-            position={"Senior UI/UX Designer"}
-            description={
-              "As a Senior Sales Manager at Shopee, I led and motivated a high-performing sales team to consistently exceed sales targets. I developed and executed strategic sales plans to acquire and retain key accounts, driving significant revenue growth."
-            }
-          />
-          <WorkingHistoryItem
-            workingHistoryId={2}
-            companyName={"Shopee"}
-            position={"Senior UI/UX Designer"}
-            description={
-              "As a Senior Sales Manager at Shopee, I led and motivated a high-performing sales team to consistently exceed sales targets. I developed and executed strategic sales plans to acquire and retain key accounts, driving significant revenue growth."
-            }
-          />
-          <WorkingHistoryItem
-            workingHistoryId={3}
-            companyName={"Bukalapak"}
-            position={"Senior UI/UX Designer"}
-            description={
-              "As a Senior Sales Manager at Shopee, I led and motivated a high-performing sales team to consistently exceed sales targets. I developed and executed strategic sales plans to acquire and retain key accounts, driving significant revenue growth."
-            }
-          />
-        </div>
+        {workingExpList.length > 0 ? (
+          <div className={`grid grid-cols-1 gap-4`}>
+            {workingExpList.map((workExp, key: number) => {
+              return (
+                <WorkingHistoryItem
+                  key={key}
+                  companyId={workExp.companyId as number}
+                  workingHistoryId={workExp.workingExperienceId as number}
+                  companyName={workExp.companyName}
+                  position={workExp.jobTitle}
+                  description={workExp.jobDescription}
+                  onEdit={() => {
+                    dispatch(
+                      setSelectedItem(workExp.workingExperienceId as number),
+                    );
+                    dispatch(openModalAction("editWorkingModal"));
+                  }}
+                />
+              );
+            })}
+          </div>
+        ) : (
+          ""
+        )}
       </section>
     </>
   );

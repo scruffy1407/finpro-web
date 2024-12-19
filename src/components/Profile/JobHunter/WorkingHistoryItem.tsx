@@ -11,8 +11,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store";
 import FormEditWorkingExperience from "@/components/Form/FormEditWorkingExperience";
 import ModalContainer from "@/components/Modal/ModalContainer";
+import ConfirmDelete from "@/components/Modal/ConfirmDelete";
+import { deleteWorkingExperience } from "@/store/slices/WorkingExpSlice";
+import Cookies from "js-cookie";
 
 interface WorkingHistoryProps {
+  companyId: number;
   workingHistoryId: number;
   companyName: string;
   position: string;
@@ -26,8 +30,11 @@ function WorkingHistoryItem({
   companyName,
   position,
   description,
+  companyId,
 }: WorkingHistoryProps) {
+  const accessToken = Cookies.get("accessToken");
   const dispatch = useDispatch<AppDispatch>();
+  const { innerId } = useSelector((state: RootState) => state.auth);
 
   const { currentModalId, editId } = useSelector(
     (state: RootState) => state.modalController,
@@ -35,8 +42,6 @@ function WorkingHistoryItem({
   const handleCloseModal = () => {
     dispatch(closeModalAction());
   };
-
-  console.log(editId);
 
   return (
     <>
@@ -48,14 +53,35 @@ function WorkingHistoryItem({
         title={`Edit Working Experience`}
       >
         <FormEditWorkingExperience
-          description={description}
-          position={position}
-          companyName={companyName}
-          workingHistoryId={workingHistoryId}
+          jobDescription={description as string}
+          jobTitle={position as string}
+          companyName={companyName as string}
+          companyId={companyId}
+          workingExperienceId={workingHistoryId as number}
+          jobHunterId={innerId as number}
         />
       </ModalContainer>
+
+      <ModalContainer
+        isOpen={
+          currentModalId === "deleteWorkingModal" && editId === workingHistoryId
+        }
+        onClose={handleCloseModal}
+      >
+        <ConfirmDelete
+          itemId={workingHistoryId}
+          onDelete={() => {
+            dispatch(
+              deleteWorkingExperience({
+                token: accessToken as string,
+                workExp: workingHistoryId as number,
+              }),
+            );
+          }}
+        />
+      </ModalContainer>
+
       <div
-        id={workingHistoryId.toString()}
         className={`border border-neutral-200 rounded-xl p-4 flex flex-col gap-4`}
       >
         <div className={`flex gap-2 item-center justify-between`}>
@@ -82,7 +108,14 @@ function WorkingHistoryItem({
               >
                 Edit
               </DropdownMenuItem>
-              <DropdownMenuItem className={`text-red-500`}>
+              <DropdownMenuItem
+                onClick={() =>
+                  dispatch(
+                    openModalAction("deleteWorkingModal", workingHistoryId),
+                  )
+                }
+                className={`text-red-500`}
+              >
                 Delete
               </DropdownMenuItem>
             </DropdownMenuContent>

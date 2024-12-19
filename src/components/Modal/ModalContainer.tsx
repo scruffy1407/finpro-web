@@ -7,7 +7,7 @@ export interface ModalProps {
 interface ModalContainerProps {
   isOpen: boolean;
   onClose: () => void;
-  title: string;
+  title?: string;
   children: React.ReactNode;
 }
 

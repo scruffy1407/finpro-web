@@ -7,6 +7,8 @@ import paginationReducer from "@/store/slices/jobPaginationSlice";
 import companyPaginationReducer from "@/store/slices/companyPaginationSlice";
 import resetPasswordReducer from "@/store/slices/resetPasswordSlice";
 import modalControllerReducer from "@/store/slices/ModalSlice";
+import workExperienceReducer from "@/store/slices/WorkingExpSlice";
+import educationReducer from "@/store/slices/EducationSlice";
 
 const store = configureStore({
   reducer: {
@@ -17,6 +19,8 @@ const store = configureStore({
     companyPagination: companyPaginationReducer,
     passwordReset: resetPasswordReducer,
     modalController: modalControllerReducer,
+    workExperience: workExperienceReducer,
+    education: educationReducer,
   },
 });
 

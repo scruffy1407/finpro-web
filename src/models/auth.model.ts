@@ -1,4 +1,4 @@
-import { EducationDegree } from "@/models/educationDegree";
+import { EducationDegree, EducationDegreeType } from "@/models/educationDegree";
 
 export interface LoginAuth {
   email: string;
@@ -26,9 +26,11 @@ export interface WorkForm {
 export interface EducationForm {
   educationId?: number;
   schoolName: string;
-  degree: EducationDegree;
+  degree: EducationDegreeType;
   gpa: number;
   description: string;
+  educationDate:string,
+  jobHunter:
 }
 
 export interface JobHunterGeneralInfo {

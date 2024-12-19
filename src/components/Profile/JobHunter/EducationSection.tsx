@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import EducationItem from "@/components/Profile/JobHunter/EducationItem";
 import ModalContainer from "@/components/Modal/ModalContainer";
@@ -6,9 +6,17 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store";
 import { closeModalAction, openModalAction } from "@/store/slices/ModalSlice";
 import FormEducation from "@/components/Form/FormEducation";
+import Cookies from "js-cookie";
+import { Education, getEducation } from "@/store/slices/EducationSlice";
+import EducationSectionSkeleton from "@/components/Profile/JobHunter/skeleton/educationSection.skeleton";
+import { EducationDegreeType } from "@/models/educationDegree";
 
 function EducationSection() {
   const dispatch = useDispatch<AppDispatch>();
+  const { isLoggedIn } = useSelector((state: RootState) => state.auth);
+  const { educationList, pendingState } = useSelector(
+    (state: RootState) => state.education,
+  );
   const { currentModalId } = useSelector(
     (state: RootState) => state.modalController,
   );
@@ -16,6 +24,20 @@ function EducationSection() {
   const handleCloseModal = () => {
     dispatch(closeModalAction());
   };
+
+  async function handleFethingEducation() {
+    const accessToken = Cookies.get("accessToken");
+    await dispatch(getEducation(accessToken as string));
+  }
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      handleFethingEducation();
+    }
+  }, [isLoggedIn]);
+
+  console.log("LISTNYA INI YAA", educationList);
+
   return (
     <>
       <ModalContainer
@@ -44,15 +66,30 @@ function EducationSection() {
             Add
           </Button>
         </div>
-        <div className={`grid grid-cols-1 gap-4 lg:grid-cols-2`}>
-          <EducationItem
-            educationId={1}
-            educationName={`Bina Nusantara University`}
-            educationDegree={`Bachelor Degree`}
-            gpa={4}
-            description={`As a Senior Sales Manager at Shopee, I led and motivated a high-performing sales team to consistently exceed sales targets. I developed and executed strategic sales plans to acquire and retain key accounts, driving significant revenue growth.`}
-          />
-        </div>
+        {pendingState.dataLoading ? (
+          <EducationSectionSkeleton />
+        ) : educationList.length === 0 ? (
+          ""
+        ) : (
+          <div className={`grid grid-cols-1 gap-4 lg:grid-cols-2`}>
+            {educationList.map((education: Education, key: number) => {
+              return (
+                <EducationItem
+                  key={key}
+                  educationId={education.educationId as number}
+                  educationDegree={
+                    education.education_degree as EducationDegreeType
+                  }
+                  gpa={education.cumulativeGpa}
+                  educationName={education.educationName}
+                  description={education.educationDescription}
+                  educationDate={education.educationDate as string}
+                  jobHunterId={education.jobHunterId as number}
+                />
+              );
+            })}
+          </div>
+        )}
       </section>
     </>
   );

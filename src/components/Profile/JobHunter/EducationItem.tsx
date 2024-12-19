@@ -11,13 +11,18 @@ import FormEditEducation from "@/components/Form/FormEditEducation";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store";
 import { closeModalAction, openModalAction } from "@/store/slices/ModalSlice";
-import { EducationDegree } from "@/models/educationDegree";
+import { EducationDegreeResult } from "@/models/educationDegree";
+import Cookies from "js-cookie";
+import ConfirmDelete from "@/components/Modal/ConfirmDelete";
+import { deleteEducation } from "@/store/slices/EducationSlice";
 
 interface EducationProps {
   educationId: number;
-  educationDegree: EducationDegree;
+  educationDegree: string;
   educationName: string;
   description: string;
+  educationDate: string | Date;
+  jobHunterId: number;
   gpa: number;
   onDelete?: () => void;
   onEdit?: () => void;
@@ -29,17 +34,18 @@ function EducationItem({
   educationDegree,
   educationId,
   educationName,
+  educationDate,
+  jobHunterId,
 }: EducationProps) {
+  const accessToken = Cookies.get("accessToken");
   const dispatch = useDispatch<AppDispatch>();
-
+  const { pendingState } = useSelector((state: RootState) => state.education);
   const { currentModalId, editId } = useSelector(
     (state: RootState) => state.modalController,
   );
   const handleCloseModal = () => {
     dispatch(closeModalAction());
   };
-
-  console.log(editId);
 
   return (
     <>
@@ -52,14 +58,35 @@ function EducationItem({
       >
         <FormEditEducation
           educationId={educationId}
-          gpa={gpa}
-          description={description}
-          schoolName={educationName}
-          degree={educationDegree}
+          educationName={educationName}
+          education_degree={educationDegree}
+          cumulativeGpa={gpa}
+          educationDescription={description}
+          educationDate={educationDate}
+          jobHunterId={jobHunterId}
+        />
+      </ModalContainer>
+
+      <ModalContainer
+        isOpen={
+          currentModalId === "deleteEducationModal" && editId === educationId
+        }
+        onClose={handleCloseModal}
+      >
+        <ConfirmDelete
+          disableState={pendingState.actionDisable}
+          loadingState={pendingState.actionLoading}
+          onDelete={() => {
+            dispatch(
+              deleteEducation({
+                token: accessToken as string,
+                education_id: educationId as number,
+              }),
+            );
+          }}
         />
       </ModalContainer>
       <div
-        id={educationId.toString()}
         className={`border border-neutral-200 rounded-xl p-4 flex flex-col gap-4`}
       >
         <div className={`flex gap-2 item-center justify-between`}>
@@ -68,7 +95,9 @@ function EducationItem({
               {educationName}
             </h3>
             <div className={`flex gap-3 item-center`}>
-              <p className={`text-xs text-neutral-600`}>{educationDegree}</p>
+              <p className={`text-xs text-neutral-600`}>
+                {EducationDegreeResult[educationDegree]}
+              </p>
               <div className={`w-[1px] h-full border border-neutral-200`}></div>
               <p className={`text-xs text-neutral-600`}>GPA:{gpa}</p>
             </div>
@@ -90,7 +119,14 @@ function EducationItem({
               >
                 Edit
               </DropdownMenuItem>
-              <DropdownMenuItem className={`text-red-500`}>
+              <DropdownMenuItem
+                onClick={() => {
+                  dispatch(
+                    openModalAction("deleteEducationModal", educationId),
+                  );
+                }}
+                className={`text-red-500`}
+              >
                 Delete
               </DropdownMenuItem>
             </DropdownMenuContent>

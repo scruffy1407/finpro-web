@@ -42,9 +42,6 @@ function AuthorizeUser(
 
   useEffect(() => {
     if (!initialRender.current) {
-      console.log("initialRender.current", initialRender.current);
-      console.log(isLoggedIn);
-      console.log(user_role);
       if (!isLoggedIn) {
         router.push("/");
         return;
