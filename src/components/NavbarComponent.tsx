@@ -78,7 +78,7 @@ function NavbarComponent({ loginJobHunter, loginCompanies }: NavProps) {
       textColor: "text-neutral-900",
       profileRoute: "/user",
       navbarItems: [
-        { label: "Find Jobs", href: "" },
+        { label: "Find Jobs", href: "/jobs" },
         { label: "Skill Assessments", href: "" },
         { label: "Explore Companies", href: "" },
       ],
