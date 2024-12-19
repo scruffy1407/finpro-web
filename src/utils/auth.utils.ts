@@ -1,9 +1,7 @@
 import { LoginAuth, RegisterAuth } from "@/models/auth.model";
-import { dummyUser } from "@/models/dummyData";
 import api from "@/pages/api/api";
-
 import AuthorizeUser from "@/utils/authorizePage";
-import { AxiosResponse } from "axios";
+import axios, { AxiosResponse } from "axios";
 
 export class AuthHandler {
   // Fungsi untuk validasi form login
@@ -113,27 +111,21 @@ export class AuthHandler {
 
   async validateUserToken(token: string) {
     try {
-      // const response = await axios.get("/api/auth/validate-token", {
-      //   headers: {
-      //     Authorization: `Bearer ${token}`,
-      //   },
-      // });
-
-      // SIMULATE HIT API --> it will replace with actual validate token API that return user data
-      console.log(token);
-      const response = dummyUser.filter((user) => {
-        if (user.token === token) {
-          return user;
-        }
+      const response = await api.get("/auth/validate-token", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
       console.log("result", response);
       // Set the data from the respose to userState --> later will also replace this with actual response
-      if (response.length > 0) {
-        return response; // If the token we pass its true, it will validate the data
+      if (response.status === 200) {
+        console.log("exec");
+        return response.data; // If the token we pass its true, it will validate the data
       } else {
         return null;
       }
     } catch (error) {
+      console.log(error);
       return error;
     }
   }
@@ -253,11 +245,7 @@ export class AuthHandler {
     }
   }
 
-  authorizeUser(
-    token: string | null,
-    roleType: "company" | "jobhunter",
-    compare?: string,
-  ) {
-    AuthorizeUser(token, roleType, compare);
+  authorizeUser(pagePermission: "jobhunter" | "company", compare?: string) {
+    AuthorizeUser(pagePermission, compare);
   }
 }

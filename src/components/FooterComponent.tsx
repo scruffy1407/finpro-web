@@ -5,7 +5,7 @@ import { RootState } from "@/store";
 import Link from "next/link";
 
 function FooterComponent() {
-  const userRole = useSelector((state: RootState) => state.login.user_role);
+  const userRole = useSelector((state: RootState) => state.auth.user_role);
 
   const roleConfig = {
     jobhunter: {

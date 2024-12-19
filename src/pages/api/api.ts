@@ -2,7 +2,7 @@ import axios, { InternalAxiosRequestConfig } from "axios";
 import { job } from "@/utils/axiosInterface";
 import { location } from "@/utils/axiosInterface";
 
-const baseURL = "http://localhost:8000";
+const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const api = axios.create({
 	baseURL,
@@ -16,7 +16,7 @@ interface GetJobPosts {
 	jobType?: string;
 	jobSpace?: string;
 	dateRange?: string;
-	sortorder?: String;
+	sortorder?: string;
 }
 
 export async function getJobNewLp() {

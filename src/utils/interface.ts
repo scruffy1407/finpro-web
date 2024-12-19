@@ -40,8 +40,8 @@ export interface HeadingProps {
 	paragraph: string;
 }
 export interface LocationOption {
-	label: string;
-	value: string;
+  label: string;
+  value: number;
 }
 export interface LocationOptionReal {
 	label: string;
@@ -118,7 +118,6 @@ export interface CompanyShortPropsDummy {
 	companyName: string;
 	jobsOpen: number;
 }
-
 
 interface CompanySuggest {
 	logo: string | null;        // The company's logo URL (can be null if no logo is available)
