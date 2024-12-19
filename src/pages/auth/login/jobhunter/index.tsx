@@ -16,7 +16,7 @@ function JobHunterLogin() {
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
 
-  const { isLoggedIn, error } = useSelector((state: RootState) => state.login);
+  const { isLoggedIn, error } = useSelector((state: RootState) => state.auth);
 
   const [loginForm, setLoginForm] = useState({
     email: "",
@@ -27,7 +27,7 @@ function JobHunterLogin() {
   const [btnDisable, setBtnDisable] = useState(false);
 
   useEffect(() => {
-    handleLoginEffect(isLoggedIn, error, router, dispatch);
+    handleLoginEffect(isLoggedIn, error as null, router, dispatch);
   }, [isLoggedIn, error, router, dispatch]);
 
   return (
@@ -39,8 +39,8 @@ function JobHunterLogin() {
           <div className="hidden md:min-w[350px] md:relative md:max-w-[35%] md:h-full md:p-8 md:flex md:items-end">
             <Link href="/">
               <Image
-                src="/loginAsset/login_hero-min.webp"
-                alt="Image of building"
+                src="/loginAsset/USERLOGIN.webp"
+                alt="Image of Laptop"
                 width={654.72}
                 height={1000}
                 className="absolute top-0 left-0 h-full w-full object-cover cursor-pointer"
@@ -60,7 +60,7 @@ function JobHunterLogin() {
             <div className="bg-white p-6 md:w-full md:max-w-[500px] md:p-8 md:rounded-3xl">
               <div className="flex items-center justify-between w-full mb-12">
                 <Image
-                  src={"/LogoIpsum.svg"}
+                  src={"/logo/MainLogo.svg"}
                   alt="main-logo"
                   width={100}
                   height={200}
@@ -150,7 +150,10 @@ function JobHunterLogin() {
 
                 <p className="text-center text-sm">
                   Don&apos;t have an account? <></>
-                  <Link href="/auth/register/jobhunter" className="text-blue-500 hover:underline">
+                  <Link
+                    href="/auth/register/jobhunter"
+                    className="text-blue-500 hover:underline"
+                  >
                     Sign up now
                   </Link>
                 </p>

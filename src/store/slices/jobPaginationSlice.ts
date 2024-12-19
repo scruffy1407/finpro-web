@@ -1,30 +1,33 @@
+// src/store/slices/jobPaginationSlice.ts
+
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { jobListPostDummy } from "@/utils/datadummy";
 
 interface PaginationState {
   currentPage: number;
-  jobsPerPage: number;
-  totalJobs: number;
-  totalPages: number;
+  totalJobPosts: number;
+  totalPages: number; // Add totalPages to the state type
 }
 
 const initialState: PaginationState = {
   currentPage: 1,
-  jobsPerPage: 15,
-  totalJobs: jobListPostDummy.length,
-  totalPages: Math.ceil(jobListPostDummy.length / 15), // Total pages based on jobsPerPage
+  totalJobPosts: 0,
+  totalPages: 1, // Set default value for totalPages
 };
 
 const jobPaginationSlice = createSlice({
   name: "pagination",
   initialState,
   reducers: {
-    setCurrentPage: (state, action: PayloadAction<number>) => {
+    setCurrentPage(state, action: PayloadAction<number>) {
       state.currentPage = action.payload;
+    },
+    // Modify the setPaginationData reducer to accept both totalJobPosts and totalPages
+    setPaginationData(state, action: PayloadAction<{ totalJobPosts: number, totalPages: number }>) {
+      state.totalJobPosts = action.payload.totalJobPosts;
+      state.totalPages = action.payload.totalPages;
     },
   },
 });
 
-export const { setCurrentPage } = jobPaginationSlice.actions;
-
+export const { setCurrentPage, setPaginationData } = jobPaginationSlice.actions;
 export default jobPaginationSlice.reducer;
