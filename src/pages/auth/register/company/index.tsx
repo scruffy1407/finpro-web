@@ -72,7 +72,9 @@ const CompanyRegister: React.FC = () => {
           errors[error.path[0]] = error.message;
         });
         setFormErrors(errors);
-        dispatch(submitFailure("Registration failed. Please check your input."));
+        dispatch(
+          submitFailure("Registration failed. Please check your input.")
+        );
       } else {
         dispatch(submitFailure("Registration failed. Please try again."));
       }
@@ -84,9 +86,9 @@ const CompanyRegister: React.FC = () => {
       <div className="hidden md:min-w[350px] md:relative md:max-w-[35%] md:h-full md:p-8 md:flex md:items-end">
         <Link href="/">
           <Image
-            src="/loginAsset/login_hero-min.webp"
-            alt="Image of building"
-            width={654.72}
+              src={"/loginAsset/COMPANYREGISTER.webp"}
+              alt="Image of a Building"
+              width={654.72}
             height={1000}
             className="absolute top-0 left-0 h-full w-full object-cover cursor-pointer"
           />
@@ -102,29 +104,29 @@ const CompanyRegister: React.FC = () => {
         </div>
       </div>
       <div className="w-full md:w-[65%] md:p-12 md:flex md:items-center">
-        <div className="bg-white p-6 md:w-full md:max-w-[500px] md:p-8 md:rounded-3xl">
+        <div className="bg-sky-950 p-6 md:w-full md:max-w-[500px] md:p-8 md:rounded-3xl">
           <div className="flex items-center justify-between w-full mb-12">
             <Image
-              src={"/LogoIpsum.svg"}
+              src={"/logo/CompanyLogo.svg"}
               alt="main-logo"
-              width={100}
-              height={200}
-              className="h-6"
+              width={120}
+              height={240}
+              className=""
             />
             <Link
               href={`/auth/register/jobhunter`}
-              className="text-xs underline text-neutral-950 hover:text-blue-500 md:text-sm"
+              className="text-xs underline text-white hover:text-blue-500 md:text-sm"
             >
               Register as jobhunter instead?
             </Link>
           </div>
           <div className="flex flex-col gap-8">
-            <h2 className="text-2xl text-neutral-950 font-bold">
+            <h2 className="text-2xl text-white font-bold">
               Register as a Company
             </h2>
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               <div>
-                <Label className="block mb-2">Company Name</Label>
+                <Label className="block mb-2 text-white">Company Name</Label>
                 <Input
                   type="text"
                   value={company.companyName}
@@ -141,7 +143,7 @@ const CompanyRegister: React.FC = () => {
               </div>
 
               <div>
-                <Label className="block mb-2">Email</Label>
+                <Label className="block mb-2 text-white">Email</Label>
                 <Input
                   type="email"
                   value={company.email}
@@ -156,7 +158,7 @@ const CompanyRegister: React.FC = () => {
               </div>
 
               <div>
-                <Label className="block mb-2">Phone Number</Label>
+                <Label className="block mb-2 text-white">Phone Number</Label>
                 <Input
                   type="tel"
                   value={company.phoneNumber}
@@ -173,7 +175,7 @@ const CompanyRegister: React.FC = () => {
               </div>
 
               <div>
-                <Label className="block mb-2">Password</Label>
+                <Label className="block mb-2 text-white">Password</Label>
                 <Input
                   type="password"
                   value={company.password}
@@ -205,15 +207,15 @@ const CompanyRegister: React.FC = () => {
               </button>
             </form>
             <div className={`flex gap-4 items-center`}>
-              <div className={"border-t border-zinc-200 w-full"}></div>
-              <p className={`text-sm text-neutral-400`}>Or</p>
-              <div className={`border-t border-zinc-200 w-full`}></div>
+              <div className={"border-t border-white w-full"}></div>
+              <p className={`text-sm text-white`}>Or</p>
+              <div className={`border-t border-white w-full`}></div>
             </div>
             <button
               onClick={() =>
                 (window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/google/company`)
               }
-              className={`w-full p-2 bg-neutral-950 text-white rounded-lg flex items-center gap-3 justify-center hover:bg-neutral-800`}
+              className={`w-full p-2 bg-white text-black rounded-lg flex items-center gap-3 justify-center hover:bg-neutral-200`}
             >
               <Image
                 width={24}
@@ -225,11 +227,11 @@ const CompanyRegister: React.FC = () => {
               Sign in with Google
             </button>
 
-            <p className="text-center text-sm">
+            <p className="text-center text-sm text-white">
               Already have an account? <></>
               <Link
                 href="/auth/login/company"
-                className="text-blue-500 hover:underline"
+                className="text-white underline hover:text-blue-500"
               >
                 Login
               </Link>

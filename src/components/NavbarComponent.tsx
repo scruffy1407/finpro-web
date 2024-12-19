@@ -2,7 +2,7 @@ import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/router";
 import { RootState } from "@/store";
-import { login, logout } from "@/store/slices/authSlice";
+import { logout } from "@/store/slices/authSlice";
 import { toggleMobileMenu } from "@/store/slices/mobileMenuSlice";
 import { NavProps } from "@/utils/interface";
 import Image from "next/image";
@@ -51,6 +51,8 @@ function NavbarComponent({ loginJobHunter, loginCompanies }: NavProps) {
         { label: "Skill Assessments", href: "" },
         { label: "Explore Companies", href: "" },
       ],
+      droplineIcon: "/droplineBlack.svg",
+      burgerIcon: "/burgerBlack.svg",
     },
     company: {
       logo: "/logo/CompanyLogo.svg",
@@ -67,6 +69,8 @@ function NavbarComponent({ loginJobHunter, loginCompanies }: NavProps) {
         { label: "Dashboard", href: "" },
         { label: "Test Templates", href: "" },
       ],
+      droplineIcon: "/droplineWhite.svg",
+      burgerIcon: "/burgerWhite.svg",
     },
     default: {
       logo: "/logo/MainLogo.svg",
@@ -79,11 +83,20 @@ function NavbarComponent({ loginJobHunter, loginCompanies }: NavProps) {
         { label: "Explore Companies", href: "" },
       ],
       dropdownItems: [],
+      droplineIcon: "/droplineBlack.svg",
+      burgerIcon: "/burgerBlack.svg",
     },
   };
 
-  const { logo, bgColor, textColor, profileRoute, dropdownItems } =
-    roleConfig[userRole || "default"];
+  const {
+    logo,
+    bgColor,
+    textColor,
+    profileRoute,
+    dropdownItems,
+    droplineIcon,
+    burgerIcon,
+  } = roleConfig[userRole || "default"];
 
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
@@ -146,8 +159,8 @@ function NavbarComponent({ loginJobHunter, loginCompanies }: NavProps) {
                 </div>
                 <div>
                   <Image
-                    src={"/dropLine.svg"}
-                    alt={"Photo"}
+                    src={droplineIcon}
+                    alt={"Dropdown Icon"}
                     width={30}
                     height={30}
                   />
@@ -188,7 +201,7 @@ function NavbarComponent({ loginJobHunter, loginCompanies }: NavProps) {
             <DropdownMenu>
               <DropdownMenuTrigger>
                 <Image
-                  src="/burger.svg"
+                  src={burgerIcon}
                   alt="Burger Icon"
                   width={30}
                   height={30}
@@ -200,7 +213,7 @@ function NavbarComponent({ loginJobHunter, loginCompanies }: NavProps) {
                   <ButtonComponent
                     container={loginJobHunter}
                     type="ButtonBorder"
-                    onClick={() => dispatch(login())}
+                    onClick={() => router.push("/auth/login/jobhunter")}
                   />
                 </div>
 
@@ -208,7 +221,7 @@ function NavbarComponent({ loginJobHunter, loginCompanies }: NavProps) {
                   <ButtonComponent
                     container={loginCompanies}
                     type="ButtonText"
-                    onClick={() => dispatch(login())}
+                    onClick={() => router.push("/auth/login/company")}
                   />
                 </div>
 
@@ -241,7 +254,7 @@ function NavbarComponent({ loginJobHunter, loginCompanies }: NavProps) {
             <DropdownMenu>
               <DropdownMenuTrigger>
                 <Image
-                  src="/burger.svg"
+                  src={burgerIcon}
                   alt="Burger Icon"
                   width={30}
                   height={30}
