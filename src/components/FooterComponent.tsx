@@ -41,7 +41,9 @@ function FooterComponent() {
         <div className="md:flex justify-between p-6">
           {/* Logo Section */}
           <div className="flex justify-center md:justify-start">
+            <Link href="/">
             <Image src={logo} alt="Footer Logo" width={150} height={28} />
+            </Link>
           </div>
 
           {/* Social Media Icons for Desktop */}

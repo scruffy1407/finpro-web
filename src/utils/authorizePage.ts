@@ -1,13 +1,12 @@
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/router";
-import { AuthHandler } from "@/utils/auth.utils";
 import Cookies from "js-cookie";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/store";
 import { validateUserToken } from "@/store/slices/authSlice";
 
 function AuthorizeUser(
-  pagePermission: "jobhunter" | "company",
+  pagePermission?: "jobhunter" | "company",
   owned?: string, // comparison data
 ) {
   const router = useRouter();

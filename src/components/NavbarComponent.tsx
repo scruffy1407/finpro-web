@@ -24,10 +24,10 @@ import ButtonComponent from "./ButtonComponent";
 function NavbarComponent({ loginJobHunter, loginCompanies }: NavProps) {
   const router = useRouter();
   const dispatch = useDispatch();
-  const isLoggedIn = useSelector((state: RootState) => state.login.isLoggedIn);
-  const userRole = useSelector((state: RootState) => state.login.user_role);
-  const userName = useSelector((state: RootState) => state.login.name);
-  const userPhoto = useSelector((state: RootState) => state.login.photo);
+  const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
+  const userRole = useSelector((state: RootState) => state.auth.user_role);
+  const userName = useSelector((state: RootState) => state.auth.name);
+  const userPhoto = useSelector((state: RootState) => state.auth.photo);
 
   console.log("Navbar Debugging Info:");
   console.log("isLoggedIn:", isLoggedIn);
@@ -47,7 +47,7 @@ function NavbarComponent({ loginJobHunter, loginCompanies }: NavProps) {
         { label: "Explore Companies", href: "" },
       ],
       dropdownItems: [
-        { label: "My Profile", href: "" },
+        { label: "My Profile", href: "/profile/user" },
         { label: "Log Out", action: () => handleLogout() },
         { label: "Find Jobs", href: "" },
         { label: "Skill Assessments", href: "" },
@@ -119,7 +119,9 @@ function NavbarComponent({ loginJobHunter, loginCompanies }: NavProps) {
       >
         <div className="flex justify-between gap-9 items-center">
           <div className="flex">
-            <Image src={logo} alt="Pathway Logo" width={121} height={24} />
+            <Link href="/">
+              <Image src={logo} alt="Pathway Logo" width={121} height={24} />
+            </Link>
           </div>
           <LinksComponents
             navbarItems={roleConfig[userRole || "default"].navbarItems}
@@ -147,7 +149,7 @@ function NavbarComponent({ loginJobHunter, loginCompanies }: NavProps) {
               <div className="hidden sm:flex justify-center items-center gap-3">
                 <div>
                   <Image
-                    className="border rounded-full"
+                    className="border rounded-full w-10 h-10 object-cover object-center"
                     src={userPhoto || "/loginAsset/nophoto.svg"}
                     alt={"Photo"}
                     width={35}

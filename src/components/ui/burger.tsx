@@ -4,7 +4,7 @@ import { RootState } from "@/store";
 
 const BurgerIcon = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const userRole = useSelector((state: RootState) => state.login.user_role);
+  const userRole = useSelector((state: RootState) => state.auth.user_role);
 
   // Dynamic color based on user role
   const burgerColor = userRole === "company" ? "bg-white" : "bg-black";

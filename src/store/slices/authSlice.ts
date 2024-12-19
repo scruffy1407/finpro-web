@@ -37,7 +37,13 @@ const initialState: LoginState = {
 };
 
 export const loginUser = createAsyncThunk<
-  { access_token: string; refresh_token: string; user_role: string },
+  {
+    access_token: string;
+    refresh_token: string;
+    user_role: string;
+    name: string;
+    photo: string | null;
+  },
   { email: string; password: string; user_role: string },
   { rejectValue: string }
 >("auth/loginUser", async (data, { rejectWithValue }) => {
@@ -49,16 +55,18 @@ export const loginUser = createAsyncThunk<
       {
         headers: { "Content-Type": "application/json" },
         withCredentials: true,
-      },
+      }
     );
 
-    const { access_token, refresh_token, user_role, user } = response.data.data;
-    console.log(response.data);
+    const { access_token, refresh_token, user } = response.data.data;
+    const { user_role, name, photo } = user || {};
+
+    console.log(user);
 
     Cookies.set("accessToken", access_token, { expires: 1 / 24 });
     Cookies.set("refreshToken", refresh_token, { expires: 3 });
 
-    return { access_token, refresh_token, user_role };
+    return { access_token, refresh_token, user_role, name, photo };
   } catch (err: unknown) {
     if (err instanceof z.ZodError) {
       return rejectWithValue(err.errors[0]?.message || "Validation failed");
@@ -84,7 +92,7 @@ export const validateUserToken = createAsyncThunk(
     } catch (e: unknown) {
       return e;
     }
-  },
+  }
 );
 
 const authSlice = createSlice({
@@ -92,12 +100,7 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     resetState: (state) => {
-      state.email = "";
       state.password = "";
-      state.user_role = null;
-      state.isLoading = false;
-      state.isLoggedIn = false;
-      state.error = null;
     },
     updatePhoto: (state, action) => {
       state.photo = action.payload;
@@ -113,11 +116,14 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
+        console.log(action, "INI ACTION!!");
         state.isLoading = false;
-        state.isLoggedIn = true;
         state.user_role = action.payload.user_role;
         state.accessToken = action.payload.access_token;
         state.refreshToken = action.payload.refresh_token;
+        state.name = action.payload.name;
+        state.photo = action.payload.photo as string;
+        state.isLoggedIn = true;
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.isLoading = false;

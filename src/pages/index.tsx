@@ -7,8 +7,12 @@ import JobMappingComponent from "@/components/JobMappingComponent";
 import ButtonComponent from "@/components/ButtonComponent";
 import CompanyMappingComponent from "@/components/CompanyMappingComponent";
 import FooterComponent from "@/components/FooterComponent";
+import { AuthHandler } from "@/utils/auth.utils";
 
 function Home() {
+  const authHandler = new AuthHandler();
+  authHandler.authorizeUser();
+
   return (
     <div className="overflow-hidden mt-5">
       <div className="mx-4 w-auto">

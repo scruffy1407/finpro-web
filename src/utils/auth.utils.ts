@@ -245,7 +245,7 @@ export class AuthHandler {
     }
   }
 
-  authorizeUser(pagePermission: "jobhunter" | "company", compare?: string) {
+  authorizeUser(pagePermission?: "jobhunter" | "company", compare?: string) {
     AuthorizeUser(pagePermission, compare);
   }
 }

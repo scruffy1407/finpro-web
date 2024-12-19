@@ -16,7 +16,7 @@ function CompanyLogin() {
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
 
-  const { isLoggedIn, error } = useSelector((state: RootState) => state.login);
+  const { isLoggedIn, error } = useSelector((state: RootState) => state.auth);
 
   const [loginForm, setLoginForm] = useState({
     email: "",
