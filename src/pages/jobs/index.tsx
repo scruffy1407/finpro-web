@@ -29,45 +29,53 @@ const JobPostPage: React.FC = () => {
 	const { currentPage, totalPages } = useSelector(
 		(state: RootState) => state.pagination
 	);
-	const { jobTitle, categoryId, jobType, dateRange, sortOrder, companyCity } = useSelector(
-		(state: RootState) => state.searchQuery
-	); // Access searchQuery from the store
+	const { jobTitle, categoryId, jobType, dateRange, sortOrder, companyCity } =
+		useSelector((state: RootState) => state.searchQuery); // Access searchQuery from the store
+
+	console.log(
+		"COBA LIAT INIIIIII ",
+		jobTitle,
+		categoryId,
+		jobType,
+		dateRange,
+		sortOrder,
+		companyCity
+	);
 
 	const dispatch = useDispatch();
 
 	useEffect(() => {
 		const fetchJobPosts = async () => {
-		  setLoading(true);
-		  try {
-			const response = await getJobPost(currentPage, {
-			  jobTitle,
-			  categoryId,
-			  jobType,
-			  dateRange,
-			  sortOrder,
-			  companyCity
-			});
-	
-			// Check if response is valid and set job posts
-			if (response?.data?.data) {
-			  setJobPosts(response.data.data);
-	
-			  // Update pagination state in Redux
-			  const { totalJobPosts, totalPages } = response.data;
-			  dispatch(setPaginationData({ totalJobPosts, totalPages }));
-			} else {
-			  console.error("Invalid job posts data:", response);
+			setLoading(true);
+			try {
+				const response = await getJobPost(currentPage, {
+					jobTitle,
+					categoryId,
+					jobType,
+					dateRange,
+					sortOrder,
+					companyCity,
+				});
+
+				// Check if response is valid and set job posts
+				if (response?.data?.data) {
+					setJobPosts(response.data.data);
+
+					// Update pagination state in Redux
+					const { totalJobPosts, totalPages } = response.data;
+					dispatch(setPaginationData({ totalJobPosts, totalPages }));
+				} else {
+					console.error("Invalid job posts data:", response);
+				}
+			} catch (error) {
+				console.error("Error fetching job posts:", error);
+			} finally {
+				setLoading(false);
 			}
-		  } catch (error) {
-			console.error("Error fetching job posts:", error);
-		  } finally {
-			setLoading(false);
-		  }
 		};
 
-	
 		fetchJobPosts();
-	  }, [
+	}, [
 		currentPage,
 		jobTitle,
 		categoryId,
@@ -75,8 +83,8 @@ const JobPostPage: React.FC = () => {
 		dateRange,
 		sortOrder,
 		companyCity,
-		dispatch,
-	  ]);
+		dispatch
+	]);
 
 	// Handle page change
 	const handlePageChange = (page: number) => {
