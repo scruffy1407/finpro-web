@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
 import ButtonComponent from "./ButtonComponent";
+import { Button } from "@/components/ui/button";
 
 function NavbarComponent({ loginJobHunter, loginCompanies }: NavProps) {
   const router = useRouter();
@@ -28,12 +29,6 @@ function NavbarComponent({ loginJobHunter, loginCompanies }: NavProps) {
   const userRole = useSelector((state: RootState) => state.auth.user_role);
   const userName = useSelector((state: RootState) => state.auth.name);
   const userPhoto = useSelector((state: RootState) => state.auth.photo);
-
-  console.log("Navbar Debugging Info:");
-  console.log("isLoggedIn:", isLoggedIn);
-  console.log("userRole:", userRole);
-  console.log("userName:", userName);
-  console.log("userPhoto:", userPhoto);
 
   const roleConfig = {
     jobhunter: {
@@ -113,9 +108,9 @@ function NavbarComponent({ loginJobHunter, loginCompanies }: NavProps) {
   };
 
   return (
-    <div className={`max-w-screen-xl mx-auto`}>
+    <div className={`max-w-screen-xl mx-auto mt-4`}>
       <div
-        className={`${bgColor} flex justify-between border rounded-xl py-5 px-4 pr-5`}
+        className={`${bgColor} flex justify-between rounded-xl py-5 px-4 pr-5`}
       >
         <div className="flex justify-between gap-9 items-center">
           <div className="flex">
@@ -132,16 +127,20 @@ function NavbarComponent({ loginJobHunter, loginCompanies }: NavProps) {
         {/* Conditional rendering based on isLoggedIn state */}
         {!isLoggedIn ? (
           <div className="hidden sm:flex sm:justify-center items-center gap-3 ">
-            <ButtonComponent
-              container={loginJobHunter}
-              type="ButtonBorder"
+            <Button
+              variant={"outline"}
+              size={"sm"}
               onClick={() => router.push("/auth/login/jobhunter")}
-            />
-            <ButtonComponent
-              container={loginCompanies}
-              type="ButtonText"
-              onClick={() => router.push("/auth/login/company")}
-            />
+            >
+              Login
+            </Button>
+            <Button
+              variant={"ghost"}
+              size={"sm"}
+              onClick={() => router.push("/auth/register/jobhunter")}
+            >
+              Register
+            </Button>
           </div>
         ) : (
           <DropdownMenu>

@@ -42,7 +42,7 @@ function FooterComponent() {
           {/* Logo Section */}
           <div className="flex justify-center md:justify-start">
             <Link href="/">
-            <Image src={logo} alt="Footer Logo" width={150} height={28} />
+              <Image src={logo} alt="Footer Logo" width={150} height={28} />
             </Link>
           </div>
 
@@ -71,7 +71,7 @@ function FooterComponent() {
 
         {/* Description Section */}
         <div className="flex text-center md:text-left w-full md:w-[50%]">
-          <p className="text-white text-sm px-6">
+          <p className="text-white text-xs px-6 opacity-85">
             At Pathway, we&apos;re dedicated to connecting you with the right
             opportunities. Whether you&apos;re looking to hire top talent or
             take the next step in your career, we&apos;re here to help you
@@ -122,7 +122,7 @@ function FooterComponent() {
             <Link
               key={index}
               href={item.href}
-              className="hover:text-blue-400 transition duration-200"
+              className="hover:text-blue-400 transition duration-200 text-xs"
             >
               {item.label}
             </Link>
@@ -131,7 +131,7 @@ function FooterComponent() {
 
         {/* Copyright Text */}
         <div>
-          <p className="text-base">&copy; 2024 Pathway Limited</p>
+          <p className="text-xs opacity-50">&copy; 2024 Pathway Limited</p>
         </div>
       </div>
     </div>

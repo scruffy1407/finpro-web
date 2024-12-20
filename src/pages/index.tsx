@@ -14,7 +14,7 @@ function Home() {
   authHandler.authorizeUser();
 
   return (
-    <div className="overflow-hidden mt-5">
+    <div className="overflow-hidden">
       <div className="mx-4 w-auto">
         <NavbarComponent
           findJobs="Find Jobs"
