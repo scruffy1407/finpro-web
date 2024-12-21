@@ -37,15 +37,6 @@ function Index() {
         onClose={handleCloseModal}
       >
         <div className={"flex flex-col gap-6"}>
-          <Image
-            src={"/loginAsset/USERLOGIN.webp"}
-            width={500}
-            height={500}
-            alt={"image"}
-            className={
-              "w-full h-[225px] object-cover object-position rounded-2xl"
-            }
-          />
           <div className={"flex flex-col gap-2 text-center"}>
             <h2 className="text-2xl font-bold text-neutral-950">
               Unlock Your Career Potential
@@ -81,10 +72,12 @@ function Index() {
         loginJobHunter="Login"
         loginCompanies="Login as Recruiter"
       />
-      <div className="mx-auto max-w-screen-lg px-4 py-16 sm:px-6">
-        <PageHeader />
-        <PricingSection />
-        <SupportSection />
+      <div className="mx-auto max-w-screen-xl mt-5 mb-10">
+        <div className={`bg-white w-full p-10 rounded-2xl`}>
+          <PageHeader />
+          <PricingSection />
+          <SupportSection />
+        </div>
       </div>
       <FooterComponent />
     </main>

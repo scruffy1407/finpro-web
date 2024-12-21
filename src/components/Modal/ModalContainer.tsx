@@ -34,7 +34,7 @@ function ModalContainer({
           >
             <div className="relative w-full md:max-w-xl h-full md:p-4 md:mx-auto ">
               {/* */}
-              <div className="absolute px-6 py-8 w-full flex flex-col gap-6 bg-white rounded-tl-2xl rounded-tr-2xl shadow bottom-0 md:relative md:rounded-2xl ">
+              <div className="absolute  px-6 py-8 w-full flex flex-col gap-6 bg-white rounded-tl-2xl rounded-tr-2xl shadow bottom-0 md:relative md:rounded-2xl md:top-1/2 md:-translate-y-1/2 ">
                 {/* */}
                 <div className="flex items-center justify-between rounded-t ">
                   <h3 className="text-xl font-bold text-gray-900 ">{title}</h3>{" "}

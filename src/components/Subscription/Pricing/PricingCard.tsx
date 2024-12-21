@@ -35,7 +35,7 @@ export function PricingCard({
 
   return (
     <div
-      className={`relative rounded-2xl border p-8 ${isPopular ? "shadow-lg" : ""} bg-white`}
+      className={`relative rounded-2xl border p-8 ${isPopular ? "shadow-2xl" : ""} bg-white`}
     >
       {isPopular && (
         <div className="absolute -top-5 left-0 right-0 mx-auto w-32 rounded-full bg-blue-500 px-3 py-2 text-sm font-medium text-white text-center">
@@ -48,7 +48,7 @@ export function PricingCard({
       </div>
       <div className="mb-5">
         <span className="text-4xl font-bold">IDR {price}</span>
-        <span className="text-gray-500">/month</span>
+        <span className="text-gray-500"> /month</span>
       </div>
 
       <Button
