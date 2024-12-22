@@ -29,8 +29,8 @@ export interface EducationForm {
   degree: EducationDegreeType;
   gpa: number;
   description: string;
-  educationDate:string,
-  jobHunter:
+  educationDate: string;
+  jobHunter: number;
 }
 
 export interface JobHunterGeneralInfo {

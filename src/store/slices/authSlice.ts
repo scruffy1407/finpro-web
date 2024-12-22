@@ -85,7 +85,7 @@ export const validateUserToken = createAsyncThunk(
   async (token: string) => {
     try {
       const user = await authHandler.validateUserToken(token);
-      console.log(user);
+
       if (user.status !== 200) {
         return null;
       } else {
