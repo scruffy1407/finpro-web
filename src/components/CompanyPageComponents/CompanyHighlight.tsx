@@ -33,7 +33,7 @@ function CompanyHighlight({
   function handleRedirect() {
     if (isLoggedIn) {
       router.push(
-        `/company/company-review?companyId=${companyId}&companynName=${companyName}`,
+        `/company/company-review?companyId=${companyId}&companynName=${companyName}&callback=${currentUrl}`,
       );
     } else {
       router.push(callbackPath);

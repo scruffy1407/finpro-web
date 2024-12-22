@@ -8,19 +8,28 @@ import { AppDispatch, RootState } from "@/store";
 import { AuthHandler } from "@/utils/auth.utils";
 import RatingComponent from "@/components/Form/RatingComponent";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { getWorkingExperience } from "@/store/slices/WorkingExpSlice";
+import {
+  addJobs,
+  clearSelectedItem,
+  getWorkingExperience,
+} from "@/store/slices/WorkingExpSlice";
 import LoadingLoader from "@/components/LoadingLoader";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import Cookies from "js-cookie";
 import { CompanyUtils } from "@/utils/company.utils";
 import { toast } from "sonner";
-import { AxiosError } from "axios";
+import { useRouter } from "next/router";
+import FormWorkingExperience from "@/components/Form/FormWorkingExperience";
+import ModalContainer from "@/components/Modal/ModalContainer";
+import { closeModalAction, openModalAction } from "@/store/slices/ModalSlice";
+import CompanyReviewSkeleton from "@/components/Skeleton/CompanyReview.skeleton";
 
 function Index() {
   const authHandler = new AuthHandler();
   authHandler.authorizeUser("jobhunter");
   const companyUtils = new CompanyUtils();
+  const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -29,6 +38,10 @@ function Index() {
   const { pendingState, workingExpList } = useSelector(
     (state: RootState) => state.workExperience,
   );
+  const { currentModalId } = useSelector(
+    (state: RootState) => state.modalController,
+  );
+  const callbackURL = router.query.callback;
 
   const [reviewForm, setReviewForm] = useState<reviewResponse>({
     careerPathRating: 0,
@@ -39,6 +52,11 @@ function Index() {
     reviewTitle: "",
     workLifeBalanceRating: 0,
   });
+
+  const handleCloseModal = () => {
+    dispatch(clearSelectedItem());
+    dispatch(closeModalAction());
+  };
 
   const handleRatingChange = (
     ratingType: keyof reviewResponse,
@@ -78,7 +96,14 @@ function Index() {
 
   async function handleSubmitReview(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    const validData = companyUtils.validateReviewData(reviewForm);
+    if (!validData) {
+      return;
+    }
+
     setIsLoading(true);
+    setIsDisable(true);
     const token = Cookies.get("accessToken");
     try {
       const response = await companyUtils.createCompanyReview(
@@ -88,16 +113,20 @@ function Index() {
       console.log(response);
       if (response.status === 201) {
         toast.success("Thank for your review");
+        dispatch(addJobs({ index: indexSelect, reviewForm: reviewForm }));
+        router.push(callbackURL ? (callbackURL as string) : "/", undefined, {
+          scroll: false,
+        });
       } else {
         console.log("init");
         const message = response.data.message;
         toast.error(message);
       }
-      setIsLoading(false);
     } catch (e) {
       toast.error(
         "Something went wrong, cannot create your review. Please try again or refresh your browser",
       );
+      setIsDisable(false);
       setIsLoading(false);
     }
   }
@@ -113,10 +142,31 @@ function Index() {
     }
   }, [isLoggedIn]);
 
-  console.log(workingExpList);
-  console.log(reviewForm);
+  useEffect(() => {
+    if (
+      reviewForm.workLifeBalanceRating === 0 ||
+      reviewForm.facilityRating === 0 ||
+      reviewForm.culturalRating === 0 ||
+      reviewForm.careerPathRating === 0 ||
+      reviewForm.reviewDescription === "" ||
+      reviewForm.reviewTitle === "" ||
+      reviewForm.workExperienceId === 0
+    ) {
+      setIsDisable(true);
+    } else {
+      setIsDisable(false);
+    }
+  }, [reviewForm]);
+
   return (
     <>
+      <ModalContainer
+        isOpen={currentModalId === "addWorkingModal"}
+        onClose={handleCloseModal}
+        title={"Add New Working Experience"}
+      >
+        <FormWorkingExperience />
+      </ModalContainer>
       <NavbarComponent
         findJobs="Find Jobs"
         skillAssessment="Skill Assessment"
@@ -150,7 +200,15 @@ function Index() {
                   </p>
                 </div>
                 {workingExpList.length === 0 ? (
-                  <Button>Add Working Experience</Button>
+                  <Button
+                    type={"button"}
+                    className={"w-fit"}
+                    variant={"outline"}
+                    size={"sm"}
+                    onClick={() => dispatch(openModalAction("addWorkingModal"))}
+                  >
+                    Add Working Experience
+                  </Button>
                 ) : (
                   <RadioGroup
                     className={`flex gap-5 flex-wrap`}
@@ -160,7 +218,7 @@ function Index() {
                     value={indexSelect?.toString()}
                   >
                     {workingExpList.map((workExp, i: number) => {
-                      if (workExp.jobReview.length === 0) {
+                      if (workExp?.jobReview?.length === 0) {
                         return (
                           <div key={i} className="flex items-center space-x-2">
                             <RadioGroupItem
@@ -193,6 +251,7 @@ function Index() {
                     className={"w-fit"}
                     variant={"outline"}
                     size={"sm"}
+                    onClick={() => dispatch(openModalAction("addWorkingModal"))}
                   >
                     Review Other Company
                   </Button>
@@ -309,7 +368,7 @@ function Index() {
                       />
                     </div>
                   </div>
-                  <Button variant="primary" type="submit">
+                  <Button disabled={isDisable} variant="primary" type="submit">
                     {isLoading ? LoadingLoader() : "Review Company"}
                   </Button>
                 </>
@@ -320,7 +379,7 @@ function Index() {
           </div>
         </section>
       ) : (
-        "loading"
+        <CompanyReviewSkeleton />
       )}
     </>
   );

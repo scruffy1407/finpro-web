@@ -16,6 +16,7 @@ interface PendingState {
   actionLoading: boolean;
   actionDisable: boolean;
   dataLoading: boolean;
+  isRender: boolean;
 }
 interface EducationList {
   educationList: Education[];
@@ -51,6 +52,7 @@ const initialState: EducationList = {
     actionLoading: false,
     actionDisable: false,
     dataLoading: false,
+    isRender: false,
   },
 };
 
@@ -132,7 +134,7 @@ export const editEducationData = createAsyncThunk(
   },
 );
 
-const handleInputChange = (state, action, targetObject) => {
+const handleInputChange = (state: any, action: any, targetObject: any) => {
   const { name, value } = action.payload;
 
   switch (name) {
@@ -235,6 +237,7 @@ const educationSlice = createSlice({
     builder
       .addCase(getEducation.pending, (state) => {
         state.pendingState.dataLoading = true;
+        state.pendingState.isRender = false;
       })
       .addCase(getEducation.fulfilled, (state, action) => {
         const educationMap: Education[] = action.payload.map((education) => {
@@ -253,9 +256,11 @@ const educationSlice = createSlice({
         });
         state.educationList = educationMap;
         state.pendingState.dataLoading = false;
+        state.pendingState.isRender = true;
       })
       .addCase(getEducation.rejected, (state) => {
         state.pendingState.dataLoading = false;
+        state.pendingState.isRender = true;
         toast.error(
           "Failed to get your personal information,please refresh your browser",
         );

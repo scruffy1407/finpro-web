@@ -46,6 +46,7 @@ function WorkingHistorySection() {
       }
     }
   }, [isLoggedIn]);
+  console.log(workingExpList);
 
   return (
     <>

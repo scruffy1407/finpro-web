@@ -17,53 +17,58 @@ function CompanyInfoTab({ value, data, totalJob }: companyInfoProps) {
       className={`flex flex-col gap-4 mt-0 data-[state=active]:flex data-[state=inactive]:hidden`}
       value={value}
     >
-      <div className="bg-white rounded-2xl p-8 ">
+      <div className="bg-white rounded-2xl p-4 md:p-8 ">
         <div className={"flex flex-col gap-8"}>
           <h2 className="text-lg font-bold">Company Overview</h2>
-          <div className="flex gap-20 ">
-            <div className=" bg-white">
+          <div className="flex flex-col gap-8 flex-wrap md:flex-row md:gap-20 ">
+            <div className="flex flex-row gap-4 md:flex-col md:gap-4">
               <Image
-                className="mb-4"
                 src="/Briefcase.svg"
                 alt="briefCase"
                 width={24}
                 height={24}
               />
-              <p className={`text-sm mb-1 text-neutral-400`}>Company Size</p>
-              <p className="text-sm font-bold text-neutral-950">
-                {data?.companySize || "-"}
-              </p>
+              <div>
+                <p className={`text-sm mb-1 text-neutral-400`}>Company Size</p>
+                <p className="text-sm font-bold text-neutral-950">
+                  {data?.companySize || "-"}
+                </p>
+              </div>
             </div>
-            <div className="bg-white">
+            <div className="flex flex-row gap-4 md:flex-col md:gap-4">
               <Image
-                className="mb-4"
                 src="/Briefcase.svg"
                 alt="briefCase"
                 width={24}
                 height={24}
               />
-              <p className={`text-sm mb-1 text-neutral-400`}>
-                Total Job Posted
-              </p>
-              <p className="text-sm font-bold text-neutral-950">
-                {totalJob} Job
-              </p>
+              <div>
+                <p className={`text-sm mb-1 text-neutral-400`}>
+                  Total Job Posted
+                </p>
+                <p className="text-sm font-bold text-neutral-950">
+                  {totalJob} Job
+                </p>
+              </div>
             </div>
-            <div className="bg-white">
+            <div className="flex flex-row gap-4 md:flex-col md:gap-4">
               <Image
-                className="mb-4"
                 src="/Briefcase.svg"
                 alt="briefCase"
                 width={24}
                 height={24}
               />
-              <p className={`text-sm mb-1 text-neutral-400`}>Last Post Job</p>
-              <p className="text-sm font-bold text-neutral-950">20 Dec 2024</p>
+              <div>
+                <p className={`text-sm mb-1 text-neutral-400`}>Last Post Job</p>
+                <p className="text-sm font-bold text-neutral-950">
+                  20 Dec 2024
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <div className="flex flex-col gap-8 bg-white rounded-2xl p-8">
+      <div className="flex flex-col gap-8 bg-white rounded-2xl p-4 md:p-8">
         <div className={`flex flex-col gap-4`}>
           <h2 className="text-lg font-bold text-neutral-950">
             Company Description
