@@ -5,6 +5,9 @@ import { z } from "zod";
 import Cookies from "js-cookie";
 import { AuthHandler } from "@/utils/auth.utils";
 
+interface PendingState {
+  dataLoading: boolean;
+}
 interface LoginState {
   baseId: number | null;
   innerId: number | null;
@@ -19,6 +22,7 @@ interface LoginState {
   accessToken?: string | null;
   refreshToken?: string | null;
   callback?: string;
+  pendingState: PendingState;
 }
 const authHandler = new AuthHandler();
 
@@ -36,6 +40,9 @@ const initialState: LoginState = {
   accessToken: "",
   refreshToken: "",
   callback: "",
+  pendingState: {
+    dataLoading: false,
+  },
 };
 
 export const loginUser = createAsyncThunk<
@@ -131,6 +138,9 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload || "Unknown error occurred";
       })
+      .addCase(validateUserToken.pending, (state) => {
+        state.pendingState.dataLoading = true;
+      })
       .addCase(validateUserToken.fulfilled, (state, action) => {
         console.log("ACTION PAYLOAD", action);
         if (action.payload.jobHunter && action.payload.jobHunter.length > 0) {
@@ -151,7 +161,7 @@ const authSlice = createSlice({
           state.innerId = action.payload.company[0].company_id;
           state.photo = action.payload.company[0].logo;
         }
-
+        state.pendingState.dataLoading = false;
         state.isLoading = false;
       });
   },

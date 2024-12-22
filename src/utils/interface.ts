@@ -37,6 +37,7 @@ export interface HeroProps {
 export interface HeadingProps {
   heading: string;
   paragraph: string;
+  onClick?: () => void;
 }
 export interface LocationOption {
   label: string;

@@ -1,8 +1,9 @@
 import React from "react";
 import ButtonComponent from "./ButtonComponent";
 import { HeadingProps } from "@/utils/interface";
+import { Button } from "@/components/ui/button";
 
-function HeadingComponent({ heading, paragraph }: HeadingProps) {
+function HeadingComponent({ heading, paragraph, onClick }: HeadingProps) {
   return (
     <div className="max-w-screen-xl mx-auto px-4 md:px-0 ">
       <div className="flex justify-between">
@@ -13,7 +14,9 @@ function HeadingComponent({ heading, paragraph }: HeadingProps) {
         </div>
 
         <div className="hidden md:flex justify-center items-center">
-          <ButtonComponent container="Explore More" type="ButtonBorder" />
+          <Button variant={"outline"} size={"sm"} onClick={onClick}>
+            Explore More
+          </Button>
         </div>
       </div>
     </div>
