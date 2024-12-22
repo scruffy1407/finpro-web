@@ -29,12 +29,6 @@ function NavbarComponent({ loginJobHunter, loginCompanies }: NavProps) {
   const userName = useSelector((state: RootState) => state.auth.name);
   const userPhoto = useSelector((state: RootState) => state.auth.photo);
 
-  console.log("Navbar Debugging Info:");
-  console.log("isLoggedIn:", isLoggedIn);
-  console.log("userRole:", userRole);
-  console.log("userName:", userName);
-  console.log("userPhoto:", userPhoto);
-
   const roleConfig = {
     jobhunter: {
       logo: "/logo/MainLogo.svg",

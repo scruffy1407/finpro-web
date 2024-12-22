@@ -4,157 +4,150 @@ import HeroJobListPageComponent from "@/components/HeroJobListPageComponent";
 import SelectionJobsComponents from "@/components/SelectionJobsComponent";
 import JobListMappingComponent from "@/components/JobListMappingComponent";
 import {
-	Pagination,
-	PaginationContent,
-	PaginationItem,
-	PaginationLink,
-	PaginationNext,
-	PaginationPrevious,
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
 } from "@/components/ui/pagination"; // Shadcn UI pagination
 import FooterComponent from "@/components/FooterComponent";
 import {
-	setCurrentPage,
-	setPaginationData,
+  setCurrentPage,
+  setPaginationData,
 } from "@/store/slices/jobPaginationSlice";
 import { RootState } from "@/store";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
-import { job } from "@/utils/axiosInterface";
 import { getJobPost } from "../api/api";
 
 const JobPostPage: React.FC = () => {
-	const [jobPosts, setJobPosts] = useState<any[]>([]);
-	const [loading, setLoading] = useState<boolean>(false);
+  const [jobPosts, setJobPosts] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
-	const { currentPage, totalPages } = useSelector(
-		(state: RootState) => state.pagination
-	);
-	const { jobTitle, categoryId, jobType, dateRange, sortOrder, companyCity } = useSelector(
-		(state: RootState) => state.searchQuery
-	); // Access searchQuery from the store
+  const { currentPage, totalPages } = useSelector(
+    (state: RootState) => state.pagination,
+  );
+  const { jobTitle, categoryId, jobType, dateRange, sortOrder, companyCity } =
+    useSelector((state: RootState) => state.searchQuery); // Access searchQuery from the store
 
-	const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-	useEffect(() => {
-		const fetchJobPosts = async () => {
-		  setLoading(true);
-		  try {
-			const response = await getJobPost(currentPage, {
-			  jobTitle,
-			  categoryId,
-			  jobType,
-			  dateRange,
-			  sortOrder,
-			  companyCity
-			});
-	
-			// Check if response is valid and set job posts
-			if (response?.data?.data) {
-			  setJobPosts(response.data.data);
-	
-			  // Update pagination state in Redux
-			  const { totalJobPosts, totalPages } = response.data;
-			  dispatch(setPaginationData({ totalJobPosts, totalPages }));
-			} else {
-			  console.error("Invalid job posts data:", response);
-			}
-		  } catch (error) {
-			console.error("Error fetching job posts:", error);
-		  } finally {
-			setLoading(false);
-		  }
-		};
+  useEffect(() => {
+    const fetchJobPosts = async () => {
+      setLoading(true);
+      try {
+        const response = await getJobPost(currentPage, {
+          jobTitle,
+          categoryId,
+          jobType,
+          dateRange,
+          sortOrder,
+          companyCity,
+        });
 
-	
-		fetchJobPosts();
-	  }, [
-		currentPage,
-		jobTitle,
-		categoryId,
-		jobType,
-		dateRange,
-		sortOrder,
-		companyCity,
-		dispatch,
-	  ]);
+        // Check if response is valid and set job posts
+        if (response?.data?.data) {
+          setJobPosts(response.data.data);
 
-	// Handle page change
-	const handlePageChange = (page: number) => {
-		if (page >= 1 && page <= totalPages) {
-			dispatch(setCurrentPage(page));
-		}
-	};
+          // Update pagination state in Redux
+          const { totalJobPosts, totalPages } = response.data;
+          dispatch(setPaginationData({ totalJobPosts, totalPages }));
+        } else {
+          console.error("Invalid job posts data:", response);
+        }
+      } catch (error) {
+        console.error("Error fetching job posts:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-	return (
-		<div className="mt-5 mx-4">
-			<div className="flex flex-col w-full">
-				<div>
-					<NavbarComponent
-						findJobs="Find Jobs"
-						skillAssessment="Skill Assessment"
-						exploreCompanies="Explore Companies"
-						loginJobHunter="Login"
-						loginCompanies="Login as Recruiter"
-					/>
-				</div>
+    fetchJobPosts();
+  }, [
+    currentPage,
+    jobTitle,
+    categoryId,
+    jobType,
+    dateRange,
+    sortOrder,
+    companyCity,
+    dispatch,
+  ]);
 
-				<div>
-					<HeroJobListPageComponent />
-				</div>
+  // Handle page change
+  const handlePageChange = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      dispatch(setCurrentPage(page));
+    }
+  };
 
-				<div className="w-full mt-4">
-					<SelectionJobsComponents />
-				</div>
+  return (
+    <div className="mt-5 mx-4">
+      <div className="flex flex-col w-full">
+        <div>
+          <NavbarComponent
+            findJobs="Find Jobs"
+            skillAssessment="Skill Assessment"
+            exploreCompanies="Explore Companies"
+            loginJobHunter="Login"
+            loginCompanies="Login as Recruiter"
+          />
+        </div>
 
-				<div className="w-full mt-5 mb-10">
-					<JobListMappingComponent jobPosts={jobPosts} />
-				</div>
+        <div>
+          <HeroJobListPageComponent />
+        </div>
 
-				<Pagination>
-					<PaginationContent>
-						<PaginationPrevious
-							onClick={() => handlePageChange(currentPage - 1)}
-							className={
-								currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
-							}
-						>
-							Previous
-						</PaginationPrevious>
+        <div className="w-full mt-4">
+          <SelectionJobsComponents />
+        </div>
 
-						{/* Page numbers */}
-						{[...Array(totalPages)].map((_, index) => (
-							<PaginationItem key={index}>
-								<PaginationLink
-									onClick={() => handlePageChange(index + 1)}
-									isActive={currentPage === index + 1}
-								>
-									{index + 1}
-								</PaginationLink>
-							</PaginationItem>
-						))}
+        <div className="w-full mt-5 mb-10">
+          <JobListMappingComponent jobPosts={jobPosts} />
+        </div>
 
-						<PaginationNext
-							onClick={() => handlePageChange(currentPage + 1)}
-							className={
-								currentPage === totalPages
-									? "opacity-50 cursor-not-allowed"
-									: ""
-							}
-						>
-							Next
-						</PaginationNext>
-					</PaginationContent>
-				</Pagination>
-				<div className="mx-4 mt-20 mb-5">
-					<FooterComponent
-						findJobs="Find Jobs"
-						skillAssessment="Skill Assessment"
-						exploreCompanies="Explore Companies"
-					/>
-				</div>
-			</div>
-		</div>
-	);
+        <Pagination>
+          <PaginationContent>
+            <PaginationPrevious
+              onClick={() => handlePageChange(currentPage - 1)}
+              className={
+                currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
+              }
+            >
+              Previous
+            </PaginationPrevious>
+
+            {/* Page numbers */}
+            {[...Array(totalPages)].map((_, index) => (
+              <PaginationItem key={index}>
+                <PaginationLink
+                  onClick={() => handlePageChange(index + 1)}
+                  isActive={currentPage === index + 1}
+                >
+                  {index + 1}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+
+            <PaginationNext
+              onClick={() => handlePageChange(currentPage + 1)}
+              className={
+                currentPage === totalPages
+                  ? "opacity-50 cursor-not-allowed"
+                  : ""
+              }
+            >
+              Next
+            </PaginationNext>
+          </PaginationContent>
+        </Pagination>
+        <div className="mx-4 mt-20 mb-5">
+          <FooterComponent />
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default JobPostPage;

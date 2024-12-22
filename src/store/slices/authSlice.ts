@@ -55,7 +55,7 @@ export const loginUser = createAsyncThunk<
       {
         headers: { "Content-Type": "application/json" },
         withCredentials: true,
-      }
+      },
     );
 
     const { access_token, refresh_token, user } = response.data.data;
@@ -83,7 +83,7 @@ export const validateUserToken = createAsyncThunk(
   async (token: string) => {
     try {
       const user = await authHandler.validateUserToken(token);
-      console.log(user);
+
       if (user.status !== 200) {
         return null;
       } else {
@@ -92,7 +92,7 @@ export const validateUserToken = createAsyncThunk(
     } catch (e: unknown) {
       return e;
     }
-  }
+  },
 );
 
 const authSlice = createSlice({
