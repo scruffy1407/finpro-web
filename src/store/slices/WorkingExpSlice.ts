@@ -2,7 +2,12 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { toast } from "sonner";
 
 import { ProfileHandler } from "@/utils/profile.utils";
+import { reviewResponse } from "@/models/company.model";
 
+interface ParamsGetWorkExp {
+  token: string;
+  wReview: boolean;
+}
 interface WorkingExperience {
   workingExperienceId?: number;
   jobHunterId?: number;
@@ -10,6 +15,7 @@ interface WorkingExperience {
   companyName: string;
   jobTitle: string;
   jobDescription: string;
+  jobReview: reviewResponse[];
 }
 interface PendingState {
   isLoading: boolean;
@@ -18,6 +24,7 @@ interface PendingState {
 }
 interface WorkingExpList {
   workingExpList: WorkingExperience[];
+  uniqueCompanyWorkExpList: WorkingExperience[];
   editWorkingExp?: WorkingExperience;
   selectedItemId?: number | undefined;
   pendingState: PendingState;
@@ -27,6 +34,7 @@ const profileHandler = new ProfileHandler();
 
 const initialState: WorkingExpList = {
   workingExpList: [],
+  uniqueCompanyWorkExpList: [],
   selectedItemId: undefined,
   editWorkingExp: {
     workingExperienceId: undefined,
@@ -35,6 +43,7 @@ const initialState: WorkingExpList = {
     companyName: "",
     jobDescription: "",
     jobTitle: "",
+    jobReview: [],
   },
   pendingState: {
     isLoading: false,
@@ -45,9 +54,13 @@ const initialState: WorkingExpList = {
 
 export const getWorkingExperience = createAsyncThunk(
   "user/company/workExprience",
-  async (token: string) => {
+  async ({ token, wReview }: ParamsGetWorkExp) => {
+    console.log("ASYNC Review", wReview);
     try {
-      const response = await profileHandler.getWorkingExperience(token);
+      const response = await profileHandler.getWorkingExperience(
+        token,
+        wReview,
+      );
       if (response.status === 200) {
         return response.data;
       } else {
@@ -106,6 +119,8 @@ const workExpSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getWorkingExperience.fulfilled, (state, action) => {
+        console.log("SLICE", action.payload);
+
         const workingExpMap: WorkingExperience[] = action.payload.map(
           (workExp): WorkingExperience => {
             return {
@@ -115,10 +130,12 @@ const workExpSlice = createSlice({
               jobTitle: workExp.job_title,
               jobDescription: workExp.job_description,
               jobHunterId: workExp.jobHunterId,
+              jobReview: workExp.JobReview,
             };
           },
         );
         state.workingExpList = workingExpMap;
+
         state.pendingState.isRender = true;
       })
       .addCase(deleteWorkingExperience.pending, (state) => {

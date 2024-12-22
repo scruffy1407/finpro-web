@@ -17,9 +17,7 @@ export interface JobPost {
 
 export interface reviewResponse {
   reviewId?: number;
-  companyId: number;
-  companyName?: string;
-  jobunterId: number;
+  workExperienceId: number;
   reviewTitle: string;
   reviewDescription: string;
   culturalRating: number;

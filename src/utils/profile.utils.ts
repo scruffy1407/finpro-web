@@ -80,13 +80,16 @@ export class ProfileHandler {
     }
   }
 
-  async getWorkingExperience(token: string) {
+  async getWorkingExperience(token: string, wReview: boolean) {
     try {
-      const response = await api.get("api/user/job-hunter/work-experience", {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const response = await api.get(
+        `api/user/job-hunter/work-experience?review=${wReview}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
       if (response.status === 200) {
         return response.data;
       } else {
