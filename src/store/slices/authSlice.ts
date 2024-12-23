@@ -7,7 +7,7 @@ import { AuthHandler } from "@/utils/auth.utils";
 
 interface LoginState {
   baseId: number | null;
-  innerId: number | null; // companyId or Job hunter Id
+  innerId: number | null;
   photo?: string;
   email: string;
   name?: string;
@@ -131,15 +131,25 @@ const authSlice = createSlice({
       })
       .addCase(validateUserToken.fulfilled, (state, action) => {
         console.log("ACTION PAYLOAD", action);
-        console.log("JOB HUNTER", action.payload.jobHunter[0]);
-        state.isLoggedIn = true;
-        state.name = action.payload.jobHunter[0].name;
-        state.email = action.payload.email;
-        state.user_role = action.payload.role_type;
-        state.innerId = action.payload.jobHunter[0].job_hunter_id;
-        state.photo = action.payload.jobHunter[0].photo;
+        if (action.payload.jobHunter && action.payload.jobHunter.length > 0) {
+          state.isLoggedIn = true;
+          state.name = action.payload.jobHunter[0].name;
+          state.email = action.payload.email;
+          state.user_role = "jobhunter";
+          state.innerId = action.payload.jobHunter[0].job_hunter_id;
+          state.photo = action.payload.jobHunter[0].photo;
+        } else if (action.payload.company && action.payload.company.length > 0) {
+          state.isLoggedIn = true;
+          state.name = action.payload.company[0].company_name;
+          state.email = action.payload.email;
+          state.user_role = "company";
+          state.innerId = action.payload.company[0].company_id;
+          state.photo = action.payload.company[0].logo;
+        }
+      
         state.isLoading = false;
       });
+      
   },
 });
 

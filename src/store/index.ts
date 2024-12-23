@@ -1,5 +1,4 @@
 import { configureStore } from "@reduxjs/toolkit";
-// import authReducer from "./slices/authSlice_tes";
 import mobileMenuReducer from "@/store/slices/mobileMenuSlice";
 import authReducer from "@/store/slices/authSlice";
 import registerReducer from "@/store/slices/registerSlice";
@@ -10,6 +9,7 @@ import searchQueryReducer from "@/store/slices/searchQuerySlice"
 import modalControllerReducer from "@/store/slices/ModalSlice";
 import workExperienceReducer from "@/store/slices/WorkingExpSlice";
 import educationReducer from "@/store/slices/EducationSlice";
+import bookmarksReducer from "@/store/slices/bookmarkSlice"
 
 const store = configureStore({
   reducer: {
@@ -23,6 +23,7 @@ const store = configureStore({
     modalController: modalControllerReducer,
     workExperience: workExperienceReducer,
     education: educationReducer,
+    bookmarks: bookmarksReducer,
   },
 });
 

@@ -2,15 +2,12 @@ import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/router";
 import { RootState } from "@/store";
-// import { logout } from "@/store/slices/authSlice";
 import { logout } from "@/store/slices/authSlice_tes";
-// import { login, logout } from "@/store/slices/authSlice_tes";
 import { toggleMobileMenu } from "@/store/slices/mobileMenuSlice";
 import { NavProps } from "@/utils/interface";
 import Image from "next/image";
 import LinksComponents from "./LinksComponents";
 import Cookies from "js-cookie";
-
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -66,7 +63,7 @@ function NavbarComponent({ loginJobHunter, loginCompanies }: NavProps) {
         { label: "Test Template", href: "" },
       ],
       dropdownItems: [
-        { label: "My Company", href: "" },
+        { label: "My Company", href: "/profile/user" },
         { label: "Log Out", action: () => handleLogout() },
         { label: "Dashboard", href: "" },
         { label: "Test Templates", href: "" },
@@ -94,7 +91,6 @@ function NavbarComponent({ loginJobHunter, loginCompanies }: NavProps) {
     logo,
     bgColor,
     textColor,
-    profileRoute,
     dropdownItems,
     droplineIcon,
     burgerIcon,
@@ -123,6 +119,7 @@ function NavbarComponent({ loginJobHunter, loginCompanies }: NavProps) {
               <Image src={logo} alt="Pathway Logo" width={121} height={24} />
             </Link>
           </div>
+
           <LinksComponents
             navbarItems={roleConfig[userRole || "default"].navbarItems}
             textColor={textColor}

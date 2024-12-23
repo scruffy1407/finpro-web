@@ -17,6 +17,7 @@ import { useRouter } from "next/router";
 import { z } from "zod";
 import { registerSchema } from "@/validators/auth.validator";
 import { FormErrorRegister } from "@/models/formError";
+import { toast } from "sonner"
 
 const CompanyRegister: React.FC = () => {
   const dispatch = useDispatch();
@@ -57,7 +58,7 @@ const CompanyRegister: React.FC = () => {
       if (response.status === 200) {
         localStorage.setItem("userEmail", company.email);
         dispatch(submitSuccess());
-        alert(
+        toast.success(
           "Company registered successfully! Please check your email to verify your account."
         );
         dispatch(resetForm());
