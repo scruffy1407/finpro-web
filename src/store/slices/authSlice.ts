@@ -158,7 +158,7 @@ const authSlice = createSlice({
           state.innerId = action.payload.company[0].company_id;
           state.photo = action.payload.company[0].logo;
         }
-      
+        state.pendingState.dataLoading = false;
         state.isLoading = false;
       });
       
