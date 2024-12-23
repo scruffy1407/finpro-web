@@ -15,10 +15,12 @@ import {
 } from "@/models/company.model";
 import SectionSkeleton from "@/components/Skeleton/CompanyDetailPage.skeleton";
 import { AuthHandler } from "@/utils/auth.utils";
-function companyPage() {
+
+function CompanyPage() {
   const authHandler = new AuthHandler();
   authHandler.authorizeUser();
   const companyUtils = new CompanyUtils();
+
   const router = useRouter();
   const companyId = router.query.companyId;
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -156,4 +158,4 @@ function companyPage() {
   );
 }
 
-export default companyPage;
+export default CompanyPage;

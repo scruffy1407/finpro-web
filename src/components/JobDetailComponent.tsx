@@ -9,6 +9,8 @@ import {
   mapCompanySize,
   mapCompanyIndustry,
 } from "../utils/enumMapping";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 interface JobDetailProps {
   job_id: string;
@@ -50,6 +52,7 @@ export default function JobDetailComponent({
 
     fetchJobDetail();
   }, [job_id]); // This effect runs only when `job_id` changes
+  console.log(jobData);
 
   const formatSalary = (salary: number) => {
     return `${(salary / 1000000).toFixed(1)} jt`; // Format to 1 decimal place
@@ -83,19 +86,29 @@ export default function JobDetailComponent({
   return (
     <div>
       {/* Header Section */}
-      <div className="flex flex-col justify-between max-w-screen-xl mx-auto bg-white mt-5 rounded-xl px-4 md:flex-row md:px-0">
-        <div className="flex flex-col md:pl-8 py-6 gap-6 md:gap-2 w-[100%] md:w-[60%]">
+      <div className="flex flex-col justify-between gap-10 max-w-screen-xl p-4 md:p-8 mx-auto bg-white mt-5 rounded-xl md:flex-row">
+        <div className="flex flex-col gap-6 md:gap-2 w-[100%] md:w-[60%]">
           {/* Breadcrumb */}
           <div className="text-sm text-neutral-600 gap-2 items-center hidden md:flex">
-            <span className="cursor-pointer hover:underline">Home</span>
+            <Link href={"/"} className="text-sm cursor-pointer hover:underline">
+              Home
+            </Link>
             <span>/</span>
-            <span className="cursor-pointer hover:underline">Find Jobs</span>
+            <Link
+              href={"/jobs"}
+              className="text-sm cursor-pointer hover:underline"
+            >
+              Find Jobs
+            </Link>
             <span>/</span>
-            <span className="cursor-pointer hover:underline">
+            <Link
+              href={`/company/${jobData?.companyId}`}
+              className="text-sm cursor-pointer hover:underline"
+            >
               {jobData?.company?.company_name}
-            </span>
+            </Link>
             <span>/</span>
-            <span className="text-neutral-900 font-semibold">
+            <span className="text-sm text-neutral-600 font-semibold">
               {jobData?.job_title}
             </span>
           </div>
@@ -107,30 +120,36 @@ export default function JobDetailComponent({
                 alt="company Logo"
                 width={30}
                 height={30}
+                className={"w-6 h-6"}
               />
-              <h2 className="text-lg">{jobData?.company?.company_name}</h2>
+              <p className="text-neutral-600">
+                {jobData?.company?.company_name}
+              </p>
             </div>
             <div className="flex justify-center items-center md:hidden">
               <ButtonComponent type="ButtonBookmark" container="Bookmarks" />
             </div>
           </div>
-          <h2 className="font-bold text-2xl mt-4">{jobData?.job_title}</h2>
+          <h2 className="font-bold text-2xl">{jobData?.job_title}</h2>
         </div>
         {/* Right Section */}
-        <div className="flex flex-col justify-center px-6 gap-2 mt-5 mb-5 items-start md:items-end">
+        <div className="flex flex-col justify-center gap-2 items-start md:items-end">
           <div className="flex gap-6">
             <div className="items-center justify-center hidden md:flex">
               <ButtonComponent type="ButtonBookmark" container="Bookmarks" />
             </div>
-            <ButtonComponent
-              type="ButtonFilled"
-              container="Apply Now"
+            <Button
+              className={"w-full md:w-fit"}
               onClick={onApplyJob}
-            />
+              variant={"primary"}
+              size={"default"}
+            >
+              Apply Now
+            </Button>
           </div>
-          <p className="w-full text-center">
+          <p className="w-full text-xs text-center">
             Job expires on:{" "}
-            <span className="text-red-500">
+            <span className=" text-red-500">
               {jobData?.expired_date &&
                 moment(jobData?.expired_date).format("MMMM Do YYYY")}
             </span>{" "}
@@ -145,10 +164,10 @@ export default function JobDetailComponent({
           {/* Job Overview */}
           <div className="bg-white rounded-xl px-4 md:px-8 py-8 mb-4">
             {/* Title */}
-            <h3 className="font-bold text-xl mb-6">Job Overview</h3>
+            <h3 className="font-bold text-lg mb-6">Job Overview</h3>
 
             {/* Overview Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-5 md:grid-cols-4 gap-2">
+            <div className="grid grid-cols-1 lg:grid-cols-4 md:grid-cols-4 gap-2">
               {/* Job Type */}
               <div className="flex items-center md:flex-col md:items-start">
                 <Image
@@ -156,11 +175,13 @@ export default function JobDetailComponent({
                   alt="Job Type Icon"
                   width={32}
                   height={32}
-                  className="w-8 h-8 mb-0 md:mb-2 md:mr-0 mr-4"
+                  className="w-6 h-6 mb-0 md:mb-2 md:mr-0 mr-4"
                 />
                 <div>
-                  <p className="text-neutral-400 hidden md:block">Job Type</p>
-                  <p className="font-bold text-neutral-900">
+                  <p className="text-neutral-400 text-sm mb-1 hidden md:block">
+                    Job Type
+                  </p>
+                  <p className="font-bold text-sm text-neutral-900">
                     {mapJobType(jobData?.job_type)}
                   </p>
                 </div>
@@ -173,11 +194,13 @@ export default function JobDetailComponent({
                   alt="Experience Icon"
                   width={32}
                   height={32}
-                  className="w-8 h-8 mb-0 md:mb-2 md:mr-0 mr-4"
+                  className="w-6 h-6 mb-0 md:mb-2 md:mr-0 mr-4"
                 />
                 <div>
-                  <p className="text-neutral-400 hidden md:block">Experience</p>
-                  <p className="font-bold text-neutral-900">
+                  <p className="text-neutral-400 text-sm mb-1 hidden md:block">
+                    Experience
+                  </p>
+                  <p className="font-bold text-sm text-neutral-900">
                     {jobData?.job_experience_max
                       ? `${jobData?.job_experience_min} - ${jobData?.job_experience_max} yrs Experience`
                       : `Min ${jobData?.job_experience_min} yrs Experience`}
@@ -192,11 +215,13 @@ export default function JobDetailComponent({
                   alt="Salary Icon"
                   width={32}
                   height={32}
-                  className="w-8 h-8 mb-0 md:mb-2 md:mr-0 mr-4"
+                  className="w-6 h-6 mb-0 md:mb-2 md:mr-0 mr-4"
                 />
                 <div>
-                  <p className="text-neutral-400 hidden md:block">Salary</p>
-                  <p className="font-bold text-neutral-900">
+                  <p className="text-neutral-400 text-sm mb-1 hidden md:block">
+                    Salary
+                  </p>
+                  <p className="font-bold text-sm text-neutral-900">
                     {jobData?.salary_show ? (
                       jobData?.salary_max ? (
                         `Rp${formatSalary(jobData?.salary_min)} - Rp${formatSalary(jobData?.salary_max)}`
@@ -219,13 +244,13 @@ export default function JobDetailComponent({
                   alt="Work Location Icon"
                   width={32}
                   height={32}
-                  className="w-8 h-8 mb-0 md:mb-2 md:mr-0 mr-4"
+                  className="w-6 h-6 mb-0 md:mb-2 md:mr-0 mr-4"
                 />
                 <div>
-                  <p className="text-neutral-400 hidden md:block">
+                  <p className="text-neutral-400 text-sm mb-1 hidden md:block">
                     Work Location
                   </p>
-                  <p className="font-bold text-neutral-900">
+                  <p className="font-bold text-sm text-neutral-900">
                     {mapJobSpace(jobData?.job_space)}
                   </p>
                 </div>
@@ -243,24 +268,27 @@ export default function JobDetailComponent({
         </div>
 
         {/* Right Section: Company Information */}
-        <div className="md:h-fit md:col-span-3 sm:col-span-7 text-neutral-900 bg-white rounded-xl px-4 md:px-8 py-6 flex flex-col justify-between">
-          <h2 className="font-bold text-xl">Company Information</h2>
-          <div className="flex flex-col">
+        <div className="md:h-fit md:col-span-3 sm:col-span-7 text-neutral-900 bg-white rounded-xl px-4 md:px-8 py-6 flex flex-col gap-6 justify-between">
+          <h2 className="font-bold text-lg">Company Information</h2>
+          <div className="flex flex-col gap-3">
             <Image
               src={jobData?.company?.logo || "/companies/Tokopedia.svg"}
               alt="Company Logo"
-              width={40}
-              height={64}
-              className="w-10 h-16 mr-4"
+              width={100}
+              height={100}
+              className="w-14 h-14 object-cover"
             />
-            <h2 className="text-lg">{jobData?.company?.company_name}</h2>
+            <div className={"flex flex-col gap-1"}>
+              <h2 className="text font-bold">
+                {jobData?.company?.company_name}
+              </h2>
+              <h3 className="text-sm text-neutral-600">
+                {mapCompanyIndustry(jobData?.company?.company_industry)}
+              </h3>
+            </div>
           </div>
 
-          <h3 className="text-md font-medium text-neutral-600">
-            {mapCompanyIndustry(jobData?.company?.company_industry)}
-          </h3>
-
-          <div className="flex items-center my-6">
+          <div className="flex items-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="currentColor"
@@ -277,7 +305,7 @@ export default function JobDetailComponent({
             </h3>
           </div>
 
-          <p className="text-sm text-neutral-600 py-2 flex gap-2">
+          <p className="text-sm text-neutral-600 flex gap-2">
             <span>Company Size:</span>
             <span className="text-neutral-900 text-right">
               {mapCompanySize(jobData?.company?.company_size)}
