@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -11,8 +11,10 @@ import {
 import ButtonComponent from "./ButtonComponent";
 import AsyncSelect from "react-select/async";
 import { LocationOptionReal } from "@/utils/interface";
-import { useState, useEffect } from "react";
 import { getCategories, searchLocation } from "@/pages/api/api";
+import { AppDispatch, RootState } from "@/store";
+import { useDispatch, useSelector } from "react-redux";
+import { setSearchQuery } from "@/store/slices/searchQuerySlice"; // Import the action
 
 const customStyles = {
   control: (provided: any) => ({
@@ -23,14 +25,11 @@ const customStyles = {
   }),
 };
 
-export interface SearchBarProps {
+interface SearchBarProps {
   onSearch: (searchParams: {
-    jobTitle: string;
-    categoryId: string;
-    jobType: string;
-    dateRange: string;
-    sortOrder: string;
-    companyCity: string;
+    jobTitle?: string;
+    categoryId?: string;
+    companyCity?: string;
   }) => void;
 }
 
@@ -40,17 +39,19 @@ export interface CategoriesReal {
 }
 
 function SearchBarComponent({ onSearch }: SearchBarProps) {
-  const [jobTitle, setJobTitle] = useState<string>("");
-  const [categoryId, setCategoryId] = useState<string>("");
-  const [category, setCategory] = useState<CategoriesReal[]>([]);
-  const [loadingCategories, setLoadingCategories] = useState<boolean>(true); // Loading state for categories
-  const [jobType, setJobType] = useState<string>("");
-  const [dateRange, setDateRange] = useState<string>("");
-  const [sortOrder, setSortOrder] = useState<string>("");
-  const [locations, setLocations] = useState<LocationOptionReal[]>([]); // Holds all locations (provinces and cities)
-  const [companyCity, setCompanyCity] = useState<string>("");
+  const dispatch = useDispatch<AppDispatch>(); // Use dispatch to send actions to Redux store
+  const searchQuery = useSelector((state: RootState) => state.searchQuery); // Access current search query state from Redux
+  const { categoryId, companyCity, jobTitle, jobType } = searchQuery;
 
-  // Fetch categories on mount
+  const [category, setCategory] = useState<CategoriesReal[]>([]);
+  const [locations, setLocations] = useState<LocationOptionReal[]>([]);
+
+  // Local state for input values
+  const [localJobTitle, setLocalJobTitle] = useState<string>(jobTitle || "");
+  const [localCategoryId, setLocalCategoryId] = useState<string>(categoryId || "");
+  const [localCompanyCity, setLocalCompanyCity] = useState<string>(companyCity || "");
+
+  // Fetch categories and locations on mount
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -61,14 +62,10 @@ function SearchBarComponent({ onSearch }: SearchBarProps) {
       }
     };
     fetchCategories();
-  }, []);
 
-  // Fetch locations on mount
-  useEffect(() => {
     const fetchLocations = async () => {
       try {
-        const response = await searchLocation(); // Pass an empty string to get all locations
-        console.log(response.data.data);
+        const response = await searchLocation();
         setLocations(
           response.data.data.map((location: any) => ({
             label: location.name,
@@ -82,25 +79,34 @@ function SearchBarComponent({ onSearch }: SearchBarProps) {
     fetchLocations();
   }, []);
 
+  // Dispatch updates to Redux store
+  const dispatchUpdate = (updatedValues: { [key: string]: string }) => {
+    dispatch(setSearchQuery({ ...searchQuery, ...updatedValues }));
+  };
+
   // Handle search
   const handleSearch = () => {
-    const clearLocation = () => {
-      setCompanyCity(""); // Reset companyCity to empty
-    };
-
-    console.log("companyCity before search:", companyCity); // This should log the correct city name.
-
     const searchParams = {
-      jobTitle,
-      categoryId: categoryId === "all" ? "" : categoryId, // If "all" is selected, pass an empty string
-      jobType,
-      dateRange,
-      sortOrder,
-      companyCity,
+      jobTitle: localJobTitle,
+      categoryId: localCategoryId === "all" ? "" : localCategoryId,
+      companyCity: localCompanyCity,
+      jobType: jobType, // Preserve the current jobType value
     };
-    console.log("Search Parameters:", searchParams); // This will help you debug
     onSearch(searchParams);
-    clearLocation();
+
+    // Update Redux store with the new search query
+    dispatchUpdate({ jobTitle: localJobTitle, categoryId: localCategoryId, companyCity: localCompanyCity });
+  };
+
+  // Handle location changes
+  const handleLocationChange = (selectedOption: any) => {
+    if (selectedOption) {
+      setLocalCompanyCity(selectedOption.label);
+      dispatchUpdate({ companyCity: selectedOption.label });
+    } else {
+      setLocalCompanyCity("");
+      dispatchUpdate({ companyCity: "" });
+    }
   };
 
   // Combined loadOptions for city search
@@ -111,61 +117,45 @@ function SearchBarComponent({ onSearch }: SearchBarProps) {
           location.label.toLowerCase().includes(inputValue.toLowerCase())
         );
         resolve(filteredCities);
-      }, 500); // Simulate async loading
+      }, 500);
     });
-  };
-
-  useEffect(() => {
-    if (companyCity) {
-      console.log("companyCity has been updated to:", companyCity);
-    }
-  }, [companyCity]); // This hook will run when companyCity changes
-
-  // Handle location changes
-  const handleLocationChange = (selectedOption: any) => {
-    if (selectedOption) {
-      setCompanyCity(selectedOption.label); // Set the cityName
-    } else {
-      setCompanyCity(""); // Reset if nothing is selected
-    }
-    console.log("Selected Location:", selectedOption);
   };
 
   return (
     <div className="flex flex-col md:flex md:flex-row gap-5 items-center md:items-end mt-2">
-      <div className="w-full">
+      <div className="w-full md:w-[35%]">
         <Label className="font-semibold text-neutral-950" htmlFor="position">
-          Position :
+          Position :{" "}
         </Label>
         <Input
-          className="rounded-xl text-sm w-full"
+          className="rounded-xl "
           id="position"
           type="text"
           placeholder="Ex : Web Developer"
-          value={jobTitle}
-          onChange={(e) => setJobTitle(e.target.value)}
+          value={localJobTitle}
+          onChange={(e) => setLocalJobTitle(e.target.value)}
         />
       </div>
-      <div className="w-full">
+
+      <div className="w-full md:w-[40%]">
         <Label className="font-semibold text-neutral-950" htmlFor="position">
-          Job Category :
+          Job Category :{" "}
         </Label>
-        <Select onValueChange={setCategoryId}>
-          <SelectTrigger className=" w-full rounded-xl text-sm">
-            <div className="text-neutral-500">
+        <Select
+          value={localCategoryId}
+          onValueChange={(value) => setLocalCategoryId(value)}
+        >
+          <SelectTrigger className="w-full md:w-full rounded-xl">
+            <div className="text-slate-500">
               <SelectValue placeholder="Select Job Category" />
             </div>
           </SelectTrigger>
-          <SelectContent className="rounded-xl">
+          <SelectContent>
             <SelectItem value="all">All categories</SelectItem>
-            {/* Dynamically generate SelectItem for each category */}
             {category.length > 0 ? (
               category.map((categoryItem, index) => (
-                <SelectItem
-                  key={categoryItem.categoryId}
-                  value={`${index + 1}`}
-                >
-                  {categoryItem.category_name} {/* Display category name */}
+                <SelectItem key={categoryItem.categoryId} value={`${index + 1}`}>
+                  {categoryItem.category_name}
                 </SelectItem>
               ))
             ) : (
@@ -176,24 +166,24 @@ function SearchBarComponent({ onSearch }: SearchBarProps) {
           </SelectContent>
         </Select>
       </div>
-      <div className="w-full rounded-xl z-50">
+
+      <div className="w-full md:w-[35%] rounded-xl">
         <Label className="font-semibold text-neutral-950" htmlFor="location">
-          Location :
+          Location :{" "}
         </Label>
         <AsyncSelect
           cacheOptions
           defaultOptions
           loadOptions={loadOptions} // Load cities based on search term
           placeholder="Search Location"
-          className="w-full text-sm"
           styles={customStyles} // Apply custom styles here
-          value={
-            companyCity ? { label: companyCity, value: companyCity } : null
-          } // Set to null if location is cleared
+          value={companyCity ? { label: companyCity, value: companyCity } : null} // Set to null if location is cleared
           onChange={handleLocationChange}
+          isClearable={true}
         />
       </div>
-      <div className="hidden md:w-[33%] md:block">
+
+      <div className="hidden md:w-[15%] md:block">
         <ButtonComponent onClick={handleSearch} type="ButtonSearch" />
       </div>
       <div className="block w-full md:hidden md:w-[15%] mt-0">

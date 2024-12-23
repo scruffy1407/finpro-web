@@ -4,22 +4,21 @@ import HeroJobListPageComponent from "@/components/HeroJobListPageComponent";
 import SelectionJobsComponents from "@/components/SelectionJobsComponent";
 import JobListMappingComponent from "@/components/JobListMappingComponent";
 import {
-	Pagination,
-	PaginationContent,
-	PaginationItem,
-	PaginationLink,
-	PaginationNext,
-	PaginationPrevious,
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
 } from "@/components/ui/pagination"; // Shadcn UI pagination
 import FooterComponent from "@/components/FooterComponent";
 import {
-	setCurrentPage,
-	setPaginationData,
+  setCurrentPage,
+  setPaginationData,
 } from "@/store/slices/jobPaginationSlice";
 import { RootState } from "@/store";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
-import { job } from "@/utils/axiosInterface";
 import { getJobPost } from "../api/api";
 
 const JobPostPage: React.FC = () => {
@@ -29,45 +28,53 @@ const JobPostPage: React.FC = () => {
 	const { currentPage, totalPages } = useSelector(
 		(state: RootState) => state.pagination
 	);
-	const { jobTitle, categoryId, jobType, dateRange, sortOrder, companyCity } = useSelector(
-		(state: RootState) => state.searchQuery
-	); // Access searchQuery from the store
+	const { jobTitle, categoryId, jobType, dateRange, sortOrder, companyCity } =
+		useSelector((state: RootState) => state.searchQuery); // Access searchQuery from the store
+
+	console.log(
+		"COBA LIAT INIIIIII ",
+		jobTitle,
+		categoryId,
+		jobType,
+		dateRange,
+		sortOrder,
+		companyCity
+	);
 
 	const dispatch = useDispatch();
 
 	useEffect(() => {
 		const fetchJobPosts = async () => {
-		  setLoading(true);
-		  try {
-			const response = await getJobPost(currentPage, {
-			  jobTitle,
-			  categoryId,
-			  jobType,
-			  dateRange,
-			  sortOrder,
-			  companyCity
-			});
-	
-			// Check if response is valid and set job posts
-			if (response?.data?.data) {
-			  setJobPosts(response.data.data);
-	
-			  // Update pagination state in Redux
-			  const { totalJobPosts, totalPages } = response.data;
-			  dispatch(setPaginationData({ totalJobPosts, totalPages }));
-			} else {
-			  console.error("Invalid job posts data:", response);
+			setLoading(true);
+			try {
+				const response = await getJobPost(currentPage, {
+					jobTitle,
+					categoryId,
+					jobType,
+					dateRange,
+					sortOrder,
+					companyCity,
+				});
+
+				// Check if response is valid and set job posts
+				if (response?.data?.data) {
+					setJobPosts(response.data.data);
+
+					// Update pagination state in Redux
+					const { totalJobPosts, totalPages } = response.data;
+					dispatch(setPaginationData({ totalJobPosts, totalPages }));
+				} else {
+					console.error("Invalid job posts data:", response);
+				}
+			} catch (error) {
+				console.error("Error fetching job posts:", error);
+			} finally {
+				setLoading(false);
 			}
-		  } catch (error) {
-			console.error("Error fetching job posts:", error);
-		  } finally {
-			setLoading(false);
-		  }
 		};
 
-	
 		fetchJobPosts();
-	  }, [
+	}, [
 		currentPage,
 		jobTitle,
 		categoryId,
@@ -75,8 +82,8 @@ const JobPostPage: React.FC = () => {
 		dateRange,
 		sortOrder,
 		companyCity,
-		dispatch,
-	  ]);
+		dispatch
+	]);
 
 	// Handle page change
 	const handlePageChange = (page: number) => {
@@ -158,78 +165,3 @@ const JobPostPage: React.FC = () => {
 };
 
 export default JobPostPage;
-
-// import React from "react";
-// import NavbarComponent from "@/components/NavbarComponent";
-// import HeroJobListPageComponent from "@/components/HeroJobListPageComponent";
-// import SelectionJobsComponents from "@/components/SelectionJobsComponents";
-// import JobListMappingComponent from "@/components/JobListMappingComponent";
-// import {
-// 	Pagination,
-// 	PaginationContent,
-// 	PaginationEllipsis,
-// 	PaginationItem,
-// 	PaginationLink,
-// 	PaginationNext,
-// 	PaginationPrevious,
-// } from "@/components/ui/pagination";
-// import FooterComponent from "@/components/FooterComponent";
-
-// function jobpost() {
-// 	return (
-// 		<div className="mt-5 mx-4">
-// 			<div className="flex flex-col w-full">
-// 				<div>
-// 					<NavbarComponent
-// 						findJobs="Find Jobs"
-// 						skillAssessment="Skill Assessment"
-// 						exploreCompanies="Explore Companies"
-// 						loginJobHunter="Login"
-// 						loginCompanies="Login as Recruiter"
-// 					/>
-// 				</div>
-
-// 				<div className="w-full">
-// 					<HeroJobListPageComponent />
-// 				</div>
-
-// 				<div className="w-full mt-4">
-// 					<SelectionJobsComponents />
-// 				</div>
-
-// 				<div className="w-full mt-5 mb-10">
-// 					<JobListMappingComponent />
-// 				</div>
-
-// 				<div className="mt-5">
-// 					<Pagination>
-// 						<PaginationContent>
-// 							<PaginationItem>
-// 								<PaginationPrevious href="#" />
-// 							</PaginationItem>
-// 							<PaginationItem>
-// 								<PaginationLink href="#">1</PaginationLink>
-// 							</PaginationItem>
-// 							<PaginationItem>
-// 								<PaginationEllipsis />
-// 							</PaginationItem>
-// 							<PaginationItem>
-// 								<PaginationNext href="#" />
-// 							</PaginationItem>
-// 						</PaginationContent>
-// 					</Pagination>
-// 				</div>
-// 			</div>
-
-// 			<div className="mx-4 mt-20 mb-5">
-// 				<FooterComponent
-// 					findJobs="Find Jobs"
-// 					skillAssessment="Skill Assessment"
-// 					exploreCompanies="Explore Companies"
-// 				/>
-// 			</div>
-// 		</div>
-// 	);
-// }
-
-// export default jobpost;

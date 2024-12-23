@@ -1,7 +1,7 @@
 import { LoginAuth, RegisterAuth } from "@/models/auth.model";
 import api from "@/pages/api/api";
 import AuthorizeUser from "@/utils/authorizePage";
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 
 export class AuthHandler {
   // Fungsi untuk validasi form login
@@ -116,6 +116,7 @@ export class AuthHandler {
           Authorization: `Bearer ${token}`,
         },
       });
+      console.log("Response from API:", response.data);
       console.log("result", response);
       // Set the data from the respose to userState --> later will also replace this with actual response
       if (response.status === 200) {

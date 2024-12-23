@@ -22,7 +22,10 @@ function AuthorizeUser(
     const accessToken = Cookies.get("accessToken");
 
     if (!accessToken) {
-      router.push("/auth/login/jobhunter");
+      if (pagePermission) {
+        router.push("/auth/login/jobhunter");
+        return;
+      }
       return;
     }
     try {
@@ -30,6 +33,7 @@ function AuthorizeUser(
         await dispatch(validateUserToken(accessToken as string));
       }
     } catch (e: unknown) {
+      console.log("ERRORRR", e);
       router.push("/");
       return;
     }
@@ -41,14 +45,18 @@ function AuthorizeUser(
 
   useEffect(() => {
     if (!initialRender.current) {
+      console.log("exec");
       if (!isLoggedIn) {
         router.push("/");
         return;
       }
-      if (user_role !== pagePermission) {
-        router.push("/");
-        return;
+      if (pagePermission) {
+        if (user_role !== pagePermission) {
+          router.push("/");
+          return;
+        }
       }
+      return;
     }
     initialRender.current = false;
   }, [isLoggedIn]);

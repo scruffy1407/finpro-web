@@ -8,13 +8,15 @@ import ButtonComponent from "@/components/ButtonComponent";
 import CompanyMappingComponent from "@/components/CompanyMappingComponent";
 import FooterComponent from "@/components/FooterComponent";
 import { AuthHandler } from "@/utils/auth.utils";
+import useRouter from "next/router";
 
 function Home() {
   const authHandler = new AuthHandler();
   authHandler.authorizeUser();
+  const router = useRouter;
 
   return (
-    <div className="overflow-hidden mt-5">
+    <div className="overflow-hidden">
       <div className="mx-4 w-auto">
         <NavbarComponent
           findJobs="Find Jobs"
@@ -36,6 +38,7 @@ function Home() {
         <HeadingComponent
           heading="We found Jobs near you!"
           paragraph="Explore opportunities tailored to your location and discover the perfect match for your next career move"
+          onClick={() => router.push("/jobs")}
         />
       </div>
 
@@ -52,6 +55,7 @@ function Home() {
         <HeadingComponent
           heading="This could be your next company"
           paragraph="Explore our partner companies and discover the exciting job openings available right now."
+          onClick={() => router.push("/companies")}
         />
       </div>
 

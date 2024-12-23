@@ -41,9 +41,6 @@ function companyPage() {
 			</div>
             <div className="mx-4 mt-20 mb-5">
 					<FooterComponent
-						findJobs="Find Jobs"
-						skillAssessment="Skill Assessment"
-						exploreCompanies="Explore Companies"
 					/>
 				</div>
 		</div>

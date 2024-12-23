@@ -5,9 +5,12 @@ import { z } from "zod";
 import Cookies from "js-cookie";
 import { AuthHandler } from "@/utils/auth.utils";
 
+interface PendingState {
+  dataLoading: boolean;
+}
 interface LoginState {
   baseId: number | null;
-  innerId: number | null; // companyId or Job hunter Id
+  innerId: number | null;
   photo?: string;
   email: string;
   name?: string;
@@ -18,6 +21,8 @@ interface LoginState {
   error?: string | null;
   accessToken?: string | null;
   refreshToken?: string | null;
+  callback?: string;
+  pendingState: PendingState;
 }
 const authHandler = new AuthHandler();
 
@@ -34,6 +39,10 @@ const initialState: LoginState = {
   error: null,
   accessToken: "",
   refreshToken: "",
+  callback: "",
+  pendingState: {
+    dataLoading: false,
+  },
 };
 
 export const loginUser = createAsyncThunk<
@@ -55,7 +64,7 @@ export const loginUser = createAsyncThunk<
       {
         headers: { "Content-Type": "application/json" },
         withCredentials: true,
-      }
+      },
     );
 
     const { access_token, refresh_token, user } = response.data.data;
@@ -83,7 +92,7 @@ export const validateUserToken = createAsyncThunk(
   async (token: string) => {
     try {
       const user = await authHandler.validateUserToken(token);
-      console.log(user);
+
       if (user.status !== 200) {
         return null;
       } else {
@@ -92,7 +101,7 @@ export const validateUserToken = createAsyncThunk(
     } catch (e: unknown) {
       return e;
     }
-  }
+  },
 );
 
 const authSlice = createSlice({
@@ -129,17 +138,30 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload || "Unknown error occurred";
       })
+      .addCase(validateUserToken.pending, (state) => {
+        state.pendingState.dataLoading = true;
+      })
       .addCase(validateUserToken.fulfilled, (state, action) => {
         console.log("ACTION PAYLOAD", action);
-        console.log("JOB HUNTER", action.payload.jobHunter[0]);
-        state.isLoggedIn = true;
-        state.name = action.payload.jobHunter[0].name;
-        state.email = action.payload.email;
-        state.user_role = action.payload.role_type;
-        state.innerId = action.payload.jobHunter[0].job_hunter_id;
-        state.photo = action.payload.jobHunter[0].photo;
+        if (action.payload.jobHunter && action.payload.jobHunter.length > 0) {
+          state.isLoggedIn = true;
+          state.name = action.payload.jobHunter[0].name;
+          state.email = action.payload.email;
+          state.user_role = "jobhunter";
+          state.innerId = action.payload.jobHunter[0].job_hunter_id;
+          state.photo = action.payload.jobHunter[0].photo;
+        } else if (action.payload.company && action.payload.company.length > 0) {
+          state.isLoggedIn = true;
+          state.name = action.payload.company[0].company_name;
+          state.email = action.payload.email;
+          state.user_role = "company";
+          state.innerId = action.payload.company[0].company_id;
+          state.photo = action.payload.company[0].logo;
+        }
+      
         state.isLoading = false;
       });
+      
   },
 });
 

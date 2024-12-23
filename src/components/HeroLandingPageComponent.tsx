@@ -10,9 +10,9 @@ export default function HeroComponent() {
 	const router = useRouter(); // Initialize the router
 
 	const handleSearch = (searchParams: {
-		jobTitle: string;
-		categoryId: string;
-		companyCity : string
+		jobTitle?: string;
+		categoryId?: string;
+		companyCity?: string;
 	}) => {
 		// Construct search query with default values
 		const searchQuery = {
