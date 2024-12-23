@@ -17,6 +17,7 @@ import { useRouter } from "next/router";
 import { z } from "zod";
 import { registerSchema } from "@/validators/auth.validator";
 import { FormErrorRegister } from "@/models/formError";
+import { toast } from "sonner";
 
 const JobhunterRegister: React.FC = () => {
   const dispatch = useDispatch();
@@ -56,8 +57,8 @@ const JobhunterRegister: React.FC = () => {
       if (response.status === 200) {
         localStorage.setItem("userEmail", jobhunter.email);
         dispatch(submitSuccess());
-        alert(
-          "Jobhunter registered successfully! Please check your email to verify your account."
+        toast.success(
+          "Account registered successfully! Please check your email to verify your account."
         );
         dispatch(resetForm());
         router.push("/auth/register/verify-email");
@@ -85,8 +86,8 @@ const JobhunterRegister: React.FC = () => {
       <div className="hidden md:min-w[350px] md:relative md:max-w-[35%] md:h-full md:p-8 md:flex md:items-end">
         <Link href="/">
           <Image
-            src="/loginAsset/login_hero-min.webp"
-            alt="Image of building"
+            src="/loginAsset/USERREGISTER.webp"
+            alt="Image of Person Climbing"
             width={654.72}
             height={1000}
             className="absolute top-0 left-0 h-full w-full object-cover cursor-pointer"
@@ -106,7 +107,7 @@ const JobhunterRegister: React.FC = () => {
         <div className="bg-white p-6 md:w-full md:max-w-[500px] md:p-8 md:rounded-3xl">
           <div className="flex items-center justify-between w-full mb-12">
             <Image
-              src={"/LogoIpsum.svg"}
+              src={"/logo/MainLogo.svg"}
               alt="main-logo"
               width={100}
               height={200}

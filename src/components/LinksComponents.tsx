@@ -9,9 +9,13 @@ interface LinksComponentsProps {
 
 function LinksComponents({ navbarItems, textColor }: LinksComponentsProps) {
   return (
-    <div className="hidden md:flex justify-between gap-5">
+    <div className="hidden md:flex justify-between gap-4">
       {navbarItems.map((item, index) => (
-        <Link key={index} className={`hover:text-blue-500 ${textColor}`} href={item.href}>
+        <Link
+          key={index}
+          className={`hover:text-blue-500 text-sm ${textColor}`}
+          href={item.href}
+        >
           {item.label}
         </Link>
       ))}

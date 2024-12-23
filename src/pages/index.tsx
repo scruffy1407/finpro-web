@@ -1,17 +1,23 @@
 import React from "react";
 import NavbarComponent from "@/components/NavbarComponent";
-import HeroComponent from "@/components/HeroLandingPageComponent";
+import HeroComponent from "@/components/HeroComponent";
 import MarqueeComponent from "@/components/MarqueeComponent";
 import HeadingComponent from "@/components/HeadingComponent";
 import JobMappingComponent from "@/components/JobMappingComponent";
 import ButtonComponent from "@/components/ButtonComponent";
 import CompanyMappingComponent from "@/components/CompanyMappingComponent";
 import FooterComponent from "@/components/FooterComponent";
+import { AuthHandler } from "@/utils/auth.utils";
+import useRouter from "next/router";
 
 function Home() {
+  const authHandler = new AuthHandler();
+  authHandler.authorizeUser();
+  const router = useRouter;
+
   return (
-    <div className="overflow-hidden mt-5">
-      <header className="mx-4 w-auto">
+    <div className="overflow-hidden">
+      <div className="mx-4 w-auto">
         <NavbarComponent
           findJobs="Find Jobs"
           skillAssessment="Skill Assessment"
@@ -19,24 +25,24 @@ function Home() {
           loginJobHunter="Login"
           loginCompanies="Login as Recruiter"
         />
-      </header>
+      </div>
 
-      <section className="mx-4 md:w-auto">
+      <div className="mx-4 md:w-auto">
         <HeroComponent />
-      </section>
-
-      <section className="mx-4">
+      </div>
+      <div className="mx-4">
         <MarqueeComponent />
-      </section>
+      </div>
 
-      <section className=" mx-4 mt-24 ">
+      <div className=" mx-4 mt-20 ">
         <HeadingComponent
-          heading="We found Jobs that nears you"
-          paragraph="Check job that we found"
+          heading="We found Jobs near you!"
+          paragraph="Explore opportunities tailored to your location and discover the perfect match for your next career move"
+          onClick={() => router.push("/jobs")}
         />
-      </section>
+      </div>
 
-      <div className="mx-4 mt-5">
+      <div className="mx-4 mt-6">
         <JobMappingComponent />
       </div>
 
@@ -45,14 +51,15 @@ function Home() {
         <ButtonComponent type="ButtonBorderCustom" container="Explore More" />
       </div>
 
-      <div className=" mx-4 mt-24">
+      <div className=" mx-4 mt-20">
         <HeadingComponent
-          heading="It might be your next company"
-          paragraph="Check out our companies & What are the jobs that currently open"
+          heading="This could be your next company"
+          paragraph="Explore our partner companies and discover the exciting job openings available right now."
+          onClick={() => router.push("/companies")}
         />
       </div>
 
-      <div className=" mx-4 mt-5">
+      <div className=" mx-4 mt-6">
         <CompanyMappingComponent />
       </div>
 
@@ -61,12 +68,8 @@ function Home() {
         <ButtonComponent type="ButtonBorderCustom" container="Explore More" />
       </div>
 
-      <div className="mx-4 mt-24 mb-5">
-        <FooterComponent
-          findJobs="Find Jobs"
-          skillAssessment="Skill Assessment"
-          exploreCompanies="Explore Companies"
-        />
+      <div className="mx-4 mt-20 mb-5">
+        <FooterComponent />
       </div>
     </div>
   );

@@ -16,7 +16,7 @@ function CompanyLogin() {
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
 
-  const { isLoggedIn, error } = useSelector((state: RootState) => state.login);
+  const { isLoggedIn, error } = useSelector((state: RootState) => state.auth);
 
   const [loginForm, setLoginForm] = useState({
     email: "",
@@ -39,8 +39,8 @@ function CompanyLogin() {
           <div className="hidden md:min-w[350px] md:relative md:max-w-[35%] md:h-full md:p-8 md:flex md:items-end">
             <Link href="/">
               <Image
-                src="/loginAsset/login_hero-min.webp"
-                alt="Image of building"
+                src="/loginAsset/COMPANYLOGIN.webp"
+                alt="Image of a Building"
                 width={654.72}
                 height={1000}
                 className="absolute top-0 left-0 h-full w-full object-cover cursor-pointer"
@@ -57,24 +57,24 @@ function CompanyLogin() {
             </div>
           </div>
           <div className="w-full md:w-[65%] md:p-12 md:flex md:items-center">
-            <div className="bg-white p-6 md:w-full md:max-w-[500px] md:p-8 md:rounded-3xl">
+            <div className="bg-sky-950 p-6 md:w-full md:max-w-[500px] md:p-8 md:rounded-3xl">
               <div className="flex items-center justify-between w-full mb-12">
                 <Image
-                  src={"/LogoIpsum.svg"}
+                  src={"/logo/CompanyLogo.svg"}
                   alt="main-logo"
-                  width={100}
-                  height={200}
-                  className="h-6"
+                  width={120}
+                  height={240}
+                  className=""
                 />
                 <Link
                   href={`/auth/login/jobhunter`}
-                  className="text-xs underline text-neutral-950 hover:text-blue-500 md:text-sm"
+                  className="text-xs underline text-white hover:text-blue-500 md:text-sm"
                 >
                   Looking for a job?
                 </Link>
               </div>
               <div className="flex flex-col gap-8">
-                <h2 className="text-2xl text-neutral-950 font-bold">
+                <h2 className="text-2xl text-white font-bold">
                   Login to your account
                 </h2>
                 <form
@@ -84,7 +84,7 @@ function CompanyLogin() {
                   className="flex flex-col gap-4"
                 >
                   <div>
-                    <Label htmlFor={`email`} className="block mb-2">
+                    <Label htmlFor={`email`} className="block mb-2 text-white">
                       Email
                     </Label>
                     <Input
@@ -97,7 +97,7 @@ function CompanyLogin() {
                   </div>
 
                   <div>
-                    <Label htmlFor={`password`} className="block mb-2">
+                    <Label htmlFor={`password`} className="block mb-2 text-white">
                       Password
                     </Label>
                     <Input
@@ -111,7 +111,7 @@ function CompanyLogin() {
 
                   <div className="ml-auto">
                     <Link
-                      className="block text-sm text-blue-500 hover:text-blue-700"
+                      className="block text-sm text-white hover:text-blue-500"
                       href={"#"}
                     >
                       Forgot Password?
@@ -136,7 +136,7 @@ function CompanyLogin() {
                   onClick={() =>
                     (window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/google/company`)
                   }
-                  className={`w-full p-2 bg-neutral-950 text-white rounded-lg flex items-center gap-3 justify-center hover:bg-neutral-800`}
+                  className={`w-full p-2 bg-white text-neutral-900 rounded-lg flex items-center gap-3 justify-center hover:bg-neutral-200`}
                 >
                   <Image
                     width={24}
@@ -148,9 +148,9 @@ function CompanyLogin() {
                   Sign in with Google
                 </button>
 
-                <p className="text-center text-sm">
+                <p className="text-center text-sm text-white">
                   Don&apos;t have an account? <></>
-                  <Link href="/auth/register/company" className="text-blue-500 hover:underline">
+                  <Link href="/auth/register/company" className="text-white underline hover:text-blue-500">
                     Sign up now
                   </Link>
                 </p>

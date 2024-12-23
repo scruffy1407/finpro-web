@@ -1,98 +1,137 @@
 import React from "react";
 import Image from "next/image";
-import LinksComponents from "./LinksComponents";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
+import Link from "next/link";
 
-interface FooterProps {
-  findJobs: string;
-  skillAssessment: string;
-  exploreCompanies: string;
-}
+function FooterComponent() {
+  const userRole = useSelector((state: RootState) => state.auth.user_role);
 
-function FooterComponent({
-  findJobs,
-  skillAssessment,
-  exploreCompanies,
-}: FooterProps) {
-  // Define the navbar items (links)
-  const navbarItems = [
-    { label: "Find Jobs", href: findJobs },
-    { label: "Skill Assessment", href: skillAssessment },
-    { label: "Explore Companies", href: exploreCompanies },
-  ];
+  const roleConfig = {
+    jobhunter: {
+      logo: "/logo/MainLogoWhite.svg",
+      navbarItems: [
+        { label: "Find Jobs", href: "" },
+        { label: "Skill Assessments", href: "" },
+        { label: "Explore Companies", href: "" },
+      ],
+    },
+    company: {
+      logo: "/logo/CompanyLogo.svg",
+      navbarItems: [
+        { label: "Dashboard", href: "" },
+        { label: "Test Templates", href: "" },
+      ],
+    },
+    default: {
+      logo: "/logo/MainLogoWhite.svg",
+      navbarItems: [
+        { label: "Find Jobs", href: "" },
+        { label: "Skill Assessments", href: "" },
+        { label: "Explore Companies", href: "" },
+      ],
+    },
+  };
 
-  const textColor = "text-white"; // You can modify this or pass dynamically if needed
+  const { logo, navbarItems } = roleConfig[userRole || "default"];
 
   return (
     <div className="max-w-screen-xl mx-auto bg-sky-950 border rounded-xl mb-16">
       <div className="">
         <div className="md:flex justify-between p-6">
+          {/* Logo Section */}
           <div className="flex justify-center md:justify-start">
-            <Image
-              src="/footer/logoFooter.svg"
-              alt="LogoIpsum"
-              width={121}
-              height={24}
-            />
+            <Link href="/">
+              <Image src={logo} alt="Footer Logo" width={150} height={28} />
+            </Link>
           </div>
+
+          {/* Social Media Icons for Desktop */}
           <div className="hidden md:flex p-3 gap-6">
             <Image
               src="/footer/logoInsta.png"
-              alt="LogoIpsum"
+              alt="Instagram Logo"
               width={20}
               height={20}
             />
             <Image
               src="/footer/logoLinkedIn.png"
-              alt="LogoIpsum"
+              alt="LinkedIn Logo"
               width={20}
               height={20}
             />
             <Image
               src="/footer/logoMail.png"
-              alt="LogoIpsum"
+              alt="Mail Logo"
               width={20}
               height={20}
             />
           </div>
         </div>
 
+        {/* Description Section */}
         <div className="flex text-center md:text-left w-full md:w-[50%]">
-          <p className="text-white px-6">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Sed
-            repudiandae amet iusto. Perferendis voluptatem, debitis dolor rerum,
+          <p className="text-white text-xs px-6 opacity-85">
+            At Pathway, we&apos;re dedicated to connecting you with the right
+            opportunities. Whether you&apos;re looking to hire top talent or
+            take the next step in your career, we&apos;re here to help you
+            bridge the gap. Explore, connect, and grow with us.
           </p>
         </div>
 
-        <div className="flex justify-center items-center mt-6 p-3 gap-6 md:hidden ">
+        {/* Social Media Icons for Mobile */}
+        <div className="flex justify-center items-center mt-6 p-3 gap-6 md:hidden">
           <Image
             src="/footer/logoInsta.png"
-            alt="LogoIpsum"
+            alt="Instagram Logo"
             width={30}
             height={30}
           />
           <Image
             src="/footer/logoLinkedIn.png"
-            alt="LogoIpsum"
+            alt="LinkedIn Logo"
             width={30}
             height={30}
           />
           <Image
             src="/footer/logoMail.png"
-            alt="LogoIpsum"
+            alt="Mail Logo"
             width={30}
             height={30}
           />
         </div>
       </div>
-      <div className=" flex gap-3 md:p-8 mt-12 justify-center md:justify-between">
-        <div className="text-white">
-          <LinksComponents navbarItems={navbarItems} textColor={textColor} />
+
+      {/* Navbar Links for Mobile */}
+      <div className="flex flex-col md:hidden text-white text-sm text-center py-8 gap-3">
+        {navbarItems.map((item, index) => (
+          <Link key={index} href={item.href} className="hover:text-blue-400">
+            {item.label}
+          </Link>
+        ))}
+        <div>
+          <p className="pt-8 text-sm">&copy; 2024 Pathway Limited</p>
+        </div>
+      </div>
+
+      {/* Navbar Links and Copyright Section */}
+      <div className="hidden md:flex justify-between items-center py-8 text-white p-6">
+        {/* Navbar Links */}
+        <div className="flex gap-6">
+          {navbarItems.map((item, index) => (
+            <Link
+              key={index}
+              href={item.href}
+              className="hover:text-blue-400 transition duration-200 text-xs"
+            >
+              {item.label}
+            </Link>
+          ))}
         </div>
 
-        <div className="mb-4 md:mb-0">
-          <p className="text-white text-sm">
-            &copy; 2024 Bantu Cari Kerja Indonesia.
-          </p>
+        {/* Copyright Text */}
+        <div>
+          <p className="text-xs opacity-50">&copy; 2024 Pathway Limited</p>
         </div>
       </div>
     </div>

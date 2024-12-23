@@ -1,47 +1,65 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useRouter } from "next/router";
-import { AuthHandler } from "@/utils/auth.utils";
+import Cookies from "js-cookie";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "@/store";
+import { validateUserToken } from "@/store/slices/authSlice";
 
 function AuthorizeUser(
-  token: string | null,
-  pagePermission: "jobhunter" | "company",
-  owned?: string,
+  pagePermission?: "jobhunter" | "company",
+  owned?: string, // comparison data
 ) {
   const router = useRouter();
-  const authHandler = new AuthHandler();
+  const dispatch = useDispatch<AppDispatch>();
+  const initialRender = useRef(true);
 
-  async function handleAuthrorize(token: string | null) {
+  const { isLoggedIn, user_role, name } = useSelector(
+    (state: RootState) => state.auth,
+  );
+
+  async function handleAuthrorize() {
     // Check the user have token or not when it access the page
-    if (!token) {
+    const accessToken = Cookies.get("accessToken");
+
+    if (!accessToken) {
+      if (pagePermission) {
+        router.push("/auth/login/jobhunter");
+        return;
+      }
+      return;
+    }
+    try {
+      if (!isLoggedIn) {
+        await dispatch(validateUserToken(accessToken as string));
+      }
+    } catch (e: unknown) {
+      console.log("ERRORRR", e);
       router.push("/");
       return;
     }
-
     // Change any to a valid user response interface
-    const response: any = await authHandler.validateUserToken(token);
-    const user = response[0];
+  }
+  useEffect(() => {
+    handleAuthrorize();
+  }, [router]);
 
-    if (response.length === 0) {
-      router.push("/");
-      return;
-    }
-    if (user.role_type !== pagePermission) {
-      router.push("/");
-      return;
-    }
-
-    if (owned) {
-      if (user.id !== owned) {
+  useEffect(() => {
+    if (!initialRender.current) {
+      console.log("exec");
+      if (!isLoggedIn) {
         router.push("/");
         return;
       }
+      if (pagePermission) {
+        if (user_role !== pagePermission) {
+          router.push("/");
+          return;
+        }
+      }
+      return;
     }
-
-    console.log(user);
-  }
-  useEffect(() => {
-    handleAuthrorize(token);
-  }, [router]);
+    initialRender.current = false;
+  }, [isLoggedIn]);
 }
 
 export default AuthorizeUser;
