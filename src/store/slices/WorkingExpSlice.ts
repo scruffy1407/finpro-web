@@ -2,22 +2,32 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { toast } from "sonner";
 
 import { ProfileHandler } from "@/utils/profile.utils";
+import { reviewResponse } from "@/models/company.model";
+import { closeModalAction } from "@/store/slices/ModalSlice";
 
-interface WorkingExperience {
+interface ParamsGetWorkExp {
+  token: string;
+  wReview: boolean;
+}
+export interface WorkingExperience {
   workingExperienceId?: number;
-  jobHunterId?: number;
-  companyId?: number;
+  jobHunterId: number | null;
+  companyId?: number | null;
   companyName: string;
   jobTitle: string;
   jobDescription: string;
+
+  jobReview?: reviewResponse[];
 }
 interface PendingState {
-  isLoading: boolean;
-  isDisable: boolean;
+  actionLoading: boolean;
+  actionDisable: boolean;
+  dataLoading: boolean;
   isRender: boolean;
 }
 interface WorkingExpList {
   workingExpList: WorkingExperience[];
+  uniqueCompanyWorkExpList: WorkingExperience[];
   editWorkingExp?: WorkingExperience;
   selectedItemId?: number | undefined;
   pendingState: PendingState;
@@ -27,14 +37,16 @@ const profileHandler = new ProfileHandler();
 
 const initialState: WorkingExpList = {
   workingExpList: [],
+  uniqueCompanyWorkExpList: [],
   selectedItemId: undefined,
   editWorkingExp: {
     workingExperienceId: undefined,
-    jobHunterId: undefined,
+    jobHunterId: null,
     companyId: undefined,
     companyName: "",
     jobDescription: "",
     jobTitle: "",
+    jobReview: [],
   },
   pendingState: {
     isLoading: false,
@@ -45,15 +57,41 @@ const initialState: WorkingExpList = {
 
 export const getWorkingExperience = createAsyncThunk(
   "user/company/workExprience",
-  async (token: string) => {
+  async ({ token, wReview }: ParamsGetWorkExp) => {
+    console.log("ASYNC Review", wReview);
     try {
-      const response = await profileHandler.getWorkingExperience(token);
+      const response = await profileHandler.getWorkingExperience(
+        token,
+        wReview,
+      );
       if (response.status === 200) {
         return response.data;
       } else {
         return null;
       }
     } catch (e: unknown) {
+      return e;
+    }
+  },
+);
+
+export const addNewWorkingExperience = createAsyncThunk(
+  "user/company/create-working-experience",
+  async (data: { token: string; formData: WorkingExperience }) => {
+    try {
+      const response = await profileHandler.createWorkingExperience(
+        data.token as string,
+        {
+          ...data.formData,
+          jobHunterId: data.formData.jobHunterId as number,
+        },
+      );
+      if (response.status === 201) {
+        return response.data;
+      } else {
+        return null;
+      }
+    } catch (e) {
       return e;
     }
   },
@@ -82,6 +120,16 @@ const workExpSlice = createSlice({
   name: "workExperience",
   initialState,
   reducers: {
+    addJobs: (state, action) => {
+      if (action.payload.index && action.payload.reviewForm) {
+        state.workingExpList[action.payload.index].jobReview?.unshift({
+          ...action.payload.reviewForm,
+        });
+      }
+    },
+    setDisable: (state, action) => {
+      state.pendingState.isDisable = action.payload;
+    },
     setSelectedItem: (state, action) => {
       state.selectedItemId = action.payload;
     },
@@ -106,6 +154,8 @@ const workExpSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getWorkingExperience.fulfilled, (state, action) => {
+        console.log("SLICE", action.payload);
+
         const workingExpMap: WorkingExperience[] = action.payload.map(
           (workExp): WorkingExperience => {
             return {
@@ -115,15 +165,17 @@ const workExpSlice = createSlice({
               jobTitle: workExp.job_title,
               jobDescription: workExp.job_description,
               jobHunterId: workExp.jobHunterId,
+              jobReview: workExp.JobReview,
             };
           },
         );
         state.workingExpList = workingExpMap;
+
         state.pendingState.isRender = true;
       })
       .addCase(deleteWorkingExperience.pending, (state) => {
-        state.pendingState.isLoading = true;
-        state.pendingState.isDisable = true;
+        state.pendingState.actionLoading = true;
+        state.pendingState.actionDisable = true;
       })
       .addCase(deleteWorkingExperience.fulfilled, (state, action) => {
         const deletedData: {
@@ -137,14 +189,36 @@ const workExpSlice = createSlice({
         if (deletedIndex !== -1) {
           state.workingExpList.splice(deletedIndex, 1);
         }
-        state.pendingState.isLoading = false;
-        state.pendingState.isDisable = false;
+        state.pendingState.actionLoading = false;
+        state.pendingState.actionDisable = false;
         toast.success("Delete success");
+      })
+      .addCase(addNewWorkingExperience.pending, (state) => {
+        state.pendingState.actionLoading = true;
+        state.pendingState.actionDisable = true;
+      })
+      .addCase(addNewWorkingExperience.fulfilled, (state, action) => {
+        console.log(action);
+        state.workingExpList.unshift({
+          jobHunterId: action.payload.jobHunterId,
+          workingExperienceId: action.payload.work_experience_id,
+          companyId: action.payload.companyId,
+          companyName: action.payload.company_name,
+          jobDescription: action.payload.job_description,
+          jobTitle: action.payload.job_title,
+          jobReview: [],
+        });
+        toast.success("Success add new working experience");
       });
   },
 });
 
-export const { setSelectedItem, clearSelectedItem, updateWorkingExp } =
-  workExpSlice.actions;
+export const {
+  setSelectedItem,
+  clearSelectedItem,
+  updateWorkingExp,
+  setDisable,
+  addJobs,
+} = workExpSlice.actions;
 
 export default workExpSlice.reducer;

@@ -1,6 +1,6 @@
-export interface WorkingExperience {
+interface WorkingExperience {
   workingExperienceId?: number | undefined;
-  jobHunterId: number;
+  jobHunterId: number | null;
   companyId: number | null;
   jobTitle: string;
   jobDescription: string;

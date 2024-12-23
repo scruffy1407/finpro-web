@@ -32,11 +32,11 @@ function EducationSection() {
 
   useEffect(() => {
     if (isLoggedIn) {
-      handleFethingEducation();
+      if (!pendingState.isRender) {
+        handleFethingEducation();
+      }
     }
   }, [isLoggedIn]);
-
-  console.log("LISTNYA INI YAA", educationList);
 
   return (
     <>

@@ -21,6 +21,8 @@ interface WorkingHistoryProps {
   companyName: string;
   position: string;
   description: string;
+  startDate: Date;
+  endData: Date;
   onDelete?: () => void;
   onEdit?: () => void;
 }
@@ -31,10 +33,16 @@ function WorkingHistoryItem({
   position,
   description,
   companyId,
+  startDate,
+  endData,
 }: WorkingHistoryProps) {
   const accessToken = Cookies.get("accessToken");
   const dispatch = useDispatch<AppDispatch>();
   const { innerId } = useSelector((state: RootState) => state.auth);
+
+  const { pendingState } = useSelector(
+    (state: RootState) => state.workExperience,
+  );
 
   const { currentModalId, editId } = useSelector(
     (state: RootState) => state.modalController,
@@ -69,7 +77,8 @@ function WorkingHistoryItem({
         onClose={handleCloseModal}
       >
         <ConfirmDelete
-          itemId={workingHistoryId}
+          disableState={pendingState.actionDisable}
+          loadingState={pendingState.actionLoading}
           onDelete={() => {
             dispatch(
               deleteWorkingExperience({

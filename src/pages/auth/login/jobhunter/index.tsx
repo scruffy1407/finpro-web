@@ -22,7 +22,9 @@ function JobHunterLogin() {
     email: "",
     password: "",
     user_role: "jobhunter",
+    callback: router.query.callback || "",
   });
+  console.log(loginForm.callback);
 
   const [btnDisable, setBtnDisable] = useState(false);
 

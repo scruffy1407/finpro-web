@@ -31,7 +31,12 @@ function WorkingHistorySection() {
 
   async function handleFethingExperience() {
     const accessToken = Cookies.get("accessToken");
-    await dispatch(getWorkingExperience(accessToken as string));
+    await dispatch(
+      getWorkingExperience({
+        token: accessToken as string,
+        wReview: false,
+      }),
+    );
   }
 
   useEffect(() => {
@@ -41,6 +46,7 @@ function WorkingHistorySection() {
       }
     }
   }, [isLoggedIn]);
+  console.log(workingExpList);
 
   return (
     <>

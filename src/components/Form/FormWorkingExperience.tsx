@@ -4,7 +4,6 @@ import AsyncSelect from "react-select/async";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { WorkingExperience } from "@/models/profile.mode";
 import { ProfileHandler } from "@/utils/profile.utils";
 import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,21 +12,28 @@ import Cookies from "js-cookie";
 import { SingleValue } from "react-select";
 import LoadingLoader from "@/components/LoadingLoader";
 import { closeModalAction } from "@/store/slices/ModalSlice";
+import {
+  addNewWorkingExperience,
+  setDisable,
+  WorkingExperience,
+} from "@/store/slices/WorkingExpSlice";
 
 function FormWorkingExperience() {
   const profileHandler = new ProfileHandler();
   const { innerId } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch<AppDispatch>();
-  const [isDisable, setIsDisable] = useState<boolean>(true);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  console.log(isDisable);
+  const { pendingState } = useSelector(
+    (state: RootState) => state.workExperience,
+  );
 
   const [formData, setFormData] = useState<WorkingExperience>({
     jobHunterId: innerId as number,
     jobDescription: "",
     companyId: null,
     jobTitle: "",
+    companyName: "",
+    startDate: null,
+    endDate: null,
   });
 
   const options = (inputValue: string, callback: (options: []) => void) => {
@@ -48,26 +54,13 @@ function FormWorkingExperience() {
   async function handleSubmitWork(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const accessToken = Cookies.get("accessToken");
-    setIsDisable(true);
-    setIsLoading(true);
-
-    try {
-      const response = await profileHandler.createWorkingExperience(
-        accessToken as string,
-        formData,
-      );
-      console.log(response);
-      if (response.status === 201) {
-        toast.success("Successfully add new work experience");
-        setIsDisable(true);
-        setIsLoading(false);
-        dispatch(closeModalAction());
-      } else {
-        toast.error(response.message);
-      }
-    } catch (e) {
-      toast.error("Something went wrong, please refresh your browser");
-    }
+    await dispatch(
+      addNewWorkingExperience({
+        token: accessToken as string,
+        formData: formData,
+      }),
+    );
+    dispatch(closeModalAction());
   }
 
   function handleChange(e: any) {
@@ -91,10 +84,12 @@ function FormWorkingExperience() {
   }
 
   useEffect(() => {
-    setIsDisable(
-      formData.jobDescription === "" ||
-        formData.jobTitle === "" ||
-        formData.companyId === null,
+    dispatch(
+      setDisable(
+        formData.jobDescription === "" ||
+          formData.jobTitle === "" ||
+          formData.companyId === null,
+      ),
     );
   }, [formData.jobDescription, formData.jobTitle, formData.companyId]);
   console.log(formData);
@@ -155,8 +150,9 @@ function FormWorkingExperience() {
           name={`jobDescription`}
         />
       </div>
-      <Button disabled={isDisable} variant="primary" type="submit">
-        {isLoading ? LoadingLoader() : "Add New Experience"}
+
+      <Button disabled={pendingState.isDisable} variant="primary" type="submit">
+        {pendingState.isLoading ? LoadingLoader() : "Add New Experience"}
       </Button>
     </form>
   );
