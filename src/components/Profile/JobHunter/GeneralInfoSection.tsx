@@ -194,7 +194,6 @@ function GeneralInfoSection() {
       setLoading(false);
       toast.error("please select the city");
       return;
-      z;
     }
 
     try {

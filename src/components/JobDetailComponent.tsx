@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import ButtonComponent from "./ButtonComponent";
-import axios from "axios";
 import moment from "moment";
 import {
   mapJobType,
@@ -11,48 +10,25 @@ import {
 } from "../utils/enumMapping";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/store";
 
 interface JobDetailProps {
+  validateDate: boolean;
+  jobData: any;
   job_id: string;
   onApplyJob: () => void;
 }
 
 export default function JobDetailComponent({
-  job_id,
+  jobData,
   onApplyJob,
+  validateDate,
 }: JobDetailProps) {
-  const [jobData, setJobData] = useState<any | null>(null);
+  const dispatch = useDispatch<AppDispatch>();
+  // const [jobData, setJobData] = useState<any | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
-
-  useEffect(() => {
-    // Debug log: Ensure we see job_id when the component is rendered
-    console.log("Job ID in JobDetailComponent:", job_id);
-
-    if (!job_id) {
-      console.log("Job ID is not available yet. Skipping API call.");
-      return; // Skip API call if job_id is undefined
-    }
-
-    const fetchJobDetail = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get(
-          `http://localhost:8000/api/company/jobDetails/${job_id}`,
-        );
-        console.log("Fetched job data:", response.data); // Log the response to see the data
-        setJobData(response.data.jobPostDetail);
-      } catch (err) {
-        console.error("Error fetching job details:", err);
-        setError("Failed to fetch job details.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchJobDetail();
-  }, [job_id]); // This effect runs only when `job_id` changes
-  console.log(jobData);
 
   const formatSalary = (salary: number) => {
     return `${(salary / 1000000).toFixed(1)} jt`; // Format to 1 decimal place
@@ -84,8 +60,7 @@ export default function JobDetailComponent({
   if (error) return <div>{error}</div>;
   if (!jobData) return <div>No job details found.</div>;
   return (
-    <div>
-      {/* Header Section */}
+    <>
       <div className="flex flex-col justify-between gap-10 max-w-screen-xl p-4 md:p-8 mx-auto bg-white mt-5 rounded-xl md:flex-row">
         <div className="flex flex-col gap-6 md:gap-2 w-[100%] md:w-[60%]">
           {/* Breadcrumb */}
@@ -313,6 +288,6 @@ export default function JobDetailComponent({
           </p>
         </div>
       </div>
-    </div>
+    </>
   );
 }

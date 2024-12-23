@@ -31,7 +31,7 @@ export const CompleteProfilePopup = ({
 
   const handleInputChange = <K extends keyof UserProfile>(
     key: K,
-    value: UserProfile[K]
+    value: UserProfile[K],
   ) => {
     setProfile({ ...profile, [key]: value });
   };
@@ -157,7 +157,7 @@ export const CompleteProfilePopup = ({
           </div>
 
           {/* Save & Continue Button */}
-            <div className="flex justify-start">
+          <div className="flex justify-start">
             <ButtonComponent
               type="ButtonFilled"
               container={loading ? "Saving..." : "Save & Continue"}

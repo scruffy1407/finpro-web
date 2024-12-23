@@ -39,8 +39,7 @@ const JobApplicationPopup = ({ onSubmit, onClose }: JobApplicationProps) => {
           Apply Job
         </h2>
         <p className="mb-6 break-words text-neutral-600">
-          You will apply to <span className="font-semibold">Tokopedia</span> as{" "}
-          <></>
+          You will apply to <span className="font-semibold">Tokopedia</span> as
           <span className="font-semibold">Senior React Developer</span>
         </p>
 
