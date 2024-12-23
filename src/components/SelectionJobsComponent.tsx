@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useDispatch, UseDispatch } from "react-redux";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { setSearchQuery } from "@/store/slices/searchQuerySlice";
 import {
 	Select,
@@ -8,76 +8,82 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import { RootState } from "@/store";
 
 function SelectionJobsComponents() {
 	const dispatch = useDispatch();
+	const { jobType, dateRange, sortOrder } = useSelector(
+		(state: RootState) => state.searchQuery
+	);
 
-	const [jobType, setJobType] = useState<string>("");
-	const [dateRange, setDateRange] = useState<string>(""); // Initial empty value
-	const [sortOrder, setSortOrder] = useState<string>(""); // Initial empty value
-	const [companyCity, setCompanyCity] = useState<string>(""); // Add the city filter state
+	// Local state initialized only once based on Redux values.
+	const [localJobType, setLocalJobType] = useState(jobType || "all");
+	const [localDateRange, setLocalDateRange] = useState(dateRange || "all");
+	const [localSortOrder, setLocalSortOrder] = useState(sortOrder || "newest");
 
-	// Handle changes for jobType, dateRange, sortOrder, and companyCity
+	// Sync local state with Redux state only once on initial render
+	useEffect(() => {
+		// Initialize local state based on Redux state only once
+		setLocalJobType(jobType || "all");
+		setLocalDateRange(dateRange || "all");
+		setLocalSortOrder(sortOrder || "newest");
+	}, []);
+
+	// Update Redux when jobType, dateRange, or sortOrder changes
 	const handleJobTypeChange = (value: string) => {
-		setJobType(value);
-		dispatchUpdate({ jobType: value });
+		setLocalJobType(value);
+		dispatchUpdate(value, localDateRange, localSortOrder); // Update Redux state
 	};
 
 	const handleDateRangeChange = (value: string) => {
-		setDateRange(value);
-		dispatchUpdate({ dateRange: value });
+		setLocalDateRange(value);
+		dispatchUpdate(localJobType, value, localSortOrder); // Update Redux state
 	};
 
 	const handleSortOrderChange = (value: string) => {
-		setSortOrder(value);
-		dispatchUpdate({ sortOrder: value });
+		setLocalSortOrder(value);
+		dispatchUpdate(localJobType, localDateRange, value); // Update Redux state
 	};
 
-	// Dispatch updates to the Redux store
-	const dispatchUpdate = (updatedValues: { [key: string]: string }) => {
-		dispatch(
-			setSearchQuery({
-				jobTitle: "",
-				categoryId: "",
-				jobType: updatedValues.jobType === "all" ? "" : updatedValues.jobType, // Treat "all" as an empty string
-				dateRange: updatedValues.dateRange === "all" ? "" : updatedValues.dateRange,
-				sortOrder,
-				companyCity,
-				...updatedValues, // Spread the updated fields
-			})
-		);
+	// Dispatch updates to Redux
+	const dispatchUpdate = (
+		jobType: string,
+		dateRange: string,
+		sortOrder: string
+	) => {
+		dispatch(setSearchQuery({ jobType, dateRange, sortOrder }));
 	};
 
 	return (
-		<div className="max-w-screen-xl mx-auto overflow-x-auto snap-x sm:snap-none  flex justify-between ">
-			<div className="flex flex-shrink-0 w-[610px] items-center gap-6 snap-start ">
+		<div className="max-w-screen-xl mx-auto overflow-x-auto snap-x sm:snap-none flex justify-between">
+			<div className="flex flex-shrink-0 w-[610px] items-center gap-6 snap-start">
 				<div>
 					<p className="text-neutral-500">We found 500+ Jobs</p>
 				</div>
-				<div className="">
-					<Select value={jobType} onValueChange={handleJobTypeChange}>
-						<SelectTrigger className=" w-full md:w-[138px] rounded-xl ">
+				<div>
+					<Select value={localJobType} onValueChange={handleJobTypeChange}>
+						<SelectTrigger className="w-full md:w-[138px] rounded-xl">
 							<div className="text-slate-500">
-								<SelectValue placeholder="All Job Type" />
+								<SelectValue />
 							</div>
 						</SelectTrigger>
 						<SelectContent>
-							<SelectItem value="all">All Type </SelectItem>
-							<SelectItem value="fulltime">Full Time </SelectItem>
+							<SelectItem value="all">All Job Type</SelectItem>
+							<SelectItem value="fulltime">Full Time</SelectItem>
 							<SelectItem value="freelance">FreeLance</SelectItem>
 							<SelectItem value="internship">Internship</SelectItem>
 						</SelectContent>
 					</Select>
 				</div>
 				<div>
-					<Select value={dateRange} onValueChange={handleDateRangeChange}>
-						<SelectTrigger className=" w-full md:w-[150px] rounded-xl">
+					<Select value={localDateRange} onValueChange={handleDateRangeChange}>
+						<SelectTrigger className="w-full md:w-[150px] rounded-xl">
 							<div className="text-slate-500">
-								<SelectValue placeholder="Job Post Date" />
+								<SelectValue />
 							</div>
 						</SelectTrigger>
 						<SelectContent>
-						<SelectItem value="all">All Range </SelectItem>
+							<SelectItem value="all">All Range</SelectItem>
 							<SelectItem value="last7days">7 Days Ago</SelectItem>
 							<SelectItem value="thisMonth">1 Month Ago</SelectItem>
 							<SelectItem value="thisYear">This Year</SelectItem>
@@ -86,21 +92,21 @@ function SelectionJobsComponents() {
 				</div>
 			</div>
 
-			<div className="flex items-center gap-4 ">
+			<div className="flex items-center gap-4">
 				<div className="w-[80px]">
-					<span className=""> Sorted by</span>
+					<span>Sorted by</span>
 				</div>
 				<div>
-					{" "}
-					<Select value={sortOrder} onValueChange={handleSortOrderChange}>
-						<SelectTrigger className=" w-full md:w-[124px] rounded-xl">
+					<Select value={localSortOrder} onValueChange={handleSortOrderChange}>
+						<SelectTrigger className="w-full md:w-[124px] rounded-xl">
 							<div className="text-slate-500">
-								<SelectValue placeholder="Relevance" />
+								<SelectValue />
 							</div>
 						</SelectTrigger>
 						<SelectContent>
 							<SelectItem value="asc">A-Z</SelectItem>
 							<SelectItem value="desc">Z-A</SelectItem>
+							<SelectItem value="newest">Newest</SelectItem>
 						</SelectContent>
 					</Select>
 				</div>
