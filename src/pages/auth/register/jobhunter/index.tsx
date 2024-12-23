@@ -17,6 +17,7 @@ import { useRouter } from "next/router";
 import { z } from "zod";
 import { registerSchema } from "@/validators/auth.validator";
 import { FormErrorRegister } from "@/models/formError";
+import { toast } from "sonner";
 
 const JobhunterRegister: React.FC = () => {
   const dispatch = useDispatch();
@@ -56,8 +57,8 @@ const JobhunterRegister: React.FC = () => {
       if (response.status === 200) {
         localStorage.setItem("userEmail", jobhunter.email);
         dispatch(submitSuccess());
-        alert(
-          "Jobhunter registered successfully! Please check your email to verify your account."
+        toast.success(
+          "Account registered successfully! Please check your email to verify your account."
         );
         dispatch(resetForm());
         router.push("/auth/register/verify-email");

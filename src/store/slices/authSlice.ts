@@ -150,10 +150,7 @@ const authSlice = createSlice({
           state.user_role = "jobhunter";
           state.innerId = action.payload.jobHunter[0].job_hunter_id;
           state.photo = action.payload.jobHunter[0].photo;
-        } else if (
-          action.payload.company &&
-          action.payload.company.length > 0
-        ) {
+        } else if (action.payload.company && action.payload.company.length > 0) {
           state.isLoggedIn = true;
           state.name = action.payload.company[0].company_name;
           state.email = action.payload.email;
@@ -161,9 +158,10 @@ const authSlice = createSlice({
           state.innerId = action.payload.company[0].company_id;
           state.photo = action.payload.company[0].logo;
         }
-        state.pendingState.dataLoading = false;
+      
         state.isLoading = false;
       });
+      
   },
 });
 

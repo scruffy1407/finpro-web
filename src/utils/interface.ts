@@ -19,14 +19,16 @@ type ButtonType =
   | "ButtonSocial";
 
 export interface ButtonProps {
-  container?: string;
-  type: ButtonType;
-  onClick?: () => void;
-  isFullWidth?: boolean;
-  isDisabled?: boolean;
-  isSubmit?: boolean;
-  isLoading?: boolean;
-  icon?: string;
+	container?: string;
+	type: ButtonType;
+	onClick?: () => void;
+	onClickBookmark?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+	isFullWidth?: boolean;
+	isDisabled?: boolean;
+	isSubmit?: boolean;
+	isLoading?: boolean;
+	icon?: string;
+	isBookmarked?: boolean;
 }
 
 export interface HeroProps {

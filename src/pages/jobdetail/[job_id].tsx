@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import NavbarComponent from "@/components/NavbarComponent";
 import JobDetailComponent from "@/components/JobDetailComponent";
 import HeadingRelatedComponent from "@/components/HeadingRelatedComponent";
-import JobMappingComponent from "@/components/JobMappingComponent";
 import FooterComponent from "@/components/FooterComponent";
 import CompleteProfilePopup from "@/components/CompleteProfilePopup";
 import JobApplicationPopup from "@/components/JobApplicationPopup";

@@ -27,19 +27,19 @@ const RedirectPage = () => {
 
   return (
     <div className="w-full h-screen flex flex-col items-center justify-center bg-gray-100 text-center px-4">
-      <h1 className="text-xl font-bold text-blue-700 mb-4">
+      <h1 className="text-xl font-bold text-sky-950 mb-4">
         {roleMessage && (
           <>
-            <p className="text-xl text-blue-700 mb-2">
+            <p className="text-xl text-sky-950 mb-2">
               {roleMessage.split(".")[0]}
             </p>
-            <p className="text-xl text-blue-500">
+            <p className="text-xl text-sky-950">
               {roleMessage.split(".")[1]}
             </p>
           </>
         )}
       </h1>
-      <p className="text-blue-500 font-bold text-lg mt-4">Redirecting...</p>
+      <p className="text-sky-950 font-bold text-lg mt-4">Redirecting...</p>
     </div>
   );
 };
