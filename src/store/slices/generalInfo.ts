@@ -10,8 +10,6 @@ import {
   ProvinceItem,
 } from "@/models/auth.model";
 import { SingleValue } from "react-select";
-import { updateName } from "@/store/slices/authSlice";
-import { AppDispatch } from "@/store";
 
 interface pendingState {
   dataLoading: boolean;

@@ -43,23 +43,23 @@ function AuthorizeUser(
     handleAuthrorize();
   }, [router]);
 
-  useEffect(() => {
-    if (!initialRender.current) {
-      console.log("exec");
-      if (!isLoggedIn) {
-        router.push("/");
-        return;
-      }
-      if (pagePermission) {
-        if (user_role !== pagePermission) {
-          router.push("/");
-          return;
-        }
-      }
-      return;
-    }
-    initialRender.current = false;
-  }, [isLoggedIn]);
+  // useEffect(() => {
+  //   if (!initialRender.current) {
+  //     console.log("exec");
+  //     if (!isLoggedIn) {
+  //       router.push("/");
+  //       return;
+  //     }
+  //     if (pagePermission) {
+  //       if (user_role !== pagePermission) {
+  //         router.push("/");
+  //         return;
+  //       }
+  //     }
+  //     return;
+  //   }
+  //   initialRender.current = false;
+  // }, [isLoggedIn]);
 }
 
 export default AuthorizeUser;

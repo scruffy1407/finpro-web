@@ -1,5 +1,5 @@
 import api from "@/pages/api/api";
-import { reviewResponse } from "@/models/company.model";
+import { ApplyJob, reviewResponse } from "@/models/company.model";
 import { toast } from "sonner";
 
 export class CompanyUtils {
@@ -50,5 +50,25 @@ export class CompanyUtils {
       return false;
     }
     return true;
+  }
+
+  async applyJob(token: string, data: FormData) {
+    try {
+      const response = await api.post("/applyjob/apply", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(response);
+      if (response.status === 201) {
+        return response.status;
+      } else {
+        console.log("execute");
+        return response.data.message;
+      }
+    } catch (e) {
+      console.log(e.response);
+      return e.response;
+    }
   }
 }

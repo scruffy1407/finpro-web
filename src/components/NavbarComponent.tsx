@@ -36,14 +36,14 @@ function NavbarComponent({ loginJobHunter, loginCompanies }: NavProps) {
       textColor: "text-neutral-900",
       profileRoute: "/user",
       navbarItems: [
-        { label: "Find Jobs", href: "" },
+        { label: "Find Jobs", href: "/jobs" },
         { label: "Skill Assessments", href: "" },
         { label: "Explore Companies", href: "" },
       ],
       dropdownItems: [
         { label: "My Profile", href: "/profile/user" },
         { label: "Log Out", action: () => handleLogout() },
-        { label: "Find Jobs", href: "" },
+        { label: "Find Jobs", href: "/jobs" },
         { label: "Skill Assessments", href: "" },
         { label: "Explore Companies", href: "" },
       ],
@@ -84,14 +84,8 @@ function NavbarComponent({ loginJobHunter, loginCompanies }: NavProps) {
     },
   };
 
-  const {
-    logo,
-    bgColor,
-    textColor,
-    dropdownItems,
-    droplineIcon,
-    burgerIcon,
-  } = roleConfig[userRole || "default"];
+  const { logo, bgColor, textColor, dropdownItems, droplineIcon, burgerIcon } =
+    roleConfig[userRole || "default"];
 
   const handleLogout = () => {
     localStorage.removeItem("accessToken");

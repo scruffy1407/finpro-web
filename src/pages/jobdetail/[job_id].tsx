@@ -85,41 +85,9 @@ function JobDetail() {
     }
   };
 
-  // //Dummy Testing!!
-  // const handleApplyJob = () => {
-  //   // Always show profile completion popup first as part of the dummy flow
-  //   setShowPopup(true);
-  // };
-
-  // const handleClosePopup = () => {
-  //   setShowPopup(false); // Close the complete profile popup
-  // };
-
-  // const handleSubmitProfile = (updatedProfile: typeof profile) => {
-  //   setProfile(updatedProfile); // Update the profile
-  //   setShowPopup(false); // Close the profile popup after submission
-  // };
-
-  // //Dummy Testing!!
-  // const handleSubmitProfile = (updatedProfile: typeof profile) => {
-  //   setProfile(updatedProfile); // Simulate profile update
-  //   setShowPopup(false); // Close the profile popup
-  //   setShowApplyPopup(true); // Open the job application popup immediately
-  // };
-  //
-  // const handleSubmitApplication = (application: {
-  //   expectedSalary: string | number;
-  //   cvFile: File | null;
-  // }) => {
-  //   console.log("Job application submitted:", application);
-  //   setShowApplyPopup(false); // Close the job application popup after submission
-  // };
-
   async function handleGetGeneralInfo() {
     const token = Cookies.get("accessToken");
     await dispatch(getGeneralInfo(token as string));
-    // await dispatch(handleGetProvince());
-    // await dispatch(handleGetcity(provinceId as number));
   }
 
   useEffect(() => {
@@ -157,7 +125,7 @@ function JobDetail() {
               {jobData?.job_title}
             </span>
           </p>
-          <FormJobApplication />
+          <FormJobApplication jobId={Number(job_id)} />
         </>
       </ModalContainer>
 
@@ -181,9 +149,9 @@ function JobDetail() {
               Login to apply to this job
             </h2>
             <p className={`text-neutral-600 text-sm`}>
-              Don't miss out on your next big opportunity. Login now to explore
+              {` Don't miss out on your next big opportunity. Login now to explore
               10K+ jobs from 200+ top companies. Your dream career is just a
-              click away.
+              click away.`}
             </p>
           </div>
           <div className={"flex gap-4"}>
@@ -207,7 +175,13 @@ function JobDetail() {
 
       <div className="overflow-hidden mt-5">
         <div className="mx-4 w-auto">
-          <NavbarComponent />
+          <NavbarComponent
+            findJobs="Find Jobs"
+            skillAssessment="Skill Assessment"
+            exploreCompanies="Explore Companies"
+            loginJobHunter="Login"
+            loginCompanies="Login as Recruiter"
+          />
         </div>
         <div className="mx-4 md:w-auto">
           {/* DUMMY CICK ONAPPLYJOB TO SHOW THE FE!! */}

@@ -41,3 +41,10 @@ export interface companyDetailResponse {
   listJob: JobPost[];
   listReview: reviewResponse[];
 }
+
+export interface ApplyJob {
+  jobHunterId: number;
+  resume: File | null;
+  expected_salary: string | number;
+  jobId: number;
+}
