@@ -12,6 +12,7 @@ import {
   getGeneralInfo,
   handleGetcity,
   handleGetProvince,
+  handleGetUseLocation,
 } from "@/store/slices/generalInfo";
 import Cookies from "js-cookie";
 import axios from "axios";
@@ -41,54 +42,12 @@ function JobDetail() {
     dispatch(closeModalAction());
   };
 
-  // const [showPopup, setShowPopup] = useState(false);
-  // // State for Apply Dummy Job Application Apply
-  // const [showApplyPopup, setShowApplyPopup] = useState(false);
-
   // Just for debugging purposes, log job_id
-  console.log("Job ID from Router:", job_id);
-  //
-  // if (!job_id) {
-  //   return <div>Loading...</div>; // Wait until job_id is available
-  // }
-  //
-  // const [profile, setProfile] = useState<{
-  //   name: string;
-  //   gender: string;
-  //   dob: Date | null;
-  //   location_city: string;
-  //   location_province: string;
-  // }>({
-  //   name: "",
-  //   gender: "",
-  //   dob: null,
-  //   location_city: "",
-  //   location_province: "",
-  // });
-
-  // const handleApplyJob = () => {
-  //   if (
-  //     !profile.name ||
-  //     !profile.gender ||
-  //     !profile.dob ||
-  //     !profile.location_city ||
-  //     !profile.location_province
-  //   ) {
-  //     // If profile is incomplete, show the complete profile popup
-  //     setShowPopup(true);
-  //   } else {
-  //     // Otherwise, show the apply job popup
-  //     setShowApplyPopup(true);
-  //   }
-  // };
-
   const fetchJobDetail = async () => {
     try {
       const response = await axios.get(
         `http://localhost:8000/api/company/jobDetails/${job_id}`,
       );
-      console.log(response);
-      console.log("Fetched job data:", response.data); // Log the response to see the data
 
       if (response.status === 200) {
         setJobData(response.data.jobPostDetail); // Set Detail Job Information
@@ -109,16 +68,15 @@ function JobDetail() {
   }
 
   const handleApplyJob = async () => {
-    console.log("RESULT", validApply);
     if (isLoggedIn) {
       if (validApply) {
         dispatch(openModalAction("applyJobModal"));
       } else {
         console.log(listProvince, listCity);
         if (listProvince.length === 0) {
-          console.log("EXECUTE INNER");
-          await dispatch(handleGetProvince());
+          await dispatch(handleGetUseLocation(cityId as number));
           await dispatch(handleGetcity(cityId as number));
+          await dispatch(handleGetProvince());
         }
         dispatch(openModalAction("completeInformationModal"));
       }
@@ -160,14 +118,15 @@ function JobDetail() {
   async function handleGetGeneralInfo() {
     const token = Cookies.get("accessToken");
     await dispatch(getGeneralInfo(token as string));
-    // await dispatch(handleGetUseLocation(cityId as number));
     // await dispatch(handleGetProvince());
     // await dispatch(handleGetcity(provinceId as number));
   }
 
   useEffect(() => {
+    console.log("IS RENDERRR", pendingState.isRender);
     if (isLoggedIn) {
       if (!pendingState.isRender) {
+        console.log("exec");
         handleGetGeneralInfo();
       }
     }
@@ -186,7 +145,20 @@ function JobDetail() {
         isOpen={currentModalId === "applyJobModal"}
         onClose={handleCloseModal}
       >
-        <FormJobApplication />
+        <>
+          <p className="break-words text-neutral-600">
+            You will apply to{" "}
+            <span className="font-semibold text-neutral-950">
+              {jobData?.company?.company_name}
+            </span>{" "}
+            as
+            <span className="font-semibold text-neutral-950">
+              {" "}
+              {jobData?.job_title}
+            </span>
+          </p>
+          <FormJobApplication />
+        </>
       </ModalContainer>
 
       <ModalContainer
@@ -242,7 +214,6 @@ function JobDetail() {
           <JobDetailComponent
             job_id={String(job_id)} // Pass the job_id as a number to your component
             onApplyJob={handleApplyJob}
-            validateDate={pendingState.dataLoading}
             jobData={jobData}
           />
         </div>
@@ -261,16 +232,6 @@ function JobDetail() {
         <div className="mx-4 mt-20 mb-5">
           <FooterComponent />
         </div>
-
-        {/* CompleteProfilePopup Integration */}
-        {/* DUMMY TESTING WHEN CLICKING ON PROFILE IT MOVE TO APPLY JOB!!! */}
-        {/*{showPopup && (*/}
-        {/*  <CompleteProfilePopup*/}
-        {/*    currentProfile={profile}*/}
-        {/*    onSubmit={handleSubmitProfile} // Leads to job application popup*/}
-        {/*    onClose={() => setShowPopup(false)}*/}
-        {/*  />*/}
-        {/*)}*/}
       </div>
     </>
   );

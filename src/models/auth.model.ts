@@ -33,7 +33,7 @@ export interface EducationForm {
   jobHunter: number;
 }
 
-export interface JobHunterGeneralInfo {
+export interface JobHunterGeneralInfoData {
   jobHunterId: string | number;
   name: string;
   dob: string | null | Date; // date only when to hit an api

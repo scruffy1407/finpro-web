@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store";
+import LoadingLoader from "@/components/LoadingLoader";
 
 interface JobDetailProps {
   validateDate: boolean;
@@ -23,12 +24,12 @@ interface JobDetailProps {
 export default function JobDetailComponent({
   jobData,
   onApplyJob,
-  validateDate,
 }: JobDetailProps) {
   const dispatch = useDispatch<AppDispatch>();
   // const [jobData, setJobData] = useState<any | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
+  const { pendingState } = useSelector((state: RootState) => state.generalInfo);
 
   const formatSalary = (salary: number) => {
     return `${(salary / 1000000).toFixed(1)} jt`; // Format to 1 decimal place
@@ -114,12 +115,15 @@ export default function JobDetailComponent({
               <ButtonComponent type="ButtonBookmark" container="Bookmarks" />
             </div>
             <Button
+              disabled={pendingState.actionDisableLocation}
               className={"w-full md:w-fit"}
               onClick={onApplyJob}
               variant={"primary"}
               size={"default"}
             >
-              Apply Now
+              {pendingState.actionLoadingLocation
+                ? LoadingLoader()
+                : "Apply Now"}
             </Button>
           </div>
           <p className="w-full text-xs text-center">

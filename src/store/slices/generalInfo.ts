@@ -3,14 +3,23 @@ import { ProfileHandler } from "@/utils/profile.utils";
 import { toast } from "sonner";
 import { LocationHandler } from "@/utils/location.utils";
 import { LocationOption } from "@/utils/interface";
-import { CityItem, locationList, ProvinceItem } from "@/models/auth.model";
+import {
+  CityItem,
+  JobHunterGeneralInfoData,
+  locationList,
+  ProvinceItem,
+} from "@/models/auth.model";
 import { SingleValue } from "react-select";
+import { updateName } from "@/store/slices/authSlice";
+import { AppDispatch } from "@/store";
 
 interface pendingState {
   dataLoading: boolean;
   isRender: boolean;
   actionLoading: boolean;
   actionDisable: boolean;
+  actionLoadingLocation: boolean;
+  actionDisableLocation: boolean;
 }
 interface UserLocation {
   cityId: number | undefined;
@@ -49,6 +58,8 @@ const initialState: JobHunterGeneralInfo = {
   provinceId: undefined,
   summary: "",
   pendingState: {
+    actionLoadingLocation: false,
+    actionDisableLocation: false,
     actionLoading: false,
     actionDisable: false,
     dataLoading: false,
@@ -67,11 +78,30 @@ function checkField(data: JobHunterGeneralInfo) {
   return (
     data.name === "" ||
     data.dob === null ||
-    data.dob === undefined ||
     data.expectedSalary === null ||
-    data.expectedSalary === undefined ||
+    data.expectedSalary === 0 ||
     data.cityId === undefined ||
     data.provinceId === undefined ||
+    data.gender === undefined
+  );
+}
+
+function applyValidity(data: JobHunterGeneralInfo) {
+  console.log(
+    "DATA VALIDASI",
+    data.name,
+    data.dob,
+    data.expectedSalary,
+    data.cityId,
+    data.gender,
+  );
+
+  return (
+    data.name === "" ||
+    data.dob === null ||
+    data.expectedSalary === null ||
+    data.expectedSalary === 0 ||
+    data.cityId === undefined ||
     data.gender === undefined
   );
 }
@@ -106,11 +136,13 @@ const handleInputChange = (state: any, action: any, targetObject: any) => {
 export const handleGetUseLocation = createAsyncThunk(
   "user/get-user-location",
   async (cityId: number) => {
+    console.log("CITY ID INNER", cityId);
     try {
       const response = await locationHandler.getUserLocation(cityId);
-      console.log(response.data);
+      console.log("ORIGINAL RESPONSEE", response);
       return response.data;
     } catch (e) {
+      console.log(e);
       return {};
     }
   },
@@ -154,7 +186,7 @@ export const handleGetcity = createAsyncThunk(
 
 export const updateUserGeneralInfo = createAsyncThunk(
   "user/updateGeneralInfo",
-  async (data: { token: string; generalInfo: JobHunterGeneralInfo }) => {
+  async (data: { token: string; generalInfo: JobHunterGeneralInfoData }) => {
     try {
       const response = await profileHandler.updateInfoJobhunter(
         data.token as string,
@@ -201,6 +233,7 @@ const generalInfoSlice = createSlice({
       state.provinceId = Number(action.payload?.value);
       state.locationCity = null;
       state.cityId = undefined;
+      state.pendingState.actionDisable = checkField(state);
     },
     handleCityChange: (
       state,
@@ -208,6 +241,7 @@ const generalInfoSlice = createSlice({
     ) => {
       state.locationCity = action.payload?.label as string;
       state.cityId = action.payload?.value as number;
+      state.pendingState.actionDisable = checkField(state);
     },
     validateField: (state) => {
       state.validApply = checkField(state);
@@ -220,14 +254,18 @@ const generalInfoSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(handleGetUseLocation.pending, (state) => {
+        state.pendingState.actionDisableLocation = true;
+        state.pendingState.actionLoadingLocation = true;
         state.pendingState.dataLoading = true;
       })
       .addCase(handleGetUseLocation.fulfilled, (state, action) => {
-        console.log("ACTION LOCATION !!!");
+        console.log("ACTION LOCATION !!!", action);
+        state.pendingState.actionDisableLocation = false;
+        state.pendingState.actionLoadingLocation = false;
         state.userLocation.cityId = action.payload.cityId;
-        state.userLocation.provinceId = action.payload.province_id;
+        state.userLocation.provinceId = action.payload.provinceId;
         state.cityId = action.payload.city_id;
-        state.provinceId = action.payload.province_id;
+        state.provinceId = action.payload.provinceId;
         state.pendingState.dataLoading = false;
       })
       .addCase(handleGetUseLocation.rejected, (state) => {
@@ -250,6 +288,7 @@ const generalInfoSlice = createSlice({
       })
       .addCase(getGeneralInfo.pending, (state) => {
         state.pendingState.dataLoading = true;
+        state.pendingState.isRender = false;
       })
       .addCase(getGeneralInfo.fulfilled, (state, action) => {
         console.log("ACTIONNN", action);
@@ -259,10 +298,11 @@ const generalInfoSlice = createSlice({
         state.expectedSalary = action.payload.expectedSalary;
         state.summary = action.payload.summary;
         state.gender = action.payload.gender;
-        state.cityId = state.userLocation.cityId;
+        state.cityId = action.payload.cityId;
         state.provinceId = state.userLocation.provinceId;
         state.dob = new Date(action.payload.dob).toISOString().split("T")[0];
-        state.validApply = !checkField(state);
+        state.pendingState.isRender = true;
+        state.validApply = !applyValidity(state);
       })
       .addCase(updateUserGeneralInfo.pending, (state) => {
         state.pendingState.actionLoading = true;
@@ -270,6 +310,15 @@ const generalInfoSlice = createSlice({
       })
       .addCase(updateUserGeneralInfo.fulfilled, (state, action) => {
         console.log(action);
+        toast.success("Successfully updated user information");
+        state.pendingState.actionLoading = false;
+        state.pendingState.actionDisable = false;
+      })
+      .addCase(updateUserGeneralInfo.rejected, (state, action) => {
+        console.log(action);
+        state.pendingState.actionLoading = false;
+        state.pendingState.actionDisable = false;
+        toast.error("Sorry, failed to update information. please try again");
       });
   },
 });

@@ -12,12 +12,17 @@ import {
   handleProvinceChange,
   handleCityChange,
   handleUpdateInputChange,
+  updateUserGeneralInfo,
 } from "@/store/slices/generalInfo";
-import { locationList } from "@/models/auth.model";
-import { RadioGroupProps } from "@radix-ui/react-radio-group";
+import { JobHunterGeneralInfoData, locationList } from "@/models/auth.model";
+import { toast } from "sonner";
+import Cookies from "js-cookie";
+import { updateName } from "@/store/slices/authSlice";
+import { closeModalAction, openModalAction } from "@/store/slices/ModalSlice";
 
 function GeneralInfoForm() {
   const dispatch = useDispatch<AppDispatch>();
+  const { innerId } = useSelector((state: RootState) => state.auth);
   const {
     name,
     expectedSalary,
@@ -28,6 +33,9 @@ function GeneralInfoForm() {
     provinceId,
     cityId,
     pendingState,
+    summary,
+    locationCity,
+    locationProvince,
   } = useSelector((state: RootState) => state.generalInfo);
 
   const handleFormProvinceChange = (
@@ -51,6 +59,50 @@ function GeneralInfoForm() {
     dispatch(handleUpdateInputChange({ name, value }));
   }
 
+  async function handleSubmitData(e: any) {
+    e.preventDefault();
+    const token = Cookies.get("accessToken");
+    if (
+      name === "" ||
+      dob === null ||
+      dob === undefined ||
+      dob === "" ||
+      expectedSalary === null ||
+      expectedSalary === undefined ||
+      expectedSalary === 0 ||
+      cityId === undefined ||
+      provinceId === undefined ||
+      gender === undefined
+    ) {
+      toast.error("Please fill all out all the field to continue apply");
+      return;
+    }
+    const updateData: JobHunterGeneralInfoData = {
+      dob,
+      cityId,
+      expectedSalary,
+      gender,
+      name,
+      jobHunterId: innerId as number,
+      provinceId,
+      summary,
+      locationProvince,
+      locationCity,
+    };
+    await dispatch(
+      updateUserGeneralInfo({
+        token: token as string,
+        generalInfo: updateData,
+      }),
+    )
+      .unwrap()
+      .finally(() => {
+        dispatch(updateName(name));
+        dispatch(closeModalAction());
+        dispatch(openModalAction("applyJobModal"));
+      });
+  }
+
   useEffect(() => {
     if (provinceId) {
       dispatch(handleGetcity(provinceId));
@@ -58,10 +110,11 @@ function GeneralInfoForm() {
   }, [dispatch, provinceId]);
 
   console.log("INIT DOD", dob);
+  console.log("DATAA", name, expectedSalary, gender, dob, provinceId, cityId);
 
   return (
     <>
-      <form className="flex flex-col gap-5">
+      <form onSubmit={handleSubmitData} className="flex flex-col gap-5">
         <div>
           {/*FULL NAME*/}
           <Label

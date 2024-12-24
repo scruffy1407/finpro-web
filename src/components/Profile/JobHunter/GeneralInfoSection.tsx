@@ -6,7 +6,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { LocationOption } from "@/utils/interface";
 import {
   CityItem,
-  JobHunterGeneralInfo,
+  JobHunterGeneralInfoData,
   locationList,
   ProvinceItem,
 } from "@/models/auth.model";
@@ -35,18 +35,19 @@ function GeneralInfoSection() {
   const [isLoading, setLoading] = useState(false);
   const accessToken = Cookies.get("accessToken");
 
-  const [formGeneralInfo, setFormGeneralInfo] = useState<JobHunterGeneralInfo>({
-    name: "",
-    dob: "",
-    expectedSalary: "",
-    gender: undefined,
-    locationCity: "",
-    locationProvince: "",
-    jobHunterId: "",
-    summary: "",
-    cityId: undefined,
-    provinceId: undefined,
-  });
+  const [formGeneralInfo, setFormGeneralInfo] =
+    useState<JobHunterGeneralInfoData>({
+      name: "",
+      dob: "",
+      expectedSalary: "",
+      gender: undefined,
+      locationCity: "",
+      locationProvince: "",
+      jobHunterId: "",
+      summary: "",
+      cityId: undefined,
+      provinceId: undefined,
+    });
 
   async function handleGetGeneralInfo() {
     try {
@@ -440,7 +441,7 @@ function GeneralInfoSection() {
               size={"default"}
               className={"w-fit"}
             >
-              {isLoading ? LoadingLoader() : "Save Change"}
+              {isLoading ? LoadingLoadere() : "Save Change"}
             </Button>
           </form>
         </section>
