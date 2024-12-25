@@ -70,8 +70,6 @@ export const loginUser = createAsyncThunk<
     const { access_token, refresh_token, user } = response.data.data;
     const { user_role, name, photo } = user || {};
 
-    console.log(user);
-
     Cookies.set("accessToken", access_token, { expires: 1 / 24 });
     Cookies.set("refreshToken", refresh_token, { expires: 3 });
 
@@ -125,7 +123,6 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
-        console.log(action, "INI ACTION!!");
         state.isLoading = false;
         state.user_role = action.payload.user_role;
         state.accessToken = action.payload.access_token;
@@ -142,7 +139,6 @@ const authSlice = createSlice({
         state.pendingState.dataLoading = true;
       })
       .addCase(validateUserToken.fulfilled, (state, action) => {
-        console.log("ACTION PAYLOAD", action);
         if (action.payload.jobHunter && action.payload.jobHunter.length > 0) {
           state.isLoggedIn = true;
           state.name = action.payload.jobHunter[0].name;
@@ -150,7 +146,10 @@ const authSlice = createSlice({
           state.user_role = "jobhunter";
           state.innerId = action.payload.jobHunter[0].job_hunter_id;
           state.photo = action.payload.jobHunter[0].photo;
-        } else if (action.payload.company && action.payload.company.length > 0) {
+        } else if (
+          action.payload.company &&
+          action.payload.company.length > 0
+        ) {
           state.isLoggedIn = true;
           state.name = action.payload.company[0].company_name;
           state.email = action.payload.email;
@@ -161,7 +160,6 @@ const authSlice = createSlice({
         state.pendingState.dataLoading = false;
         state.isLoading = false;
       });
-      
   },
 });
 

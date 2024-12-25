@@ -10,6 +10,7 @@ import LoadingLoader from "@/components/LoadingLoader";
 
 interface JobFormProps {
   jobId: number;
+  waitingSubmissionStatus: boolean;
 }
 
 const FormJobApplication = ({ jobId }: JobFormProps) => {
@@ -62,21 +63,17 @@ const FormJobApplication = ({ jobId }: JobFormProps) => {
         setIsLoading(false);
         setIsDisable(false);
       } else {
-        console.log(response);
         toast.error(response.data.message);
         setIsLoading(false);
         setIsDisable(false);
       }
     } catch (e) {
-      console.log("FORM", e);
       toast.error(
         "Failed to submit your application, please try again or refresh your browser",
       );
       setIsLoading(false);
       setIsDisable(false);
     }
-
-    console.log(applyJobForm);
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -85,7 +82,6 @@ const FormJobApplication = ({ jobId }: JobFormProps) => {
 
     if (file) {
       if (file.size < maxSizeInBytes) {
-        console.log(file);
         setApplyJobForm({
           ...applyJobForm,
           resume: file,

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import NavbarComponent from "@/components/NavbarComponent";
 import JobDetailComponent from "@/components/JobDetailComponent";
 import HeadingRelatedComponent from "@/components/HeadingRelatedComponent";
@@ -14,22 +14,28 @@ import {
   handleGetProvince,
   handleGetUseLocation,
 } from "@/store/slices/generalInfo";
-import Cookies from "js-cookie";
 import axios from "axios";
 import GeneralInfoForm from "@/components/Form/generalInfoForm";
 import ModalContainer from "@/components/Modal/ModalContainer";
 import FormJobApplication from "@/components/Form/FormApplyJob";
 import { Button } from "@/components/ui/button";
 import { AuthHandler } from "@/utils/auth.utils";
+import Cookies from "js-cookie";
+import { JobApplication } from "@/models/applicant.model";
 
 function JobDetail() {
   const authHandler = new AuthHandler();
   authHandler.authorizeUser();
   const router = useRouter();
-  const { job_id } = router.query; // Extract job_id from URL
-  const callbackPath = "/auth/login/jobhunter?callback=ini-bosss";
+  const { job_id } = router.query;
+  const { innerId } = useSelector((state: RootState) => state.auth);
+  const [applicantData, setApplicantData] = useState<null | JobApplication>(
+    null,
+  );
   const [jobData, setJobData] = useState<any | null>(null);
   const [relatedPost, setRelatedPost] = useState<any[] | null>(null);
+  const [dataLoading, setDataLoading] = useState<boolean>(true);
+  const [validateLoading, setValiateLoading] = useState<boolean>(false);
   const dispatch = useDispatch<AppDispatch>();
   const { currentModalId } = useSelector(
     (state: RootState) => state.modalController,
@@ -37,12 +43,12 @@ function JobDetail() {
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const { validApply, pendingState, listProvince, listCity, cityId } =
     useSelector((state: RootState) => state.generalInfo);
+  const callbackPath = "/auth/login/jobhunter?callback=ini-bosss";
 
   const handleCloseModal = () => {
     dispatch(closeModalAction());
   };
 
-  // Just for debugging purposes, log job_id
   const fetchJobDetail = async () => {
     try {
       const response = await axios.get(
@@ -58,7 +64,33 @@ function JobDetail() {
       }
     } catch (err) {
       console.error("Error fetching job details:", err);
-    } finally {
+    }
+  };
+
+  const validateUserJob = async () => {
+    const token = Cookies.get("accessToken");
+    try {
+      const response = await axios.get(
+        `http://localhost:8000/api/user/job-hunter/validate/${job_id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      if (response.status === 200 && response.data.code === "JOIN") {
+        setApplicantData({
+          jobHunterId: response.data.data.jobHunterId,
+          resume: response.data.data.resume,
+          createdAt: response.data.data.created_at,
+          applicationStatus: response.data.data.application_status,
+          applicationId: response.data.data.application_id,
+        });
+      } else if (response.status === 200 && response.data.code === "NOT_JOIN") {
+        setApplicantData(null);
+      }
+    } catch (err) {
+      console.error("Error fetching job details:", err);
     }
   };
 
@@ -72,7 +104,6 @@ function JobDetail() {
       if (validApply) {
         dispatch(openModalAction("applyJobModal"));
       } else {
-        console.log(listProvince, listCity);
         if (listProvince.length === 0) {
           await dispatch(handleGetUseLocation(cityId as number));
           await dispatch(handleGetcity(cityId as number));
@@ -91,17 +122,19 @@ function JobDetail() {
   }
 
   useEffect(() => {
-    console.log("IS RENDERRR", pendingState.isRender);
     if (isLoggedIn) {
+      setValiateLoading(true);
       if (!pendingState.isRender) {
-        console.log("exec");
         handleGetGeneralInfo();
       }
+      validateUserJob();
+      setValiateLoading(false);
     }
-  }, [isLoggedIn]);
+  }, [job_id]);
 
   useEffect(() => {
     if (job_id) {
+      setDataLoading(true);
       fetchJobDetail();
     }
   }, [job_id]);
@@ -125,7 +158,39 @@ function JobDetail() {
               {jobData?.job_title}
             </span>
           </p>
-          <FormJobApplication jobId={Number(job_id)} />
+          <FormJobApplication
+            waitingSubmissionStatus={false} // To define the endpoint after user submit when the status is waitingSubmission or stil not yet join
+            jobId={Number(job_id)}
+          />
+        </>
+      </ModalContainer>
+
+      <ModalContainer
+        title={" Congratulations! You have successfully passed the test."}
+        isOpen={currentModalId === "applyJobModalWaitingSubmission"}
+        onClose={handleCloseModal}
+      >
+        <>
+          <p className="break-words text-neutral-600">
+            Before proceeding with your application, please complete the
+            following information.
+          </p>
+          <p className={"text-sm p-2 px-4 bg-neutral-100 rounded-2xl"}>
+            {" "}
+            You will apply to{" "}
+            <span className="font-semibold text-neutral-950">
+              {jobData?.company?.company_name}
+            </span>{" "}
+            as
+            <span className="font-semibold text-neutral-950">
+              {" "}
+              {jobData?.job_title}
+            </span>
+          </p>
+          <FormJobApplication
+            waitingSubmissionStatus={false} // To define the endpoint after user submit when the status is waitingSubmission or stil not yet join
+            jobId={Number(job_id)}
+          />
         </>
       </ModalContainer>
 
@@ -186,9 +251,10 @@ function JobDetail() {
         <div className="mx-4 md:w-auto">
           {/* DUMMY CICK ONAPPLYJOB TO SHOW THE FE!! */}
           <JobDetailComponent
-            job_id={String(job_id)} // Pass the job_id as a number to your component
             onApplyJob={handleApplyJob}
             jobData={jobData}
+            alreadyJoined={applicantData}
+            validateUserLoading={validateLoading}
           />
         </div>
 

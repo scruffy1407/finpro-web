@@ -116,17 +116,14 @@ export class AuthHandler {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log("Response from API:", response.data);
-      console.log("result", response);
+
       // Set the data from the respose to userState --> later will also replace this with actual response
       if (response.status === 200) {
-        console.log("exec");
         return response.data; // If the token we pass its true, it will validate the data
       } else {
         return null;
       }
     } catch (error) {
-      console.log(error);
       return error;
     }
   }
@@ -195,14 +192,12 @@ export class AuthHandler {
         },
       );
       if (response.status === 200) {
-        console.log(response.status);
         return response.status;
       } else {
         return response.status;
       }
     } catch (e) {
       return e;
-      console.log(e);
     }
   }
 
@@ -225,13 +220,11 @@ export class AuthHandler {
         return response.status;
       }
     } catch (e) {
-      console.log(e);
       return e;
     }
   }
 
   async sendResetEmail(email: string) {
-    console.log(email);
     try {
       const response: AxiosResponse = await api.put("/auth/request-reset", {
         email: email,
