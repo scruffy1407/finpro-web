@@ -7,14 +7,18 @@ import { setSearchQuery } from "@/store/slices/searchQuerySlice";
 function HeroJobListPageComponent() {
 	const dispatch = useDispatch();
 
-	const onSearch = (searchParams: { jobTitle: string; categoryId: string; companyCity : string}) => {
-		    // Adding default values for missing fields
-			const searchQuery = {
-				...searchParams,
-				jobType: "",     // Default value or pass value from your inputs
-				dateRange: "",   // Default value or pass value from your inputs
-				sortOrder: "",   // Default value or pass value from your inputs
-			  };
+	const onSearch = (searchParams: {
+		jobTitle?: string;
+		categoryId?: string;
+		companyCity?: string;
+	}) => {
+		// Adding default values for missing fields
+		const searchQuery = {
+			...searchParams,
+			jobType: "", // Default value or pass value from your inputs
+			dateRange: "", // Default value or pass value from your inputs
+			sortOrder: "", // Default value or pass value from your inputs
+		};
 		dispatch(setSearchQuery(searchQuery)); // Dispatch action to update search query in the store
 		console.log("Search query:", searchQuery);
 	};

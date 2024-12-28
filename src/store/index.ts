@@ -10,6 +10,7 @@ import modalControllerReducer from "@/store/slices/ModalSlice";
 import workExperienceReducer from "@/store/slices/WorkingExpSlice";
 import educationReducer from "@/store/slices/EducationSlice";
 import bookmarksReducer from "@/store/slices/bookmarkSlice"
+import searchQueryJobDashReducer from "@/store/slices/searchQueryJobDashSlice"
 
 const store = configureStore({
   reducer: {
@@ -24,6 +25,7 @@ const store = configureStore({
     workExperience: workExperienceReducer,
     education: educationReducer,
     bookmarks: bookmarksReducer,
+    searchQueryJobdash : searchQueryJobDashReducer,
   },
 });
 

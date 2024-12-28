@@ -1,3 +1,18 @@
+export interface JobPostDash {
+	job_title: string;
+	created_at: string;
+	updated_at: string;
+	salary_min: number;
+	salary_max: number;
+	salary_show: boolean;
+	job_id: string;
+	companyId: number;
+	expired_date: string;
+	number_applicants: number;
+	selection_test_active: boolean;
+	status: boolean;
+}
+
 export interface NavProps {
   findJobs: string;
   skillAssessment: string;

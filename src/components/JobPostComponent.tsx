@@ -39,7 +39,7 @@ function JobPostComponent({
   return (
     <Link
       href={`/jobdetail/${job_id}`}
-      className="bg-white w-full h-fit bg-white rounded-xl hover:shadow-lg"
+      className="bg-white w-full h-fit rounded-xl hover:shadow-lg"
       prefetch={false}
     >
       <div className="p-4 flex flex-col gap-6">
