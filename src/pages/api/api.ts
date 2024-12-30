@@ -108,7 +108,11 @@ export async function getJobPostDash({
 
 	if (sortOrder) {
 		queryString += `&sortOrder=${sortOrder}`;
-	}
+	} 
+	if (!sortOrder) {
+		queryString += `&sortOrder=desfc`;
+	} 
+
 
 	// Add the Authorization header
 	const config = {
