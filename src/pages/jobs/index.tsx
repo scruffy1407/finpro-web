@@ -29,7 +29,7 @@ const JobPostPage: React.FC = () => {
 		(state: RootState) => state.pagination
 	);
 	const { jobTitle, categoryId, jobType, dateRange, sortOrder, companyCity } =
-		useSelector((state: RootState) => state.searchQuery); // Access searchQuery from the store
+		useSelector((state: RootState) => state.searchQuery); 
 
 	console.log(
 		"COBA LIAT INIIIIII ",

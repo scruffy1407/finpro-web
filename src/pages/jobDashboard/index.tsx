@@ -30,9 +30,6 @@ function JobDashBoard() {
 						<JobDashLeft />
 					</div>
 					<div className="w-full ml-6">
-						{/* <div>
-							<SearchBarJobDash onSearch={onSearch} />
-						</div> */}
 						<div className="mt-4" >
 							<JobPostedDash />
 						</div>

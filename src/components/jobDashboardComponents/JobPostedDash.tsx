@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { formatDistanceToNow, format } from "date-fns"; // Import format for date formatting
+import { formatDistanceToNow, format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/router";
 import ConfirmDelete from "@/components/Modal/ConfirmDelete";
@@ -14,15 +14,17 @@ import { JobPostDash } from "@/utils/interface";
 import { getJobPostDash } from "@/pages/api/api";
 import SearchBarJobDash from "./searchBarJobDash";
 import { deleteJobPostDash } from "@/pages/api/api";
+import JobEditForm from "./jobEditForm";
+import CreateJobForm from "./jobCreateForm";
+
 import axios, { AxiosError } from "axios";
 
 interface BackendError {
 	error: string;
 }
 interface DeleteJobPostResponse {
-	message: string; // The success message when a job post is deleted
-  }
-  
+	message: string; 
+}
 
 function JobPostedDash() {
 	const router = useRouter();
@@ -31,34 +33,39 @@ function JobPostedDash() {
 	const [jobPosts, setJobPosts] = useState<JobPostDash[]>([]);
 	const [offset, setOffset] = useState(1);
 	const [hasMore, setHasMore] = useState(true);
-	const [selectedJobId, setSelectedJobId] = useState<number | null>(null); // New state for selected job ID
+	const [selectedJobId, setSelectedJobId] = useState<number | null>(null); 
+	const [selectedJobIdEdit, setSelectedJobIdEdit] = useState<string | null>(
+		null
+	); 
+
+	const [showEditForm, setShowEditForm] = useState(false);
 
 	const handleDelete = async (jobId: number) => {
 		setLoadingState(true);
 		try {
-			const response : DeleteJobPostResponse  = await deleteJobPostDash(jobId);
-					// Assuming the response contains a 'message' property for success
-		if (response?.message) {
-			alert(response.message); // Show the success message
-		} else {
-			alert("Job post deleted successfully.");
-		}
+			const response: DeleteJobPostResponse = await deleteJobPostDash(jobId);
+			if (response?.message) {
+				alert(response.message); 
+			} else {
+				alert("Job post deleted successfully.");
+			}
 
-		setJobPosts((prevPosts) => prevPosts.filter((post) => Number(post.job_id) !== jobId));
-
+			setJobPosts((prevPosts) =>
+				prevPosts.filter((post) => Number(post.job_id) !== jobId)
+			);
 		} catch (error) {
 			if (axios.isAxiosError(error) && error.response?.data) {
-				const backendError = error.response.data as BackendError; // Explicitly type the response data
+				const backendError = error.response.data as BackendError; 
 				if (backendError.error) {
-					alert(backendError.error); // Show the backend error message
+					alert(backendError.error); 
 					return;
 				}
 			}
-			// Handle unexpected errors
+
 			alert("Failed to delete the job post. Please try again later.");
 		} finally {
 			setLoadingState(false);
-			setDialogOpen(false); // Close the dialog after handling
+			setDialogOpen(false);
 		}
 	};
 
@@ -67,13 +74,13 @@ function JobPostedDash() {
 			try {
 				const response = await getJobPostDash({
 					limit: 10,
-					page: offset, // Passing the current page (offset)
+					page: offset, 
 				});
 				console.log(response);
 
 				if (Array.isArray(response)) {
 					setJobPosts((prevPosts) => [...prevPosts, ...response]);
-					setHasMore(response.length === 10); // If less than 10 items are returned, no more data to load
+					setHasMore(response.length === 10); 
 				}
 			} catch (error) {
 				console.error("Failed to fetch job posts:", error);
@@ -82,20 +89,25 @@ function JobPostedDash() {
 		};
 
 		fetchData();
-	}, [offset]); // Trigger the fetch whenever offset (page number) changes
+	}, [offset]); 
+
+	//debugging purposed
+	useEffect(() => {
+		console.log("Current fetched data:", jobPosts);
+	}, [jobPosts]);
 
 	// Helper function to format date
 	const formatDate = (dateString: string) => {
-		return format(new Date(dateString), "dd MMM yyyy"); // Format date to "21 Dec 2024"
+		return format(new Date(dateString), "dd MMM yyyy"); 
 	};
 
 	const formatSalary = (salary: number) => {
-		return `${(salary / 1000000).toFixed(1)} jt`; // Format to 1 decimal place
+		return `${(salary / 1000000).toFixed(1)} jt`; 
 	};
 
 	const handleLoadMore = () => {
 		if (hasMore) {
-			setOffset((prevOffset) => prevOffset + 1); // Increment offset to load more posts
+			setOffset((prevOffset) => prevOffset + 1); 
 		}
 	};
 
@@ -104,16 +116,28 @@ function JobPostedDash() {
 			const { jobTitle, sortOrder } = searchParams;
 			const response = await getJobPostDash({
 				limit: 10,
-				page: 1, // Reset to the first page
+				page: 1, 
 				jobTitle,
 				sortOrder,
 			});
 
-			setJobPosts(response); // Replace current data with the filtered results
-			setOffset(1); // Reset the offset
-			setHasMore(response.length === 10); // Update hasMore based on results
+			setJobPosts(response); 
+			setOffset(1); 
+			setHasMore(response.length === 10); 
 		} catch (error) {
 			console.error("Error fetching filtered job posts:", error);
+		}
+	};
+
+
+	const handleEdit = (jobId: string) => {
+		if (selectedJobIdEdit === jobId) {
+
+			setShowEditForm(!showEditForm);
+		} else {
+
+			setSelectedJobIdEdit(jobId);
+			setShowEditForm(true);
 		}
 	};
 
@@ -189,7 +213,24 @@ function JobPostedDash() {
 											Detail
 										</Button>
 
-										<Button variant="outline">Edit</Button>
+										<div
+											className={`space-y-4 ${showEditForm ? "opacity-50" : ""}`}
+										>
+											<Button
+												variant="outline"
+												onClick={() => handleEdit(job_id)}
+											>
+												Edit
+											</Button>
+
+											<JobEditForm
+												job_id={selectedJobIdEdit}
+												showForm={showEditForm}
+												setShowForm={setShowEditForm}
+											/>
+											{/* Other components */}
+										</div>
+
 										<Popover>
 											{/* Three-dot Vertical Icon */}
 											<PopoverTrigger asChild>

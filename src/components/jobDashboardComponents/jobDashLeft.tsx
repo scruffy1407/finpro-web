@@ -1,12 +1,11 @@
 import React from "react";
-import Image from "next/image";
-import ButtonComponent from "../ButtonComponent";
 import { Button } from "@/components/ui/button";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
+import CreateJobForm from "./jobCreateForm";
 
 interface Metrics {
 	jobActiveCount: number;
@@ -20,6 +19,8 @@ function JobDashLeft({}) {
 	const router = useRouter();
 	console.log(router.pathname);
 	const [metrics, setMetrics] = useState<Metrics | null>(null);
+	const [showForm, setShowForm] = useState(false);
+	
 
 	useEffect(() => {
 		async function fetchMetrics() {
@@ -66,9 +67,11 @@ function JobDashLeft({}) {
 			</div>
 
 			<div className="flex flex-col gap-3">
-				<Button variant={"primary"} onClick={handleRedirect}>
+				<Button variant="primary" onClick={() => setShowForm(true)}>
 					Create New Job
 				</Button>
+
+				<CreateJobForm showForm={showForm} setShowForm={setShowForm} />
 			</div>
 
 			<div className="flex flex-col gap-3">
