@@ -11,7 +11,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/router";
-import Image from "next/image";
 
 function Index() {
   const authHandler = new AuthHandler();
@@ -42,9 +41,9 @@ function Index() {
               Unlock Your Career Potential
             </h2>
             <p className={`text-neutral-600 text-sm`}>
-              Don't miss out on your next big opportunity. Login now to explore
+              {`Don't miss out on your next big opportunity. Login now to explore
               10K+ jobs from 200+ top companies. Your dream career is just a
-              click away.
+              click away.`}
             </p>
           </div>
           <div className={"flex gap-4"}>
