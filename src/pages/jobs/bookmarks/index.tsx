@@ -12,6 +12,7 @@ import BookmarkJobListMappingComponent from "@/components/BookmarkJobListMapping
 import axios from "axios";
 import Cookies from "js-cookie";
 import { AuthHandler } from "@/utils/auth.utils";
+import { Navbar } from "@/components/NavigationBar/Navbar";
 
 const BookmarkPage: React.FC = () => {
   const authHandler = new AuthHandler();
@@ -19,7 +20,7 @@ const BookmarkPage: React.FC = () => {
 
   const dispatch = useDispatch<AppDispatch>();
   const bookmarks = useSelector(
-    (state: RootState) => state.bookmarks.bookmarks
+    (state: RootState) => state.bookmarks.bookmarks,
   );
   const validBookmarks = Array.isArray(bookmarks) ? bookmarks : [];
 
@@ -34,7 +35,7 @@ const BookmarkPage: React.FC = () => {
         "http://localhost:8000/applyjob/bookmark",
         {
           headers: { Authorization: `Bearer ${token}` },
-        }
+        },
       );
 
       const jobWishlist = response.data.bookmarks?.jobWishlist || [];
@@ -59,7 +60,7 @@ const BookmarkPage: React.FC = () => {
       const response = await axios.post(
         "http://localhost:8000/applyjob/bookmark",
         { jobPostId },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token}` } },
       );
       dispatch(addBookmark(response.data.bookmark));
       fetchBookmarks();
@@ -79,7 +80,7 @@ const BookmarkPage: React.FC = () => {
       await axios.post(
         "http://localhost:8000/applyjob/bookmark/remove",
         { wishlist_id: wishlistId },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token}` } },
       );
       dispatch(removeBookmark(wishlistId));
       fetchBookmarks();
@@ -90,13 +91,7 @@ const BookmarkPage: React.FC = () => {
 
   return (
     <div className="mt-5 mx-4">
-      <NavbarComponent
-        findJobs="Find Jobs"
-        skillAssessment="Skill Assessment"
-        exploreCompanies="Explore Companies"
-        loginJobHunter="Login"
-        loginCompanies="Login as Recruiter"
-      />
+      <Navbar />
 
       <div className="mx-auto">
         <div className="max-w-screen-xl mx-auto bg-white mt-5 rounded-xl px-4 md:px-0">

@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/store";
-import { validateUserToken } from "@/store/slices/authSlice";
+import { refreshUserToken, validateUserToken } from "@/store/slices/authSlice";
 
 function AuthorizeUser(
   pagePermission?: "jobhunter" | "company",
@@ -20,11 +20,20 @@ function AuthorizeUser(
   async function handleAuthrorize() {
     // Check the user have token or not when it access the page
     const accessToken = Cookies.get("accessToken");
+    const refreshToken = Cookies.get("refreshToken");
 
     if (!accessToken) {
-      if (pagePermission) {
-        router.push("/auth/login/jobhunter");
-        return;
+      if (!refreshToken) {
+        if (pagePermission) {
+          router.push("/auth/login/jobhunter");
+          return;
+        } else {
+          return;
+        }
+      } else {
+        await dispatch(refreshUserToken(refreshToken as string));
+        const newAccessToken = Cookies.get("accessToken"); // get the newest token
+        await dispatch(validateUserToken(newAccessToken as string));
       }
       return;
     }

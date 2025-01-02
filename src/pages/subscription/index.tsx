@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/router";
+import { Navbar } from "@/components/NavigationBar/Navbar";
 
 function Index() {
   const authHandler = new AuthHandler();
@@ -64,13 +65,8 @@ function Index() {
           </div>
         </div>
       </ModalContainer>
-      <NavbarComponent
-        findJobs="Find Jobs"
-        skillAssessment="Skill Assessment"
-        exploreCompanies="Explore Companies"
-        loginJobHunter="Login"
-        loginCompanies="Login as Recruiter"
-      />
+      <Navbar />
+
       <div className="mx-auto max-w-screen-xl mt-5 mb-10">
         <div className={`bg-white w-full p-10 rounded-2xl`}>
           <PageHeader />

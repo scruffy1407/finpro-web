@@ -11,6 +11,7 @@ import Cookies from "js-cookie";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { useRouter } from "next/router";
+import { AxiosResponse } from "axios";
 
 export default function ConfirmationCard({ plan }: { plan: SubscriptionPlan }) {
   const paymentHandler = new PaymentHandler();
@@ -23,6 +24,7 @@ export default function ConfirmationCard({ plan }: { plan: SubscriptionPlan }) {
 
   const handlePayment = async () => {
     // TODO: Implement Midtrans payment integration
+
     console.log("Proceeding to payment for plan:");
     const token = Cookies.get("accessToken");
     let subscriptionId: number = 1;
@@ -39,12 +41,16 @@ export default function ConfirmationCard({ plan }: { plan: SubscriptionPlan }) {
           token as string,
           subscriptionId,
         );
-        console.log(response);
-        if (response.data.status === 200) {
+        if (response.status === 201) {
           console.log(response.data.data.transaction);
-          const redirectUrl = response.data.data.transaction.redirect_url;
+          const redirectUrl = response?.data.data.transaction.redirect_url;
 
           await router.push(`${redirectUrl}`);
+        } else if (response.status === 400) {
+          console.log("exec");
+          setIsLoading(false);
+          setIsDisable(false);
+          toast.error(response.response.data.message);
         } else {
           setIsLoading(false);
           setIsDisable(false);
@@ -57,9 +63,10 @@ export default function ConfirmationCard({ plan }: { plan: SubscriptionPlan }) {
         setIsDisable(false);
         toast.error("You need to login first to subscribe the plan");
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       setIsLoading(false);
       setIsDisable(false);
+      console.log(err);
       toast.error(
         "Failed to procced the payment, please try again or refresh your browser",
       );

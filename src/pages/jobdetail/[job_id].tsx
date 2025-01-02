@@ -22,6 +22,7 @@ import { Button } from "@/components/ui/button";
 import { AuthHandler } from "@/utils/auth.utils";
 import Cookies from "js-cookie";
 import { JobApplication } from "@/models/applicant.model";
+import { Navbar } from "@/components/NavigationBar/Navbar";
 
 function JobDetail() {
   const authHandler = new AuthHandler();
@@ -240,13 +241,7 @@ function JobDetail() {
 
       <div className="overflow-hidden mt-5">
         <div className="mx-4 w-auto">
-          <NavbarComponent
-            findJobs="Find Jobs"
-            skillAssessment="Skill Assessment"
-            exploreCompanies="Explore Companies"
-            loginJobHunter="Login"
-            loginCompanies="Login as Recruiter"
-          />
+          <Navbar />
         </div>
         <div className="mx-4 md:w-auto">
           {/* DUMMY CICK ONAPPLYJOB TO SHOW THE FE!! */}

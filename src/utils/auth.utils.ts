@@ -2,6 +2,7 @@ import { LoginAuth, RegisterAuth } from "@/models/auth.model";
 import api from "@/pages/api/api";
 import AuthorizeUser from "@/utils/authorizePage";
 import { AxiosResponse } from "axios";
+import Cookies from "js-cookie";
 
 export class AuthHandler {
   // Fungsi untuk validasi form login
@@ -128,55 +129,44 @@ export class AuthHandler {
     }
   }
 
-  // async refreshUserAcessToken(refreshToken: string) {
-  //   try {
-  //     // Get new access token
-  //     const response = await axios.get("/api/auth/update-token", {
-  //       headers: {
-  //         Authorization: `Bearer ${refreshToken}`,
-  //       },
-  //     });
-  //
-  //     if (response.data.data.code === "GUT") {
-  //       // Get New Access Token
-  //       const newAccessToken = response.data.data.accessToken;
-  //       const in60Minutes = 60 / (24 * 60);
-  //
-  //       const uniqueCode =
-  //         response.data.data.user_role === "user"
-  //           ? UniqueCode.USER
-  //           : UniqueCode.ADMIN;
-  //
-  //       // Check if return access token
-  //       if (!newAccessToken) {
-  //         return undefined;
-  //       }
-  //
-  //       // Update access token in cookies
-  //       Cookies.set(`access${uniqueCode}_token`, newAccessToken, {
-  //         expires: in60Minutes,
-  //       });
-  //
-  //       // Validate access token after refreshing it
-  //       try {
-  //         const validateResponse = await this.validateUserToken(newAccessToken);
-  //         if (validateResponse) {
-  //           return validateResponse;
-  //         } else {
-  //           return null;
-  //         }
-  //       } catch (error) {
-  //         return error;
-  //       }
-  //     }
-  //   } catch (error) {
-  //     Cookies.remove(`access${UniqueCode.USER}_token`);
-  //     Cookies.remove(`refresh${UniqueCode.USER}_token`);
-  //     Cookies.remove(`access${UniqueCode.ADMIN}_token`);
-  //     Cookies.remove(`refresh${UniqueCode.ADMIN}_token`);
-  //     return error;
-  //   }
-  // }
+  async refreshUserAcessToken(refreshToken: string) {
+    try {
+      console.log(refreshToken);
+      // Get new access token
+      const response = await api.post(
+        "/api/user/auth/refresh-token",
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${refreshToken}`,
+          },
+        },
+      );
+
+      console.log("RESPONSE REFRESHACCESSTOKEn", response);
+      if (response.status === 200) {
+        // Get New Access Token
+        const newAccessToken = response.data.data;
+        console.log("NEW TOKEN", newAccessToken);
+        const in60Minutes = 60 / (24 * 60);
+
+        // Check if return access token
+        if (!newAccessToken) {
+          return undefined;
+        }
+
+        // Update access token in cookies
+        Cookies.set(`accessToken`, newAccessToken, {
+          expires: in60Minutes,
+        });
+        return newAccessToken;
+      }
+    } catch (error) {
+      Cookies.remove(`accessToken`);
+      Cookies.remove(`refreshToken`);
+      return error;
+    }
+  }
 
   async validateResetToken(token: string | undefined) {
     if (token === undefined) {

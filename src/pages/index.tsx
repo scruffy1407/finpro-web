@@ -9,6 +9,7 @@ import CompanyMappingComponent from "@/components/CompanyMappingComponent";
 import FooterComponent from "@/components/FooterComponent";
 import { AuthHandler } from "@/utils/auth.utils";
 import useRouter from "next/router";
+import { Navbar } from "@/components/NavigationBar/Navbar";
 
 function Home() {
   const authHandler = new AuthHandler();
@@ -18,13 +19,7 @@ function Home() {
   return (
     <div className="overflow-hidden">
       <div className="mx-4 w-auto">
-        <NavbarComponent
-          findJobs="Find Jobs"
-          skillAssessment="Skill Assessment"
-          exploreCompanies="Explore Companies"
-          loginJobHunter="Login"
-          loginCompanies="Login as Recruiter"
-        />
+        <Navbar />
       </div>
 
       <div className="mx-4 md:w-auto">

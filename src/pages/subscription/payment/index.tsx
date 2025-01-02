@@ -1,90 +1,258 @@
 import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import { PaymentHandler } from "@/utils/payment.utils";
+import Cookies from "js-cookie";
+import LoadingLoader from "@/components/LoadingLoader";
+import { AuthHandler } from "@/utils/auth.utils";
 
-type PaymentStatus = "pending" | "finished" | "error";
-
-interface QueryParams {
-  order_id?: string;
-  status_code?: string;
-  transaction_status?: PaymentStatus;
-  action?: string;
-}
+type PaymentStatus = "pending" | "settlement" | "error";
 
 function Payment() {
+  // Using dummy data instead of database
+  const authHandler = new AuthHandler();
+  const pagePermission = "jobhunter";
+  authHandler.authorizeUser(pagePermission);
+
+  const paymentHandler = new PaymentHandler();
   const router = useRouter();
-  const [queryParams, setQueryParams] = useState<QueryParams>({});
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const searchParams = useSearchParams();
+  const [isLoading, setIsLoading] = useState(false);
+  const [orderNotFound, setOrderNotFound] = useState(false);
+  const [orderId, setOrderId] = useState("");
+  const [transactionStatus, setTransactionStatus] = useState("");
+  const [validStatus, setValidStatus] = useState<string>("");
+  const [statusCode, setStatusCode] = useState("");
+
+  const initialRender = useRef(true);
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const parsedParams: QueryParams = {};
+    const orderIdParam = searchParams.get("order_id");
+    const transactionStatusParam = searchParams.get("transaction_status");
+    const statusCodeParam = searchParams.get("status_code");
 
-    for (const [key, value] of urlParams.entries()) {
-      if (key === "transaction_status") {
-        if (["pending", "finished", "error"].includes(value as PaymentStatus)) {
-          parsedParams[key as keyof QueryParams] = value as PaymentStatus;
-        } else {
-          // Handle invalid transaction_status (e.g., log an error, set a default value)
-          parsedParams[key as keyof QueryParams] = undefined;
-        }
-      } else {
-        parsedParams[key as keyof QueryParams] = value;
+    if (orderIdParam) setOrderId(orderIdParam);
+    if (transactionStatusParam) setTransactionStatus(transactionStatusParam);
+    if (statusCodeParam) setStatusCode(statusCodeParam);
+
+    if (!initialRender.current) {
+      // Handle missing or invalid parameters
+      if (!orderId || !transactionStatus || !statusCode) {
+        // Handle missing query parameters (e.g., redirect to an error page)
+        return;
       }
+    } else {
+      initialRender.current = false;
     }
+  }, [searchParams]);
 
-    setQueryParams(parsedParams);
-  }, []);
+  async function handleValidatePayment() {
+    const token = Cookies.get("accessToken");
+    setIsLoading(true);
 
-  const { order_id, status_code, transaction_status, action } = queryParams;
+    if (transactionStatus === "settlement" && token) {
+      const response = await paymentHandler.verifyPayment(
+        token as string,
+        "settlement",
+        orderId,
+      );
+      setValidStatus(response.data.data);
+      if (response.status === 400) {
+        setOrderNotFound(true);
+      }
+      console.log(response);
+    } else if (transactionStatus === "pending" && token) {
+      const response = await paymentHandler.verifyPayment(
+        token as string,
+        "pending",
+        orderId,
+      );
+      console.log(response.data.data);
+      setValidStatus(response.data.data);
 
-  // Handle different payment statuses and actions
+      if (response.status === 400) {
+        setOrderNotFound(true);
+      }
+      console.log(response);
+    }
+    setIsLoading(false);
+  }
+
+  useEffect(() => {
+    if (orderId) {
+      handleValidatePayment();
+    }
+  }, [orderId]);
+  console.log(validStatus);
+
   const renderContent = () => {
-    if (!order_id || !status_code || !transaction_status) {
+    if (
+      !orderId ||
+      !statusCode ||
+      !transactionStatus ||
+      !paymentHandler.isValidOrderString(orderId) ||
+      orderNotFound
+    ) {
       return (
-        <div className="text-center p-4">
-          Missing required query parameters.
+        <div className="p-10 rounded-2xl flex flex-col gap-10 bg-white">
+          <Image
+            src={"/logo/MainLogo.svg"}
+            alt={"Pathway logo"}
+            width={121}
+            height={24}
+          />
+          <div>
+            <h2 className="text-7xl mb-6 text-neutral-950 font-bold">404</h2>
+            <p className={"text-lg text-neutral-600"}>
+              {orderNotFound
+                ? "No order was found with that ID. Please return to the homepage."
+                : "Page Not Found. Return to Homepage"}
+            </p>
+          </div>
+
+          <Button
+            onClick={() => router.push("/")}
+            variant={"primary"}
+            size={"default"}
+          >
+            Back to homepage
+          </Button>
         </div>
       );
     }
 
-    if (transaction_status === "pending") {
+    if ((validStatus || transactionStatus) === "pending") {
       return (
-        <div className="text-center p-4">
-          <h2>Payment Pending</h2>
-          <p>Your order (ID: {order_id}) is being processed.</p>
+        <div className="p-10 w-full rounded-2xl flex flex-col gap-10 bg-white">
+          <Image
+            src={"/logo/MainLogo.svg"}
+            alt={"Pathway logo"}
+            width={121}
+            height={24}
+          />
+          <h2 className="text-2xl text-neutral-950 font-bold">
+            Please complete your payment
+          </h2>
+          <div className={"grid grid-cols-2 gap-10"}>
+            <div>
+              <p className={"text-xs text-neutral-600 mb-2"}>Your Order ID</p>
+              <h4 className={"text-lg font-bold text-neutral-950"}>
+                {orderId}
+              </h4>
+            </div>
+            <div>
+              <p className={"text-xs text-neutral-600 mb-2"}>Total Ammount</p>
+              <h4 className={"text-lg font-bold text-neutral-950"}>
+                Rp 25.000
+              </h4>
+            </div>
+          </div>
+
+          <Button variant={"primary"} size={"default"}>
+            Complete Payment
+          </Button>
         </div>
       );
-    } else if (transaction_status === "finished") {
+    } else if ((validStatus || transactionStatus) === "settlement") {
       return (
-        <div className="text-center p-4">
-          <h2>Payment Successful</h2>
-          <p>Your order (ID: {order_id}) has been completed.</p>
+        <div className="p-10 rounded-2xl flex flex-col gap-10 bg-white">
+          <Image
+            src={"/logo/MainLogo.svg"}
+            alt={"Pathway logo"}
+            width={121}
+            height={24}
+          />
+          <h2 className="text-2xl text-neutral-950 font-bold">
+            Payment Successfully
+          </h2>
+          <div className={"grid grid-cols-2 gap-10"}>
+            <div>
+              <p className={"text-xs text-neutral-600 mb-2"}>Your Order ID</p>
+              <h4 className={"text-lg font-bold text-neutral-950"}>
+                {orderId}
+              </h4>
+            </div>
+            <div>
+              <p className={"text-xs text-neutral-600 mb-2"}>Total Ammount</p>
+              <h4 className={"text-lg font-bold text-neutral-950"}>
+                Rp 25.000
+              </h4>
+            </div>
+          </div>
+          <p>
+            You can now use exclusive features like generating a CV and
+            improving your skills with our skill assessment test
+          </p>
+          <div className={"grid grid-cols-2 gap-6"}>
+            <Button
+              onClick={() => router.push("/profile/user")}
+              className={
+                "h-fit w-full p-4 bg-white border border-neutral-200 text-neutral-950 hover:text-blue-500 hover:bg-blue-50 justify-start whitespace-normal"
+              }
+            >
+              <div className={"flex flex-col gap-1 text-left w-full"}>
+                <h6 className={"font-bold"}>Get Your ATS-Optimized CV Now</h6>
+                <p className={"text-xs w-full hover:text-opacity-75"}>
+                  Easily land more interviews with an ATS-friendly CV.
+                </p>
+              </div>
+            </Button>
+            <Button
+              onClick={() => router.push("/assessment")}
+              className={
+                "h-fit w-full p-4 bg-white border border-neutral-200 text-neutral-950 hover:text-blue-500 hover:bg-blue-50 justify-start whitespace-normal"
+              }
+            >
+              <div className={"flex flex-col gap-1 text-left w-full"}>
+                <h6 className={"font-bold"}>Take Your Skills Assessment Now</h6>
+                <p className={"text-xs w-full hover:text-opacity-75"}>
+                  Identify your strengths and areas for improvement.
+                </p>
+              </div>
+            </Button>
+          </div>
         </div>
       );
-    } else if (transaction_status === "error") {
+    } else if (transactionStatus === "error") {
       return (
         <div className="text-center p-4">
           <h2>Payment Error</h2>
-          <p>An error occurred while processing your order (ID: {order_id}).</p>
+          <p>An error occurred while processing your order (ID: {orderId}).</p>
         </div>
       );
     }
 
-    return null; // Handle unexpected transaction_status
+    return (
+      <div className="p-10 rounded-2xl flex flex-col gap-10 bg-white">
+        <Image
+          src={"/logo/MainLogo.svg"}
+          alt={"Pathway logo"}
+          width={121}
+          height={24}
+        />
+        <div>
+          <h2 className="text-7xl mb-6 text-neutral-950 font-bold">404</h2>
+          <p className={"text-lg text-neutral-600"}>
+            Page Not Found. Return to Homepage
+          </p>
+        </div>
+
+        <Button
+          onClick={() => router.push("/")}
+          variant={"primary"}
+          size={"default"}
+        >
+          Back to homepage
+        </Button>
+      </div>
+    ); // Handle unexpected transaction_status
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex justify-center items-center">
-      {renderContent()}
-      {action === "back" && (
-        <button
-          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700"
-          onClick={() => router.back()}
-        >
-          Go Back
-        </button>
-      )}
+    <div className="min-h-screen max-w-2xl mx-auto flex flex-col justify-center items-center">
+      {isLoading ? LoadingLoader() : renderContent()}
     </div>
   );
 }
