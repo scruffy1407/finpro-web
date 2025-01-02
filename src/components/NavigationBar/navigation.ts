@@ -55,7 +55,7 @@ export const themeConfig: Record<UserRole, ThemeConfig> = {
 export const navItemConfig: Record<UserRole, NavigationItem[]> = {
   jobhunter: [
     { name: "Find Jobs", href: "/jobs", icon: Briefcase },
-    { name: "Skill Assessment", href: "/assessment", icon: Brain },
+    { name: "Skill Assessment", href: "/skills-assessment", icon: Brain },
     { name: "Explore Companies", href: "/companies", icon: Building2 },
   ],
   company: [
@@ -85,7 +85,7 @@ export const dropDownItemConfig: Record<UserRole, NavigationItem[]> = {
 export const MobileNavigation: Record<UserRole, NavigationItem[]> = {
   jobhunter: [
     { name: "Find Jobs", href: "/jobs", icon: Briefcase },
-    { name: "Skill Assessment", href: "/assessment", icon: Brain },
+    { name: "Skill Assessment", href: "/skills-assessment", icon: Brain },
     { name: "Explore Companies", href: "/companies", icon: Building2 },
   ],
   company: [

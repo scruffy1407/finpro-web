@@ -1,4 +1,5 @@
 export interface JobPost {
+  job_id: number;
   job_title: string;
   companyId?: number;
   preSelectionTestId?: number;

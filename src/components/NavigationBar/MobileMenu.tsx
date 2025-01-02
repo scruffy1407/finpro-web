@@ -3,12 +3,10 @@ import {
   Sheet,
   SheetContent,
   SheetHeader,
-  SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Menu, LogOut, TrendingUp, Sparkles, Crown } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import {
@@ -30,9 +28,6 @@ export function MobileMenu({ isOpen, onOpenChange }: MobileMenuProps) {
   const userPhoto = useSelector((state: RootState) => state.auth.photo);
   const subsId = useSelector((state: RootState) => state.auth.subscriptionId);
 
-  const userEmail = useSelector((state: RootState) => state.auth.email);
-
-  console.log(userRole);
   const mobileNavigation =
     MobileNavigation[(userRole as UserRole) || "jobhunter"];
 

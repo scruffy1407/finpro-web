@@ -51,10 +51,12 @@ function JobListTab({
           </div>
 
           <div className="grid lg:grid-cols-2 xl:grid-cols-3 gap-4 overflow-hidden">
-            {data?.map((job: JobPost) => {
+            {data?.map((job: JobPost, i: number) => {
               return (
                 <JobPostComponent
-                  job_id={"1"}
+                  key={i}
+                  job_id={job.job_id.toString()}
+                  companyId={job.companyId as number}
                   job_title={job.job_title}
                   jobType={job.job_type}
                   company_province={companyProvince}

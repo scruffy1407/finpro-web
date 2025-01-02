@@ -55,7 +55,6 @@ function GeneralInfoForm() {
   };
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
-    console.log(e.target.value);
     dispatch(handleUpdateInputChange({ name, value }));
   }
 
@@ -108,9 +107,6 @@ function GeneralInfoForm() {
       dispatch(handleGetcity(provinceId));
     }
   }, [dispatch, provinceId]);
-
-  console.log("INIT DOD", dob);
-  console.log("DATAA", name, expectedSalary, gender, dob, provinceId, cityId);
 
   return (
     <>

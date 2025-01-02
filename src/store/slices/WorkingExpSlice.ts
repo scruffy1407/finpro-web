@@ -49,16 +49,16 @@ const initialState: WorkingExpList = {
     jobReview: [],
   },
   pendingState: {
-    isLoading: false,
-    isDisable: false,
+    actionLoading: false,
+    actionDisable: false,
     isRender: false,
+    dataLoading: false,
   },
 };
 
 export const getWorkingExperience = createAsyncThunk(
   "user/company/workExprience",
   async ({ token, wReview }: ParamsGetWorkExp) => {
-    console.log("ASYNC Review", wReview);
     try {
       const response = await profileHandler.getWorkingExperience(
         token,
@@ -128,7 +128,7 @@ const workExpSlice = createSlice({
       }
     },
     setDisable: (state, action) => {
-      state.pendingState.isDisable = action.payload;
+      state.pendingState.actionDisable = action.payload;
     },
     setSelectedItem: (state, action) => {
       state.selectedItemId = action.payload;
@@ -154,8 +154,6 @@ const workExpSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getWorkingExperience.fulfilled, (state, action) => {
-        console.log("SLICE", action.payload);
-
         const workingExpMap: WorkingExperience[] = action.payload.map(
           (workExp): WorkingExperience => {
             return {
@@ -198,7 +196,6 @@ const workExpSlice = createSlice({
         state.pendingState.actionDisable = true;
       })
       .addCase(addNewWorkingExperience.fulfilled, (state, action) => {
-        console.log(action);
         state.workingExpList.unshift({
           jobHunterId: action.payload.jobHunterId,
           workingExperienceId: action.payload.work_experience_id,

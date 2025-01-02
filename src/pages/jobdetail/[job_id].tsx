@@ -29,7 +29,6 @@ function JobDetail() {
   authHandler.authorizeUser();
   const router = useRouter();
   const { job_id } = router.query;
-  const { innerId } = useSelector((state: RootState) => state.auth);
   const [applicantData, setApplicantData] = useState<null | JobApplication>(
     null,
   );
@@ -79,6 +78,7 @@ function JobDetail() {
           },
         },
       );
+      console.log("VALIDATE USER JOIN", response);
       if (response.status === 200 && response.data.code === "JOIN") {
         setApplicantData({
           jobHunterId: response.data.data.jobHunterId,
@@ -137,6 +137,9 @@ function JobDetail() {
     if (job_id) {
       setDataLoading(true);
       fetchJobDetail();
+      if (isLoggedIn) {
+        validateUserJob();
+      }
     }
   }, [job_id]);
 

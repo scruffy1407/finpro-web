@@ -114,10 +114,11 @@ export function ProfileMenu({ logout }: ProfileProps) {
             </>
           ) : null}
 
-          {dropDownItem.map((item) => {
+          {dropDownItem.map((item, i: number) => {
             const Icon = item.icon;
             return (
               <DropdownMenuItem
+                key={i}
                 className={"cursor-pointer"}
                 onClick={() => {
                   router.push(item.href);

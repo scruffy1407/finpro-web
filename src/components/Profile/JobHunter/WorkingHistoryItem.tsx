@@ -21,8 +21,8 @@ interface WorkingHistoryProps {
   companyName: string;
   position: string;
   description: string;
-  startDate: Date;
-  endData: Date;
+  // startDate: Date;
+  // endData: Date;
   onDelete?: () => void;
   onEdit?: () => void;
 }
@@ -33,8 +33,6 @@ function WorkingHistoryItem({
   position,
   description,
   companyId,
-  startDate,
-  endData,
 }: WorkingHistoryProps) {
   const accessToken = Cookies.get("accessToken");
   const dispatch = useDispatch<AppDispatch>();

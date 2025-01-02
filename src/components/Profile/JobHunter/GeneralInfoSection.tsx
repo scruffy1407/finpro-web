@@ -441,7 +441,7 @@ function GeneralInfoSection() {
               size={"default"}
               className={"w-fit"}
             >
-              {isLoading ? LoadingLoadere() : "Save Change"}
+              {isLoading ? LoadingLoader() : "Save Change"}
             </Button>
           </form>
         </section>

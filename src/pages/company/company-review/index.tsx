@@ -24,6 +24,9 @@ import FormWorkingExperience from "@/components/Form/FormWorkingExperience";
 import ModalContainer from "@/components/Modal/ModalContainer";
 import { closeModalAction, openModalAction } from "@/store/slices/ModalSlice";
 import CompanyReviewSkeleton from "@/components/Skeleton/CompanyReview.skeleton";
+import { Navbar } from "@/components/NavigationBar/Navbar";
+
+type FormInputEvent = React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>;
 
 function Index() {
   const authHandler = new AuthHandler();
@@ -86,7 +89,7 @@ function Index() {
       workExperienceId: workingExpList[value].workingExperienceId as number,
     });
   }
-  function handleInputChange(e) {
+  function handleInputChange(e: FormInputEvent) {
     const { name, value } = e.target;
     setReviewForm({
       ...reviewForm,
@@ -167,13 +170,8 @@ function Index() {
       >
         <FormWorkingExperience />
       </ModalContainer>
-      <NavbarComponent
-        findJobs="Find Jobs"
-        skillAssessment="Skill Assessment"
-        exploreCompanies="Explore Companies"
-        loginJobHunter="Login"
-        loginCompanies="Login as Recruiter"
-      />
+      <Navbar />
+
       {pendingState.isRender ? (
         <section className={"w-full p-4"}>
           <div className="max-w-screen-sm mx-auto p-8 bg-white rounded-2xl flex flex-col gap-8">

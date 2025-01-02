@@ -14,7 +14,6 @@ const JobPostSection: React.FC = () => {
       try {
         setIsLoading(true);
         const response = await getJobNewLp();
-        console.log(response); // Make sure you inspect the data
 
         // Assuming response is an array of job posts:
         const mappedData = response.map((job: any) => ({

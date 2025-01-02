@@ -22,6 +22,8 @@ import { useState } from "react";
 import { getJobPost } from "../api/api";
 import { Navbar } from "@/components/NavigationBar/Navbar";
 import { AuthHandler } from "@/utils/auth.utils";
+import ListSkeleton from "@/components/listSkeleton";
+import JobPostComponentSkeleton from "@/components/JobPostSkeleton";
 
 const JobPostPage: React.FC = () => {
   const authHandler = new AuthHandler();
@@ -35,16 +37,6 @@ const JobPostPage: React.FC = () => {
   );
   const { jobTitle, categoryId, jobType, dateRange, sortOrder, companyCity } =
     useSelector((state: RootState) => state.searchQuery); // Access searchQuery from the store
-
-  console.log(
-    "COBA LIAT INIIIIII ",
-    jobTitle,
-    categoryId,
-    jobType,
-    dateRange,
-    sortOrder,
-    companyCity,
-  );
 
   const dispatch = useDispatch();
 
@@ -113,7 +105,15 @@ const JobPostPage: React.FC = () => {
         </div>
 
         <div className="w-full mt-5 mb-10">
-          <JobListMappingComponent jobPosts={jobPosts} />
+          {loading ? (
+            <ListSkeleton
+              ListItemComponent={JobPostComponentSkeleton}
+              numberItem={16}
+              className={"max-w-screen-xl mx-auto gap-6 grid grid-cols-3"}
+            />
+          ) : (
+            <JobListMappingComponent jobPosts={jobPosts} />
+          )}
         </div>
 
         <Pagination>
@@ -152,11 +152,7 @@ const JobPostPage: React.FC = () => {
           </PaginationContent>
         </Pagination>
         <div className="mx-4 mt-20 mb-5">
-          <FooterComponent
-            findJobs="Find Jobs"
-            skillAssessment="Skill Assessment"
-            exploreCompanies="Explore Companies"
-          />
+          <FooterComponent />
         </div>
       </div>
     </div>

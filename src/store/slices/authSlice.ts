@@ -71,13 +71,8 @@ export const loginUser = createAsyncThunk<
       },
     );
 
-    console.log("RESPONSEEEEEEEEEEE", response);
-
     const { access_token, refresh_token, user } = response.data.data;
     const { user_role, name, photo } = user || {};
-
-    console.log("ACCESSTOKEN ", access_token);
-    console.log("REFRESHTOKEN ", refresh_token);
 
     Cookies.set("accessToken", access_token, { expires: 1 / 24 });
     Cookies.set("refreshToken", refresh_token, { expires: 3 });
@@ -99,8 +94,6 @@ export const validateUserToken = createAsyncThunk(
   async (token: string) => {
     try {
       const user = await authHandler.validateUserToken(token);
-
-      console.log("AUTH USER", user);
 
       if (user.status !== 200) {
         return null;

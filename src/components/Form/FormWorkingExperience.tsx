@@ -92,7 +92,6 @@ function FormWorkingExperience() {
       ),
     );
   }, [formData.jobDescription, formData.jobTitle, formData.companyId]);
-  console.log(formData);
 
   return (
     <form onSubmit={handleSubmitWork} className="flex flex-col gap-5">
@@ -151,8 +150,12 @@ function FormWorkingExperience() {
         />
       </div>
 
-      <Button disabled={pendingState.isDisable} variant="primary" type="submit">
-        {pendingState.isLoading ? LoadingLoader() : "Add New Experience"}
+      <Button
+        disabled={pendingState.actionDisable}
+        variant="primary"
+        type="submit"
+      >
+        {pendingState.actionLoading ? LoadingLoader() : "Add New Experience"}
       </Button>
     </form>
   );
