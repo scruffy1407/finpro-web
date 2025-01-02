@@ -258,13 +258,16 @@ const generalInfoSlice = createSlice({
       })
       .addCase(handleGetUseLocation.fulfilled, (state, action) => {
         console.log("ACTION LOCATION !!!", action);
-        state.pendingState.actionDisableLocation = false;
-        state.pendingState.actionLoadingLocation = false;
-        state.userLocation.cityId = action.payload.cityId;
-        state.userLocation.provinceId = action.payload.provinceId;
-        state.cityId = action.payload.city_id;
-        state.provinceId = action.payload.provinceId;
-        state.pendingState.dataLoading = false;
+        if (action.payload !== undefined) {
+          state.pendingState.actionDisableLocation = false;
+          state.pendingState.actionLoadingLocation = false;
+          state.userLocation.cityId = action.payload.cityId || undefined;
+          state.userLocation.provinceId =
+            action.payload.provinceId || undefined;
+          state.cityId = action.payload.city_id || undefined;
+          state.provinceId = action.payload.provinceId || undefined;
+          state.pendingState.dataLoading = false;
+        }
       })
       .addCase(handleGetUseLocation.rejected, (state) => {
         toast.error("Failed to get location information");
@@ -291,13 +294,13 @@ const generalInfoSlice = createSlice({
       .addCase(getGeneralInfo.fulfilled, (state, action) => {
         console.log("ACTIONNN", action);
         state.name = action.payload.name;
-        state.locationCity = action.payload.locationCity;
-        state.locationProvince = action.payload.locationProvince;
+        state.locationCity = action.payload.locationCity || "";
+        state.locationProvince = action.payload.locationProvince || "";
         state.expectedSalary = action.payload.expectedSalary;
         state.summary = action.payload.summary;
         state.gender = action.payload.gender;
-        state.cityId = action.payload.cityId;
-        state.provinceId = state.userLocation.provinceId;
+        state.cityId = action.payload.cityId || undefined;
+        state.provinceId = state.userLocation.provinceId || undefined;
         state.dob = new Date(action.payload.dob).toISOString().split("T")[0];
         state.pendingState.isRender = true;
         state.validApply = !applyValidity(state);

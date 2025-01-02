@@ -18,6 +18,8 @@ interface LoginState {
   user_role: string | null;
   isLoading?: boolean;
   isLoggedIn: boolean;
+  subscriptionId: number;
+  subscriptionActive: boolean;
   error?: string | null;
   accessToken?: string | null;
   refreshToken?: string | null;
@@ -37,6 +39,8 @@ const initialState: LoginState = {
   isLoading: false,
   isLoggedIn: false,
   error: null,
+  subscriptionActive: false,
+  subscriptionId: 1,
   accessToken: "",
   refreshToken: "",
   callback: "",
@@ -67,8 +71,13 @@ export const loginUser = createAsyncThunk<
       },
     );
 
+    console.log("RESPONSEEEEEEEEEEE", response);
+
     const { access_token, refresh_token, user } = response.data.data;
     const { user_role, name, photo } = user || {};
+
+    console.log("ACCESSTOKEN ", access_token);
+    console.log("REFRESHTOKEN ", refresh_token);
 
     Cookies.set("accessToken", access_token, { expires: 1 / 24 });
     Cookies.set("refreshToken", refresh_token, { expires: 3 });
@@ -91,6 +100,8 @@ export const validateUserToken = createAsyncThunk(
     try {
       const user = await authHandler.validateUserToken(token);
 
+      console.log("AUTH USER", user);
+
       if (user.status !== 200) {
         return null;
       } else {
@@ -99,6 +110,13 @@ export const validateUserToken = createAsyncThunk(
     } catch (e: unknown) {
       return e;
     }
+  },
+);
+
+export const refreshUserToken = createAsyncThunk(
+  "auth/refreshAccessToken",
+  async (refreshToken: string) => {
+    await authHandler.refreshUserAcessToken(refreshToken);
   },
 );
 
@@ -146,6 +164,10 @@ const authSlice = createSlice({
           state.user_role = "jobhunter";
           state.innerId = action.payload.jobHunter[0].job_hunter_id;
           state.photo = action.payload.jobHunter[0].photo;
+          state.subscriptionId =
+            action.payload.jobHunter[0].jobHunterSubscription.subscriptionId;
+          state.subscriptionActive =
+            action.payload.jobHunter[0].jobHunterSubscription.subscription_active;
         } else if (
           action.payload.company &&
           action.payload.company.length > 0
@@ -157,6 +179,13 @@ const authSlice = createSlice({
           state.innerId = action.payload.company[0].company_id;
           state.photo = action.payload.company[0].logo;
         }
+        state.pendingState.dataLoading = false;
+        state.isLoading = false;
+      })
+      .addCase(refreshUserToken.pending, (state, action) => {
+        state.pendingState.dataLoading = true;
+      })
+      .addCase(refreshUserToken.fulfilled, (state, action) => {
         state.pendingState.dataLoading = false;
         state.isLoading = false;
       });
