@@ -1,46 +1,121 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import { Button } from "./ui/button";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import axios from "axios";
+import Cookies from "js-cookie";
+import { toast } from "sonner";
 
 interface JobDetailsProps {
+  jobId: number;
   title: string;
   jobType: string;
   experience: string;
   salary: string;
   location: string;
   trueorfalse: boolean;
+  companyLogo: string;
   onEdit: () => void;
   onDisable: () => void;
 }
 
 export const JobDetails: React.FC<JobDetailsProps> = ({
+  jobId,
   title,
   jobType,
   experience,
   salary,
   location,
   trueorfalse,
-  //   onEdit,
-  //   onDisable,
+  companyLogo,
 }) => {
+  const [jobStatus, setJobStatus] = useState<boolean | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const fetchJobStatus = async () => {
+      try {
+        const accessToken = Cookies.get("accessToken");
+        if (!accessToken) {
+          console.error("Access token not found");
+          return;
+        }
+        const response = await axios.get(
+          `http://localhost:8000/api/company/jobstatus/${jobId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+
+        if (response.status === 200) {
+          setJobStatus(response.data.status);
+        } else {
+          console.error("Failed to fetch job status.");
+        }
+      } catch (error) {
+        console.error("Error fetching job status:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchJobStatus();
+  }, [jobId]);
+
+  const toggleJobStatus = async () => {
+    try {
+      const accessToken = Cookies.get("accessToken");
+      if (!accessToken) {
+        console.error("Access token not found");
+        return;
+      }
+
+      const response = await axios.put(
+        `http://localhost:8000/api/company/job/${jobId}/status`,
+        { status: !jobStatus },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        setJobStatus(!jobStatus);
+        toast.success(
+          `Job status updated to ${!jobStatus ? "Active" : "Inactive"}`
+        );
+      } else {
+        toast.error("Failed to update job status.");
+      }
+    } catch (error) {
+      console.error("Error toggling job status:", error);
+      toast.error("Something went wrong. Please try again.");
+    }
+  };
+
+  if (isLoading) {
+    return <div>Loading job details...</div>;
+  }
+  const switchChecked = jobStatus === null ? false : jobStatus;
+
   return (
     <div className="bg-white rounded-2xl p-6">
       <div className="flex items-center gap-4 mb-6">
         <div className="bg-blue-100 p-3 rounded-lg">
-          <svg
-            className="w-6 h-6 text-blue-600"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-            />
-          </svg>
+          <Image
+            src={
+              companyLogo ||
+              "https://res.cloudinary.com/dgnce1xzd/image/upload/v1734781439/ohlj0zikblpzrexcrd2w.png"
+            }
+            alt={"Company Logo"}
+            width={40}
+            height={40}
+            className="rounded-full"
+          />
         </div>
         <h2 className="text-2xl font-bold text-gray-800">{title}</h2>
       </div>
@@ -63,9 +138,12 @@ export const JobDetails: React.FC<JobDetailsProps> = ({
           <span className="font-medium text-sm">{location}</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-gray-600 min-w-28 text-sm">Selection Test:</span>
-          {/* kalo misalkan true = Selection Test Enabled / kalo misalkan false = No Selection Test */}
-          <span className="font-medium text-sm">{trueorfalse}</span>
+          <span className="text-gray-600 min-w-28 text-sm">
+            Selection Test:
+          </span>
+          <span className="font-medium text-sm">
+            {trueorfalse ? "Selection Test Available" : "No Selection Test"}
+          </span>
         </div>
       </div>
 
@@ -74,12 +152,16 @@ export const JobDetails: React.FC<JobDetailsProps> = ({
           Edit Job
         </Button>
         <div className="flex items-center gap-2">
-          <Label htmlFor="Job Online" className="text-xs text-neutral-600">
-            Unpublish
+          <Label htmlFor="JobStatus" className="text-xs text-neutral-600">
+            Unpublish Job
           </Label>
-          <Switch id="Job Online" />
-          <Label htmlFor="Job Online" className="text-xs text-neutral-600">
-            Publish
+          <Switch
+            id="JobStatus"
+            checked={switchChecked}
+            onCheckedChange={toggleJobStatus}
+          />
+          <Label htmlFor="JobStatus" className="text-xs text-neutral-600">
+            Publish Job
           </Label>
         </div>
       </div>

@@ -11,6 +11,7 @@ import {
 } from "../utils/enumMapping";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { ShareButton } from "@/components/ShareButton";
 
 interface JobDetailProps {
   job_id: string;
@@ -24,6 +25,10 @@ export default function JobDetailComponent({
   const [jobData, setJobData] = useState<any | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
+
+  const handleShare = (platform: string) => {
+    console.log(`Shared on ${platform}`);
+  };
 
   useEffect(() => {
     // Debug log: Ensure we see job_id when the component is rendered
@@ -311,6 +316,12 @@ export default function JobDetailComponent({
               {mapCompanySize(jobData?.company?.company_size)}
             </span>
           </p>
+          <ShareButton
+          jobTitle="Senior Frontend Developer"
+          companyName="TechCorp Inc."
+          jobUrl={window.location.href}
+          onShare={handleShare}
+        />
         </div>
       </div>
     </div>

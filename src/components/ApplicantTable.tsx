@@ -1,5 +1,5 @@
-import React from 'react';
-import { Applicant, JobStatus } from '@/models/applicant.model';
+import React from "react";
+import { Applicant, JobStatus } from "@/models/applicant.model";
 
 interface ApplicantTableProps {
   applicants: Applicant[];
@@ -39,11 +39,11 @@ export const ApplicantTable: React.FC<ApplicantTableProps> = ({
                 {applicant.name}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                ${applicant.expectedSalary.toLocaleString()}
+                {applicant.expectedSalary.toLocaleString()}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm">
                 <a
-                  href={applicant.resumeLink}
+                  href={applicant.resumeLink?.replace("&dl=0", "&dl=1")}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-600 hover:text-blue-900"
@@ -57,15 +57,17 @@ export const ApplicantTable: React.FC<ApplicantTableProps> = ({
               <td className="px-6 py-4 whitespace-nowrap">
                 <select
                   value={applicant.status}
-                  onChange={(e) => onStatusChange(applicant.id, e.target.value as JobStatus)}
+                  onChange={(e) =>
+                    onStatusChange(applicant.id, e.target.value as JobStatus)
+                  }
                   className={`rounded-full px-3 py-1 text-sm font-semibold ${
-                    applicant.status === 'accepted'
-                      ? 'text-green-800 bg-green-100'
-                      : applicant.status === 'rejected'
-                      ? 'text-red-800 bg-red-100'
-                      : 'text-yellow-800 bg-yellow-100'
-                  } ${applicant.status !== 'onreview' ? 'opacity-75 cursor-not-allowed' : ''}`}
-                  disabled={applicant.status !== 'onreview'}
+                    applicant.status === "accepted"
+                      ? "text-green-800 bg-green-100"
+                      : applicant.status === "rejected"
+                        ? "text-red-800 bg-red-100"
+                        : "text-yellow-800 bg-yellow-100"
+                  }`}
+                  disabled={applicant.status !== "onreview"}
                 >
                   <option value="onreview">On Review</option>
                   <option value="accepted">Accepted</option>
