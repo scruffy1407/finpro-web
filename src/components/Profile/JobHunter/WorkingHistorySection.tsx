@@ -17,11 +17,11 @@ function WorkingHistorySection() {
   const dispatch = useDispatch<AppDispatch>();
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const { workingExpList, pendingState } = useSelector(
-    (state: RootState) => state.workExperience,
+    (state: RootState) => state.workExperience
   );
 
   const { currentModalId } = useSelector(
-    (state: RootState) => state.modalController,
+    (state: RootState) => state.modalController
   );
 
   const handleCloseModal = () => {
@@ -35,7 +35,7 @@ function WorkingHistorySection() {
       getWorkingExperience({
         token: accessToken as string,
         wReview: false,
-      }),
+      })
     );
   }
 
@@ -88,9 +88,11 @@ function WorkingHistorySection() {
                   companyName={workExp.companyName}
                   position={workExp.jobTitle}
                   description={workExp.jobDescription}
+                  startDate={workExp.startDate}
+                  endDate={workExp.endDate}
                   onEdit={() => {
                     dispatch(
-                      setSelectedItem(workExp.workingExperienceId as number),
+                      setSelectedItem(workExp.workingExperienceId as number)
                     );
                     dispatch(openModalAction("editWorkingModal"));
                   }}

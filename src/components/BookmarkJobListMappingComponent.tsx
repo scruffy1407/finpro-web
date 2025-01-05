@@ -52,8 +52,8 @@ const BookmarkJobListMappingComponent: React.FC<
     return (
       <div className="flex justify-center items-center">
         <Image
-          src="/NoJobs.svg"
-          alt="No jobs available"
+          src="/NoBookmark.svg"
+          alt="No bookmarks available"
           width={300}
           height={200}
         />

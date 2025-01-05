@@ -99,7 +99,7 @@ const CVPDF: React.FC<CVPDFProps> = ({ profile }) => (
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerText}>{profile.name}</Text>
-        <Text style={styles.subHeaderText}>{profile.email} | {profile.phone}</Text>
+        <Text style={styles.subHeaderText}>{profile.email}</Text>
         <Text style={styles.subHeaderText}>{profile.address}</Text>
       </View>
 

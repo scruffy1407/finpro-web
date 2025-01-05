@@ -15,6 +15,8 @@ export interface WorkingExperience {
   jobTitle: string;
   jobDescription: string;
   jobReview?: reviewResponse[];
+  startDate: string;
+  endDate: string;
 }
 interface PendingState {
   actionLoading: boolean;
@@ -46,6 +48,8 @@ const initialState: WorkingExpList = {
     jobDescription: "",
     jobTitle: "",
     jobReview: [],
+    startDate: "",
+    endDate: "",
   },
   pendingState: {
     actionLoading: false,
@@ -56,11 +60,17 @@ const initialState: WorkingExpList = {
     isDisable: false,
   },
 };
+const formatDate = (dateString: string): string => {
+  const date = new Date(dateString);
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+  return `${year}-${month}-${day}`;
+};
 
 export const getWorkingExperience = createAsyncThunk(
-  "user/company/workExprience",
+  "user/company/workExperience",
   async ({ token, wReview }: ParamsGetWorkExp) => {
-    console.log("ASYNC Review", wReview);
     try {
       const response = await profileHandler.getWorkingExperience(
         token,
@@ -86,6 +96,7 @@ export const addNewWorkingExperience = createAsyncThunk(
         {
           ...data.formData,
           jobHunterId: data.formData.jobHunterId as number,
+          companyId: data.formData.companyId ?? null,
         }
       );
       if (response.status === 201) {
@@ -169,6 +180,8 @@ const workExpSlice = createSlice({
                 jobDescription: workExp.job_description,
                 jobHunterId: workExp.jobHunterId,
                 jobReview: workExp.JobReview,
+                startDate: formatDate(workExp.start_date),
+                endDate: formatDate(workExp.end_date),
               };
             }
           );
@@ -205,7 +218,7 @@ const workExpSlice = createSlice({
         state.pendingState.actionDisable = true;
       })
       .addCase(addNewWorkingExperience.fulfilled, (state, action) => {
-        console.log(action);
+        console.log(action.payload, "FAREL FAREL FAREL TESTING");
         state.workingExpList.unshift({
           jobHunterId: action.payload.jobHunterId,
           workingExperienceId: action.payload.work_experience_id,
@@ -214,6 +227,8 @@ const workExpSlice = createSlice({
           jobDescription: action.payload.job_description,
           jobTitle: action.payload.job_title,
           jobReview: [],
+          startDate: formatDate(action.payload.start_date),
+          endDate: formatDate(action.payload.end_date),
         });
         toast.success("Success add new working experience");
       });
