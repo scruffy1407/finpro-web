@@ -13,7 +13,7 @@ function FooterComponent() {
       navbarItems: [
         { label: "Find Jobs", href: "/jobs" },
         { label: "Skill Assessments", href: "/skills-assessment" },
-        { label: "Explore Companies", href: "" },
+        { label: "Explore Companies", href: "/company" },
         { label: "Check Certificate", href: "/verify-certificate" },
       ],
     },
@@ -27,10 +27,10 @@ function FooterComponent() {
     default: {
       logo: "/logo/MainLogoWhite.svg",
       navbarItems: [
-        { label: "Find Jobs", href: "" },
-        { label: "Skill Assessments", href: "" },
-        { label: "Explore Companies", href: "" },
-        { label: "Check Certificate", href: "/certificate/verify" },
+        { label: "Find Jobs", href: "/jobs" },
+        { label: "Skill Assessments", href: "/skills-assessment" },
+        { label: "Explore Companies", href: "/company" },
+        { label: "Check Certificate", href: "/verify-certificate" },
       ],
     },
   };

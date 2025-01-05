@@ -56,7 +56,7 @@ export const navItemConfig: Record<UserRole, NavigationItem[]> = {
   jobhunter: [
     { name: "Find Jobs", href: "/jobs", icon: Briefcase },
     { name: "Skill Assessment", href: "/skills-assessment", icon: Brain },
-    { name: "Explore Companies", href: "/companies", icon: Building2 },
+    { name: "Explore Companies", href: "/company", icon: Building2 },
   ],
   company: [
     { name: "Job List", href: "/post-job", icon: FileText },

@@ -71,4 +71,33 @@ export class CompanyUtils {
       return e.response;
     }
   }
+
+  async getCompanyList(
+    companyName: string,
+    companyLocation: string,
+    hasJobs: boolean = false,
+    currentPage?: number,
+    limit?: number,
+  ) {
+    console.log("UTILS", companyLocation);
+    let queryString = `?page=${currentPage}&limit=${limit || 12}`;
+
+    if (companyName) {
+      queryString += `&companyName=${companyName}`;
+    }
+    if (companyLocation) {
+      queryString += `&companyCity=${companyLocation}`;
+    }
+
+    try {
+      const response = await api.get(`/api/company/company${queryString}`);
+      if (response.status === 200) {
+        return response.data;
+      } else {
+        return [];
+      }
+    } catch (e) {
+      return e;
+    }
+  }
 }

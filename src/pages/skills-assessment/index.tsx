@@ -60,11 +60,14 @@ function Index() {
   };
 
   async function handleClick() {
+    console.log(isLoggedIn);
     if (!isLoggedIn) {
       dispatch(openModalAction("needToLoginModal"));
+      return;
     }
     if (subscriptionId === 1) {
       dispatch(openModalAction("subscribePackageModal"));
+      return;
     }
   }
 

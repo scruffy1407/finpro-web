@@ -11,6 +11,7 @@ import workExperienceReducer from "@/store/slices/WorkingExpSlice";
 import educationReducer from "@/store/slices/EducationSlice";
 import bookmarksReducer from "@/store/slices/bookmarkSlice";
 import generalInfoReducer from "@/store/slices/generalInfo";
+import companySearchReducer from "@/store/slices/companySearchSlice";
 
 const store = configureStore({
   reducer: {
@@ -26,6 +27,7 @@ const store = configureStore({
     education: educationReducer,
     bookmarks: bookmarksReducer,
     generalInfo: generalInfoReducer,
+    companySearch: companySearchReducer,
   },
 });
 
