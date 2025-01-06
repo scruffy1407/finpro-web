@@ -1,4 +1,5 @@
 export interface JobPost {
+  job_id: number;
   job_title: string;
   companyId?: number;
   preSelectionTestId?: number;
@@ -40,4 +41,11 @@ export interface companyDetailResponse {
   companyPhoneNumber: number;
   listJob: JobPost[];
   listReview: reviewResponse[];
+}
+
+export interface ApplyJob {
+  jobHunterId: number;
+  resume: File | null;
+  expected_salary: string | number;
+  jobId: number;
 }

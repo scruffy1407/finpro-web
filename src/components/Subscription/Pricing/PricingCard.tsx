@@ -11,6 +11,7 @@ interface PricingCardProps {
   description: string;
   features: string[];
   isPopular?: boolean;
+  subParam: string;
 }
 
 export function PricingCard({
@@ -19,6 +20,7 @@ export function PricingCard({
   description,
   features,
   isPopular,
+  subParam,
 }: PricingCardProps) {
   const router = useRouter();
   const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
@@ -29,7 +31,7 @@ export function PricingCard({
     if (!isLoggedIn) {
       dispatch(openModalAction("needToLoginModal"));
     } else {
-      router.push("/subscription/confirmation");
+      router.push(`/subscription/${subParam}`);
     }
   }
 

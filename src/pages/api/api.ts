@@ -1,39 +1,41 @@
 import axios, { InternalAxiosRequestConfig } from "axios";
 import { job } from "@/utils/axiosInterface";
 import { location } from "@/utils/axiosInterface";
+import Cookies from "js-cookie";
 
 const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
+const accessToken = Cookies.get("accessToken");
 
 const api = axios.create({
-	baseURL,
+  baseURL,
 });
 
 interface GetJobPosts {
-	page: number;
-	limit: number;
-	job_title?: string;
-	categoryId?: number;
-	jobType?: string;
-	jobSpace?: string;
-	dateRange?: string;
-	sortorder?: string;
+  page: number;
+  limit: number;
+  job_title?: string;
+  categoryId?: number;
+  jobType?: string;
+  jobSpace?: string;
+  dateRange?: string;
+  sortorder?: string;
 }
 
 export async function getJobNewLp() {
-	const response = await job.get("jobNewLp");
-	return response.data;
+  const response = await job.get("jobNewLp");
+  return response.data;
 }
 
 export async function getJobPost(
-	currentPage: number,
-	searchQuery: {
-		jobTitle?: string;
-		categoryId?: string;
-		jobType?: string;
-		dateRange?: string;
-		sortOrder?: string;
-		companyCity?: string;
-	}
+  currentPage: number,
+  searchQuery: {
+    jobTitle?: string;
+    categoryId?: string;
+    jobType?: string;
+    dateRange?: string;
+    sortOrder?: string;
+    companyCity?: string;
+  },
 ) {
 	const { jobTitle, categoryId, jobType, dateRange, sortOrder, companyCity } =
 		searchQuery;
@@ -68,8 +70,6 @@ export async function getJobPost(
 		queryString += `&companyCity=${encodeURIComponent(companyCity)}`;
 	}
 
-	console.log("THIS IS QUERRY STRING ");
-	console.log(queryString);
 	try {
 		const response = await job.get(queryString); // Make the API request
 		return response; // Return the data part of the response
@@ -80,43 +80,88 @@ export async function getJobPost(
 }
 
 export const getProvince = async () => {
-	const response = await location.get("/get-province");
-	return response;
+  const response = await location.get("/get-province");
+  return response;
 };
 
 export const getCityByProvince = async (provinceId: number) => {
-	const response = await location.get(`/get-city/${provinceId}`);
-	return response;
+  const response = await location.get(`/get-city/${provinceId}`);
+  return response;
 };
 
 export const searchLocation = async () => {
-	const response = await location.get("search-location");
-	return response;
+  const response = await location.get("search-location");
+  return response;
 };
 
 export async function getCategories() {
-	const response = await job.get("categories");
-	return response.data;
+  const response = await job.get("categories");
+  return response.data;
 }
 
+export async function getJobPostDash({
+	limit = 10,
+	page = 1,
+	jobTitle = "",
+	sortOrder = "",
+}: {
+	limit?: number;
+	page?: number;
+	jobTitle?: string;
+	sortOrder?: string;
+}) {
+	// Build the query string
+	let queryString = `companydashjob?page=${page}&limit=${limit}`;
+
+	if (jobTitle) {
+		queryString += `&job_title=${jobTitle}`;
+	}
+
+	if (sortOrder) {
+		queryString += `&sortOrder=${sortOrder}`;
+	} 
+	if (!sortOrder) {
+		queryString += `&sortOrder=desfc`;
+	} 
+
+
+	// Add the Authorization header
+	const config = {
+		headers: {
+			Authorization: `Bearer ${accessToken}`,
+		},
+	};
+
+	console.log("THIS IS QUERRY STRING ");
+	console.log(queryString);
+
+	try {
+		const response = await job.get(queryString, config); // Make the API request
+		return response.data.data; // Return the data part of the response
+	} catch (error) {
+		console.error("Error fetching job posts:", error);
+		throw error;
+	}
+}
+
+export async function deleteJobPostDash(job_Id: number): Promise<{ message: string }> {
+	try {
+	  // Perform the DELETE request
+	  const response = await job.put(`job/${job_Id}`, {}, {
+		headers: {
+		  Authorization: `Bearer ${accessToken}`, // Include your token
+		},
+	  });
+	  console.log(`Requesting DELETE on job/${job_Id}`);
+	  
+	  // Assuming the response from the server contains a message property
+	  // Return the response with the success message
+	  return response.data; // Ensure response.data contains the message
+	} catch (error) {
+	  // Handle errors, e.g., log or throw the error
+	  console.error("Error deleting job post:", error);
+	  throw error; // Rethrow the error to be caught by the calling function
+	}
+  }
+
 export default api;
-
-// backup lastest
-// export async function getJobPost(
-// 	currentPage: number,
-// 	searchQuery: { jobTitle?: string; categoryId?: string }
-// ) {
-// 	const { jobTitle, categoryId } = searchQuery;
-
-// 	const response = await job.get(
-// 		`jobPosts?page=${currentPage}&limit=15${
-// 			jobTitle ? `&job_title=${jobTitle}` : ""
-// 		}${
-//       categoryId ? `&categoryId=${categoryId}` : ""}`
-// 	);
-// 	console.log("THIS IS AFTER HIT API");
-// 	console.log(response);
-// 	return response.data.data;
-// }
-
-// }

@@ -12,6 +12,15 @@ export interface Education {
   cumulativeGpa: number;
   educationDate: string | Date;
 }
+interface ServerEducation {
+  education_id: number | null;
+  cumulative_gpa: number;
+  education_description: string;
+  education_name: string;
+  education_degree: EducationDegreeType;
+  graduation_date: string;
+  jobHunterId: number | null;
+}
 interface PendingState {
   actionLoading: boolean;
   actionDisable: boolean;
@@ -24,6 +33,10 @@ interface EducationList {
   newEducation: Education;
   selectedItemId?: number | undefined;
   pendingState: PendingState;
+}
+interface InputChangePayload {
+  name: string | number;
+  value: string | number;
 }
 
 const profileHandler = new ProfileHandler();
@@ -74,6 +87,7 @@ export const getEducation = createAsyncThunk(
   async (token: string) => {
     try {
       const response = await profileHandler.getEducation(token);
+      console.log('Add Education Response:', response.data); // Debug log
       if (response.status === 200) {
         return response.data;
       } else {
@@ -82,7 +96,7 @@ export const getEducation = createAsyncThunk(
     } catch (e) {
       return e;
     }
-  },
+  }
 );
 
 export const addNewEducation = createAsyncThunk(
@@ -93,7 +107,7 @@ export const addNewEducation = createAsyncThunk(
       try {
         const response = await profileHandler.addNewEducation(
           newData.token,
-          newData.data,
+          newData.data
         );
         if (response.status === 201) {
           return response.data;
@@ -106,7 +120,7 @@ export const addNewEducation = createAsyncThunk(
     } else {
       toast.error("Please filled all the field");
     }
-  },
+  }
 );
 
 export const editEducationData = createAsyncThunk(
@@ -117,7 +131,7 @@ export const editEducationData = createAsyncThunk(
       try {
         const response = await profileHandler.editEducation(
           updateData.token,
-          updateData.data,
+          updateData.data
         );
         if (response.status === 200) {
           return response.data;
@@ -131,27 +145,32 @@ export const editEducationData = createAsyncThunk(
     {
       toast.error("Please filled all the field");
     }
-  },
+  }
 );
 
-const handleInputChange = (state: any, action: any, targetObject: any) => {
+const handleInputChange = (
+  state: EducationList,
+  action: { payload: InputChangePayload },
+  targetObject: Education
+) => {
   const { name, value } = action.payload;
 
   switch (name) {
     case "educationName":
-      targetObject.educationName = value;
+      targetObject.educationName = String(value);
       break;
     case "education_degree":
       targetObject.education_degree = value as EducationDegreeType;
       break;
     case "educationDescription":
-      targetObject.educationDescription = value;
+      targetObject.educationDescription = String(value);
       break;
     case "cumulativeGpa":
       targetObject.cumulativeGpa = Number(value);
       break;
     case "educationDate":
-      targetObject.educationDate = value;
+      targetObject.educationDate =
+        typeof value === "string" ? value : new Date(value).toISOString();
       break;
     default:
       break;
@@ -166,7 +185,7 @@ export const deleteEducation = createAsyncThunk(
     try {
       const response = await profileHandler.deleteEducation(
         data.token,
-        data.education_id,
+        data.education_id
       );
       if (response.status === 200) {
         return {
@@ -179,7 +198,7 @@ export const deleteEducation = createAsyncThunk(
     } catch (e) {
       throw e;
     }
-  },
+  }
 );
 
 const educationSlice = createSlice({
@@ -240,7 +259,9 @@ const educationSlice = createSlice({
         state.pendingState.isRender = false;
       })
       .addCase(getEducation.fulfilled, (state, action) => {
-        const educationMap: Education[] = action.payload.map((education) => {
+        const educationMap: Education[] = (
+          action.payload as ServerEducation[]
+        ).map((education) => {
           const formattedDate = new Date(education.graduation_date)
             .toISOString()
             .slice(0, 7);
@@ -262,7 +283,7 @@ const educationSlice = createSlice({
         state.pendingState.dataLoading = false;
         state.pendingState.isRender = true;
         toast.error(
-          "Failed to get your personal information,please refresh your browser",
+          "Failed to get your personal information,please refresh your browser"
         );
       })
       //   Add Education
@@ -297,7 +318,7 @@ const educationSlice = createSlice({
         state.pendingState.actionDisable = false;
         state.pendingState.actionLoading = false;
         toast.error(
-          "Its on us. We failed to add new education, please try again or refresh browser",
+          "Its on us. We failed to add new education, please try again or refresh browser"
         );
       })
       .addCase(deleteEducation.pending, (state) => {
@@ -311,7 +332,7 @@ const educationSlice = createSlice({
         } = action.payload;
 
         const deletedIndex = state.educationList.findIndex(
-          (education) => education.educationId === deletedData.educationId,
+          (education) => education.educationId === deletedData.educationId
         );
         if (deletedIndex !== -1) {
           state.educationList.splice(deletedIndex, 1);
@@ -324,7 +345,7 @@ const educationSlice = createSlice({
         state.pendingState.actionLoading = false;
         state.pendingState.actionDisable = false;
         toast.error(
-          "Its on us. We failed to add new education, please try again or refresh browser",
+          "Its on us. We failed to add new education, please try again or refresh browser"
         );
       })
       .addCase(editEducationData.pending, (state) => {
@@ -337,7 +358,7 @@ const educationSlice = createSlice({
 
         const updateEducation = action.payload.education_id;
         const educationIndex = state.educationList.findIndex(
-          (edu) => edu.educationId === updateEducation,
+          (edu) => edu.educationId === updateEducation
         );
 
         if (educationIndex !== -1) {
@@ -354,11 +375,11 @@ const educationSlice = createSlice({
         }
         toast.success("Success update education");
       })
-      .addCase(editEducationData.rejected, (state, action) => {
+      .addCase(editEducationData.rejected, (state) => {
         state.pendingState.actionDisable = false;
-        state.pendingState.actionLoading = false;
+        state.pendingState.actionLoading = true;
         toast.error(
-          `Its on us. We failed to add new education, please try again or refresh browser`,
+          `Its on us. We failed to add new education, please try again or refresh browser`
         );
       });
   },

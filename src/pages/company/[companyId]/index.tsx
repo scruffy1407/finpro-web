@@ -15,6 +15,7 @@ import {
 } from "@/models/company.model";
 import SectionSkeleton from "@/components/Skeleton/CompanyDetailPage.skeleton";
 import { AuthHandler } from "@/utils/auth.utils";
+import { Navbar } from "@/components/NavigationBar/Navbar";
 
 function CompanyPage() {
   const authHandler = new AuthHandler();
@@ -47,6 +48,7 @@ function CompanyPage() {
     return Number((sum / (totalReviews * 4)).toFixed(2)); // 4 ratings per review
   };
 
+  console.log("LIST JOB", jobList);
   async function handleFetchingData() {
     setIsLoading(true);
     try {
@@ -77,13 +79,7 @@ function CompanyPage() {
 
   return (
     <div className="max-w-screen-xl mx-auto">
-      <NavbarComponent
-        findJobs="Find Jobs"
-        skillAssessment="Skill Assessment"
-        exploreCompanies="Explore Companies"
-        loginJobHunter="Login"
-        loginCompanies="Login as Recruiter"
-      />
+      <Navbar />
 
       {isLoading ? (
         <SectionSkeleton />
