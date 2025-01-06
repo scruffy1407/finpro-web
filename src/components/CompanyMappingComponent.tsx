@@ -17,7 +17,6 @@ function CompanyMappingComponent() {
     const response = await companyUtls.getCompanyList(
       companyName,
       companyCity,
-      false,
       1,
       8,
     );

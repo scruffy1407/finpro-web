@@ -10,10 +10,9 @@ import {
 } from "../utils/enumMapping";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/store";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 import LoadingLoader from "@/components/LoadingLoader";
-import { isBoolean } from "node:util";
 import SectionJoinApplicant from "@/components/SectionJoinApplicant";
 import { JobApplication } from "@/models/applicant.model";
 import { ShareButton } from "@/components/ShareButton";
@@ -44,10 +43,9 @@ export default function JobDetailComponent({
     return `${(salary / 1000000).toFixed(1)} jt`; // Format to 1 decimal place
   };
   const calculateAverageRating = (reviews: any[]) => {
-    // Extract the ratings for each review
     const totalReviews = reviews.length;
 
-    if (totalReviews === 0) return 0; // If no reviews, return 0
+    if (totalReviews === 0) return 0;
 
     const sum = reviews.reduce((acc, review) => {
       return (
@@ -338,7 +336,6 @@ export default function JobDetailComponent({
           onShare={handleShare}
         />
         </div>
-      </div>
     </>
   );
 }

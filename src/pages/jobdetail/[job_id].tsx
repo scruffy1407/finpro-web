@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
-import NavbarComponent from "@/components/NavbarComponent";
+import React, { useState, useEffect } from "react";
 import JobDetailComponent from "@/components/JobDetailComponent";
 import HeadingRelatedComponent from "@/components/HeadingRelatedComponent";
 import FooterComponent from "@/components/FooterComponent";
@@ -31,7 +30,7 @@ function JobDetail() {
   const router = useRouter();
   const { job_id } = router.query;
   const [applicantData, setApplicantData] = useState<null | JobApplication>(
-    null,
+    null
   );
   const [jobData, setJobData] = useState<any | null>(null);
   const [relatedPost, setRelatedPost] = useState<any[] | null>(null);
@@ -39,7 +38,7 @@ function JobDetail() {
   const [validateLoading, setValiateLoading] = useState<boolean>(false);
   const dispatch = useDispatch<AppDispatch>();
   const { currentModalId } = useSelector(
-    (state: RootState) => state.modalController,
+    (state: RootState) => state.modalController
   );
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const { validApply, pendingState, listProvince, listCity, cityId } =
@@ -53,11 +52,11 @@ function JobDetail() {
   const fetchJobDetail = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/company/jobDetails/${job_id}`,
+        `http://localhost:8000/api/company/jobDetails/${job_id}`
       );
 
       if (response.status === 200) {
-        setJobData(response.data.jobPostDetail); // Set Detail Job Information
+        setJobData(response.data.jobPostDetail);
         setRelatedPost(response.data.relatedJobPosts);
       } else {
         setJobData(null);
@@ -77,7 +76,7 @@ function JobDetail() {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        },
+        }
       );
       console.log("VALIDATE USER JOIN", response);
       if (response.status === 200 && response.data.code === "JOIN") {
@@ -169,25 +168,33 @@ function JobDetail() {
           />
         </>
       </ModalContainer>
-<!--     <div className="overflow-hidden mt-5"> -->
-       {/* Dynamic Meta Tags HEADING!! */}
-       <Head>
-        <title>{jobDetails ? `${jobDetails.title} at ${jobDetails.company}` : "Job Details"}</title>
+
+      {/* Dynamic Meta Tags HEADING!! */}
+      <Head>
+        <title>
+          {jobData
+            ? `${jobData.title} at ${jobData.company}`
+            : "Job Details"}
+        </title>
         <meta
           property="og:title"
-          content={jobDetails ? `${jobDetails.title} at ${jobDetails.company}` : "Job Details"}
+          content={
+            jobData
+              ? `${jobData.title} at ${jobData.company}`
+              : "Job Details"
+          }
         />
         <meta
           property="og:description"
           content={
-            jobDetails
-              ? `Exciting job opportunity at ${jobDetails.company}. Click to learn more.`
+            jobData
+              ? `Exciting job opportunity at ${jobData.company}. Click to learn more.`
               : "Job opportunity details."
           }
         />
         <meta
           property="og:image"
-          content={jobDetails?.image || "/default-job-image.jpg"} // Fallback to default image
+          content={jobData?.image || "/default-job-image.jpg"} // Fallback to default image
         />
         <meta
           property="og:url"

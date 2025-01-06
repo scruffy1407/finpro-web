@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import NavbarComponent from "@/components/NavbarComponent";
 import HeroCompanyListComponent from "@/components/HeroCompanyListComponent";
 import CompanyListMappingComponent from "@/components/CompanyListMappingComponent";
 

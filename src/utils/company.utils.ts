@@ -75,7 +75,6 @@ export class CompanyUtils {
   async getCompanyList(
     companyName: string,
     companyLocation: string,
-    hasJobs: boolean = false,
     currentPage?: number,
     limit?: number,
   ) {

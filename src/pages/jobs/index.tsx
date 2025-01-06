@@ -25,7 +25,6 @@ import { Navbar } from "@/components/NavigationBar/Navbar";
 import { AuthHandler } from "@/utils/auth.utils";
 import ListSkeleton from "@/components/listSkeleton";
 import JobPostComponentSkeleton from "@/components/JobPostSkeleton";
-import { AuthHandler } from "@/utils/auth.utils";
 import { addBookmark, removeBookmark, fetchBookmarks } from "@/store/slices/bookmarkSlice";
 import Cookies from "js-cookie";
 import axios from "axios";
