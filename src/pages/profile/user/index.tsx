@@ -18,6 +18,7 @@ import { Navbar } from "@/components/NavigationBar/Navbar";
 import ButtonComponent from "@/components/ButtonComponent";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import LoadingLoader from "@/components/LoadingLoader";
 
 interface Experience {
   company: string;
@@ -48,13 +49,15 @@ function ProfilePage() {
   const authHandler = new AuthHandler();
   const pagePermission = "jobhunter";
   authHandler.authorizeUser(pagePermission);
-  const { name, email, photo } = useSelector((state: RootState) => state.auth);
+  const { name, email, photo, isLoggedIn } = useSelector(
+    (state: RootState) => state.auth,
+  );
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const dispatch = useDispatch<AppDispatch>();
   const hiddenFileInput = useRef<HTMLInputElement>(null);
 
   const { currentModalId } = useSelector(
-    (state: RootState) => state.modalController
+    (state: RootState) => state.modalController,
   );
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -120,7 +123,7 @@ function ProfilePage() {
               ? new Date(exp.end_date).toLocaleDateString()
               : "Present",
             description: exp.job_description,
-          })
+          }),
         ),
         education: cvData.education.map(
           (edu: {
@@ -133,7 +136,7 @@ function ProfilePage() {
             degree: edu.education_degree,
             graduationDate: new Date(edu.graduation_date).toLocaleDateString(),
             description: edu.education_description,
-          })
+          }),
         ),
       };
       setProfileData(transformedData);
@@ -148,7 +151,7 @@ function ProfilePage() {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [isLoggedIn]);
 
   // Get Remaining CV Quota
   const [remainingGenerations, setRemainingGenerations] = useState<
@@ -180,7 +183,7 @@ function ProfilePage() {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       if (response.data.success) {
@@ -211,7 +214,7 @@ function ProfilePage() {
     handleGenerateCV();
   };
 
-  if (loading) return <div>Loading...</div>;
+  // if (loading) return <div>Loading...</div>;
   if (error) return <div className="text-red-500">{error}</div>;
 
   return (
@@ -270,14 +273,14 @@ function ProfilePage() {
                 variant="primary"
                 size="sm"
                 className="w-full"
-                onClick={() => {
+                onClick={async () => {
                   if (
                     jobHunterSubscriptionId === 1 ||
                     subscriptionActive === false
                   ) {
                     toast.error("Please subscribe to access this feature.");
                   } else {
-                    fetchData();
+                    await fetchData();
                     openConfirmationModal();
                   }
                 }}
@@ -290,13 +293,16 @@ function ProfilePage() {
                   remainingGenerations === 0
                 }
               >
-                {jobHunterSubscriptionId === 1 || subscriptionActive === false
-                  ? "Generate CV 🔒 (Premium)"
-                  : `Generate CV (PDF) ${
-                      remainingGenerations !== null
-                        ? `(${remainingGenerations} left)`
-                        : ""
-                    }`}
+                {loading
+                  ? LoadingLoader()
+                  : jobHunterSubscriptionId === 1 ||
+                      subscriptionActive === false
+                    ? "Generate CV 🔒 (Premium)"
+                    : `Generate CV (PDF) ${
+                        remainingGenerations !== null
+                          ? `(${remainingGenerations} left)`
+                          : ""
+                      }`}
               </Button>
 
               {showConfirmationModal && (

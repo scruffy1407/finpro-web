@@ -13,7 +13,6 @@ function Index() {
   const [activeTab, setActiveTab] = useState<string>(
     JobApplicationStatus.OnReview,
   );
-  const prevActiveTab = useRef<string>(JobApplicationStatus.OnReview);
 
   return (
     <main>
