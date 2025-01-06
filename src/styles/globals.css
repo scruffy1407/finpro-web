@@ -26,3 +26,25 @@ button {
 	font-family: "Inter", sans-serif;
 
 }
+
+.my-custom-bullet-list {
+	list-style-type: disc; /* Standard bullet list */
+	margin-left: 1.5rem;
+  }
+
+  .my-custom-ordered-list {
+	list-style-type: decimal; /* Ordered list with numbers */
+	margin-left: 1.5rem;
+  }
+
+  .my-custom-blockquote {
+	border-left: 4px solid #ddd; /* Add a left border to distinguish the blockquote */
+	padding-left: 1rem; /* Add some padding to the left */
+	margin: 1rem 0; /* Add margin above and below */
+	font-style: italic; /* Optionally, italicize the text */
+	color: #555; /* Change the text color */
+  }
+  
+  .my-custom-blockquote p {
+	margin: 0; /* Remove default paragraph margin inside the blockquote */
+  }
