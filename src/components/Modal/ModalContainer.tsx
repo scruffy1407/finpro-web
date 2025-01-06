@@ -38,12 +38,18 @@ function ModalContainer({
               {/* */}
               <div className="absolute  px-6 py-8 w-full flex flex-col gap-6 bg-white rounded-tl-2xl rounded-tr-2xl shadow bottom-0 md:relative md:rounded-2xl md:top-1/2 md:-translate-y-1/2 ">
                 {/* */}
-                <div className="flex items-center justify-between rounded-t ">
-                  <h3 className="text-xl font-bold text-gray-900 ">{title}</h3>
-                  {description ? (
-                    <p className={"text-sm text-neutral-600"}>{description}</p>
-                  ) : null}
-                  {/* Replaced static title with dynamic prop */}
+                <div className="flex items-start gap-10 justify-between rounded-t ">
+                  <div className={"flex flex-col gap-2"}>
+                    <h3 className="text-xl font-bold text-gray-900 ">
+                      {title}
+                    </h3>
+                    {description ? (
+                      <p className={"text-sm text-neutral-600"}>
+                        {description}
+                      </p>
+                    ) : null}
+                  </div>
+
                   <button
                     type="button"
                     className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"

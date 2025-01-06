@@ -77,7 +77,6 @@ function ButtonComponent({
     case "ButtonBookmark":
       return (
         <button
-          className=""
           onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
             e.stopPropagation();
             onClickBookmark?.(e);

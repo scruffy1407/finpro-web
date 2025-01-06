@@ -22,11 +22,14 @@ function FormEditWorkingExperience({
   companyId,
   workingExperienceId,
   jobHunterId,
+  startDate,
+  endDate,
 }: WorkingExperience) {
   const dispatch = useDispatch<AppDispatch>();
   const profileHandler = new ProfileHandler();
   const [isDisable, setIsDisable] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  console.log(workingExperienceId);
 
   const [editForm, setEditForm] = useState<WorkingExperience>({
     workingExperienceId: workingExperienceId,
@@ -35,19 +38,21 @@ function FormEditWorkingExperience({
     companyId: companyId,
     companyName: companyName,
     jobTitle: jobTitle,
+    startDate: startDate,
+    endDate: endDate,
   });
   const options = (inputValue: string, callback: (options: []) => void) => {
     fetchCompanyData(inputValue)
       .then((data) => callback(data))
-      .catch(() => callback([])); // Handle errors with an empty array
+      .catch(() => callback([]));
   };
 
   async function fetchCompanyData(keyword: string) {
     try {
       const response = await profileHandler.searchCompany(keyword);
       return response.data;
-    } catch (e: unknown) {
-      return []; // Handle errors with an empty array
+    } catch {
+      return [];
     }
   }
 
@@ -59,7 +64,7 @@ function FormEditWorkingExperience({
     try {
       const response = await profileHandler.editWorkingExperience(
         accessToken as string,
-        editForm,
+        editForm
       );
       if (response === 204) {
         toast.success("Successfully update your work experience");
@@ -70,12 +75,14 @@ function FormEditWorkingExperience({
       } else {
         toast.error("Failed to update your profile");
       }
-    } catch (e) {
+    } catch {
       toast.error("Something went wrong, please refresh your browser");
     }
   }
 
-  function handleChange(e: any) {
+  function handleChange(
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) {
     const { name, value } = e.target;
     setEditForm({
       ...editForm,
@@ -87,7 +94,7 @@ function FormEditWorkingExperience({
     selectedOption: SingleValue<{
       value: number | null;
       label: string | undefined;
-    }> | null,
+    }> | null
   ) {
     if (selectedOption) {
       setEditForm({
@@ -99,13 +106,25 @@ function FormEditWorkingExperience({
   }
 
   useEffect(() => {
+    const startDate = new Date(editForm.startDate);
+    const endDate = new Date(editForm.endDate);
+    const isInvalidDateRange = startDate > endDate;
+
     setIsDisable(
       editForm.jobDescription === "" ||
         editForm.jobTitle === "" ||
-        editForm.companyId === null,
+        editForm.companyId === null ||
+        isInvalidDateRange
     );
-  }, [editForm.jobDescription, editForm.jobTitle, editForm.companyId]);
+  }, [
+    editForm.jobDescription,
+    editForm.jobTitle,
+    editForm.companyId,
+    editForm.startDate,
+    editForm.endDate,
+  ]);
 
+  console.log(editForm, "INI DATA EDITNYA!!! 123123");
   return (
     <form onSubmit={handleEditWork} className="flex flex-col gap-5">
       <div>
@@ -149,6 +168,28 @@ function FormEditWorkingExperience({
           placeholder="Ex : Senior Product Manager"
           value={editForm.jobTitle}
           onChange={handleChange}
+        />
+      </div>
+
+      {/* START DATE & END DATE */}
+      <div className="mb-4">
+        <label className="block text-sm font-medium">Start Date</label>
+        <input
+          type="date"
+          className="input"
+          value={editForm.startDate}
+          onChange={handleChange}
+          name="startDate"
+        />
+      </div>
+      <div className="mb-4">
+        <label className="block text-sm font-medium">End Date</label>
+        <input
+          type="date"
+          className="input"
+          value={editForm.endDate}
+          onChange={handleChange}
+          name="endDate"
         />
       </div>
 

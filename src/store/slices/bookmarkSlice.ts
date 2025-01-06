@@ -1,33 +1,63 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
+import Cookies from "js-cookie";
 
 export interface Job {
-    wishlist_id: number;
-    jobPost: {
-      job_id: number;
-      job_title: string;
-      salary_min: string;
-      salary_max: string;
-      job_type: string;
-      job_space: string;
-      job_experience_min: string;
-      job_experience_max: string;
-      salary_show: boolean;
-      created_at: string;
-      company: {
-        company_name: string;
-        company_city: string;
-        logo: string;
-      };
+  wishlist_id: number;
+  jobPostId: number;
+  jobPost: {
+    job_id: number;
+    job_title: string;
+    salary_min: string;
+    salary_max: string;
+    job_type: string;
+    job_space: string;
+    job_experience_min: string;
+    job_experience_max: string;
+    salary_show: boolean;
+    created_at: string;
+    company: {
+      company_name: string;
+      company_city: string;
+      logo: string;
     };
-  }
+  };
+}
 
 interface BookmarkState {
   bookmarks: Job[];
+  loading: boolean;
+  error: string | null;
 }
 
 const initialState: BookmarkState = {
   bookmarks: [],
+  loading: false,
+  error: null,
 };
+
+export const fetchBookmarks = createAsyncThunk(
+  "bookmarks/fetchBookmarks",
+  async (_, { rejectWithValue }) => {
+    try {
+      const token = Cookies.get("accessToken");
+      if (!token) {
+        throw new Error("Token is missing from cookies.");
+      }
+
+      const response = await axios.get(
+        "http://localhost:8000/applyjob/bookmark",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      return response.data.bookmarks?.jobWishlist || [];
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
 
 const bookmarkSlice = createSlice({
   name: "bookmarks",
@@ -38,12 +68,27 @@ const bookmarkSlice = createSlice({
     },
     removeBookmark: (state, action: PayloadAction<number>) => {
       state.bookmarks = state.bookmarks.filter(
-        (job) => job.wishlist_id !== action.payload
+        (bookmark) => bookmark.wishlist_id !== action.payload
       );
     },
     addBookmark: (state, action: PayloadAction<Job>) => {
       state.bookmarks.push(action.payload);
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchBookmarks.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchBookmarks.fulfilled, (state, action) => {
+        state.loading = false;
+        state.bookmarks = action.payload;
+      })
+      .addCase(fetchBookmarks.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      });
   },
 });
 

@@ -1,10 +1,14 @@
 import React from "react";
-import CompanyComponent from "./CompanyComponent";
+import CompanyComponent, { CompanyShortProps } from "./CompanyComponent";
 import { RootState } from "@/store";
 import { useSelector } from "react-redux";
 import { CompanyListPostDummy } from "@/utils/datadummy";
 
-function CompanyListMappingComponent() {
+interface CompanyListProps {
+  companies: CompanyShortProps[];
+}
+
+function CompanyListMappingComponent({ companies }: CompanyListProps) {
   // Get pagination state from Redux
   const { currentPage, companiesPerPage } = useSelector(
     (state: RootState) => state.companyPagination,
@@ -22,39 +26,28 @@ function CompanyListMappingComponent() {
   );
 
   return (
-    <div className="">
-      <div className="max-w-screen-xl rounded-xl mx-auto flex flex-col gap-4 items-center px-4 lg:hidden">
-        {/* Map through dummyCompanies and render CompanyComponent for each company */}
-        {currentCompanies.map((company, index) => (
-          <div
-            key={index}
-            className="flex w-full rounded-xl sm:w-[410px] bg-white  hover:shadow-lg"
-          >
+    <section className="px-4">
+      <div className="max-w-screen-xl mx-auto ">
+        <div
+          className={
+            "grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3  lg:grid-cols-4"
+          }
+        >
+          {/* Map through dummyCompanies and render CompanyComponent for each company */}
+          {companies.map((company, index) => (
             <CompanyComponent
+              companyId={company.companyId}
               key={index}
               logo={company.logo}
               companyName={company.companyName}
+              jobsOpen={company.jobsOpen}
+              companyProvince={company.companyProvince}
+              companyCity={company.companyCity}
             />
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-      <div className="hidden max-w-screen-xl mx-auto lg:grid grid-cols-4 gap-4 justify-center rounded-xl">
-        {/* Map through currentCompanies and render CompanyComponent for each company */}
-        {currentCompanies.map(
-          (
-            company,
-            index, // Limit to 8 company for 2 rows of 4
-          ) => (
-            <div key={index} className="bg-white rounded-xl hover:shadow-lg">
-              <CompanyComponent
-                logo={company.logo}
-                companyName={company.companyName}
-              />
-            </div>
-          ),
-        )}
-      </div>
-    </div>
+    </section>
   );
 }
 

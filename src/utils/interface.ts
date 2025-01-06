@@ -79,7 +79,7 @@ export interface JobPostProps {
   companyName: string;
   job_title: string;
   company_province: string;
-  jobType: string; // This will accept an array of the predefined JobType values
+  jobType: string;
   created_at: Date;
   salaryMin: number;
   salaryMax: number;
@@ -87,7 +87,7 @@ export interface JobPostProps {
   jobSpace?: string;
   experienceMin?: number;
   experienceMax?: number;
-  job_id: string;
+  job_id: number;
   companyId: number;
 }
 

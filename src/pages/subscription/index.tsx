@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/router";
-import Image from "next/image";
+import { Navbar } from "@/components/NavigationBar/Navbar";
 
 function Index() {
   const authHandler = new AuthHandler();
@@ -42,9 +42,9 @@ function Index() {
               Unlock Your Career Potential
             </h2>
             <p className={`text-neutral-600 text-sm`}>
-              Don't miss out on your next big opportunity. Login now to explore
+              {`Don't miss out on your next big opportunity. Login now to explore
               10K+ jobs from 200+ top companies. Your dream career is just a
-              click away.
+              click away.`}
             </p>
           </div>
           <div className={"flex gap-4"}>
@@ -65,13 +65,8 @@ function Index() {
           </div>
         </div>
       </ModalContainer>
-      <NavbarComponent
-        findJobs="Find Jobs"
-        skillAssessment="Skill Assessment"
-        exploreCompanies="Explore Companies"
-        loginJobHunter="Login"
-        loginCompanies="Login as Recruiter"
-      />
+      <Navbar />
+
       <div className="mx-auto max-w-screen-xl mt-5 mb-10">
         <div className={`bg-white w-full p-10 rounded-2xl`}>
           <PageHeader />
