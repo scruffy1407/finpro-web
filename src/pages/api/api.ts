@@ -152,6 +152,8 @@ export async function deleteJobPostDash(job_Id: number): Promise<{ message: stri
 	  throw error; // Rethrow the error to be caught by the calling function
 	}
   }
+
+  
   
 
 export default api;

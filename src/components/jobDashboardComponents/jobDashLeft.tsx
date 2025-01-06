@@ -17,7 +17,6 @@ function JobDashLeft({}) {
 	const { isLoggedIn } = useSelector((state: RootState) => state.auth);
 	const accessToken = Cookies.get("accessToken");
 	const router = useRouter();
-	console.log(router.pathname);
 	const [metrics, setMetrics] = useState<Metrics | null>(null);
 	const [showForm, setShowForm] = useState(false);
 	

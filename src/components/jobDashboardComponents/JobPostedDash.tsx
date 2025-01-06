@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { formatDistanceToNow, format } from "date-fns";
+import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/router";
 import ConfirmDelete from "@/components/Modal/ConfirmDelete";
@@ -15,13 +15,12 @@ import { getJobPostDash } from "@/pages/api/api";
 import SearchBarJobDash from "./searchBarJobDash";
 import { deleteJobPostDash } from "@/pages/api/api";
 import JobEditForm from "./jobEditForm";
-import CreateJobForm from "./jobCreateForm";
 import ModalContainer from "@/components/Modal/ModalContainer";
 import { closeModalAction, openModalAction } from "@/store/slices/ModalSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store";
 
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { number } from "zod";
 
 interface BackendError {
@@ -164,7 +163,7 @@ function JobPostedDash() {
 								<JobEditForm
 									number_applicants={number_applicants}
 									job_id={String(editId)}
-									closeModal={handleCloseModal}  // Pass handleCloseModal as a prop
+									closeModal={handleCloseModal} // Pass handleCloseModal as a prop
 								/>
 							</ModalContainer>
 							<div

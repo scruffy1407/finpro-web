@@ -1,0 +1,247 @@
+import React, { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import Cookies from "js-cookie";
+import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
+import ConfirmDelete from "@/components/Modal/ConfirmDelete";
+import Link from "next/link";
+
+interface PreSelectionTestProps {
+	test_id: number;
+	test_name: string;
+	passing_grade: number;
+	duration: number;
+	_count: { testQuestions: number }; // Add _count with testQuestions field
+}
+
+function PreSelectionPost() {
+	const accessToken = Cookies.get("accessToken");
+	const [preSelectionTest, setPreSelectionTests] = useState<
+		PreSelectionTestProps[]
+	>([]);
+	const [selectedTest, setSelectedTest] =
+		useState<PreSelectionTestProps | null>(null);
+	const [isDialogOpen, setDialogOpen] = useState(false);
+	const [isEditFormOpen, setEditFormOpen] = useState(false);
+	const [editFormData, setEditFormData] = useState({
+		testName: "",
+		passingGrade: 50,
+		duration: 30,
+	});
+
+	const fetchPreSelectionTests = async () => {
+		try {
+			const response = await axios.get(
+				"http://localhost:8000/api/company/viewpretest",
+				{
+					headers: { Authorization: `Bearer ${accessToken}` },
+				}
+			);
+			if (
+				response.data.message === "Pre-selection tests fetched successfully"
+			) {
+				setPreSelectionTests(response.data.data);
+			}
+		} catch (error) {
+			console.error("Error fetching pre-selection tests:", error);
+		}
+	};
+
+	useEffect(() => {
+		fetchPreSelectionTests();
+	}, [accessToken]);
+
+	const handleEdit = (test: PreSelectionTestProps) => {
+		setSelectedTest(test);
+		setEditFormData({
+			testName: test.test_name,
+			passingGrade: test.passing_grade,
+			duration: test.duration,
+		});
+		setEditFormOpen(true);
+	};
+
+	const handleInputChange = (
+		e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+	) => {
+		const { name, value } = e.target;
+		setEditFormData((prev) => ({
+			...prev,
+			[name]:
+				name === "passingGrade" || name === "duration" ? Number(value) : value,
+		}));
+	};
+
+	const handleUpdate = async (e: React.FormEvent) => {
+		e.preventDefault();
+		if (!selectedTest) return;
+
+		const body = {
+			testName: editFormData.testName,
+			passingGrade: editFormData.passingGrade,
+			duration: editFormData.duration,
+		};
+
+		try {
+			const response = await axios.put(
+				`http://localhost:8000/api/company/updatepretest/${selectedTest.test_id}`,
+				body,
+				{
+					headers: { Authorization: `Bearer ${accessToken}` },
+				}
+			);
+
+			if (response.data.message) {
+				alert(response.data.message);
+				setPreSelectionTests((prev) =>
+					prev.map((test) =>
+						test.test_id === selectedTest.test_id
+							? { ...test, ...body, test_name: body.testName }
+							: test
+					)
+				);
+				setEditFormOpen(false);
+			}
+		} catch (error) {
+			console.error("Error updating test:", error);
+			alert("Failed to update the test. Please try again.");
+		}
+	};
+
+	return (
+		<div className="space-y-4">
+			{preSelectionTest.length > 0 ? (
+				preSelectionTest.map((test) => (
+					<div
+						key={test.test_id}
+						className="flex justify-between border p-4 rounded-xl shadow bg-white hover:shadow-md"
+					>
+						<div>
+							<h3 className="text-lg font-bold p-4">{test.test_name}</h3>
+							<p className="mx-4">Passing Grade: {test.passing_grade}</p>
+							<p className="mx-4 mb-4">Duration: {test.duration} minutes</p>
+						</div>
+						<div className="flex gap-2 items-center">
+							<Button variant="outline" onClick={() => handleEdit(test)}>
+								Edit Test
+							</Button>
+							{/* Conditional Button */}
+							{test._count.testQuestions === 25 ? (
+								<Button variant="outline">
+									<Link href={`/edit-questions/${test.test_id}`}>
+										Edit Questions
+									</Link>
+								</Button>
+							) : (
+								<Button variant="outline">
+									<Link href={`/add-questions/${test.test_id}`}>
+										Add Questions
+									</Link>
+								</Button>
+							)}
+							<Button
+								variant="destructive"
+								onClick={() => {
+									setSelectedTest(test);
+									setDialogOpen(true);
+								}}
+							>
+								Delete Test
+							</Button>
+						</div>
+					</div>
+				))
+			) : (
+				<p>No Pre-selection tests available.</p>
+			)}
+
+			{/* Edit Form */}
+			{isEditFormOpen && selectedTest && (
+				<div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
+					<div className="bg-white p-6 rounded-md shadow-md w-full max-w-2xl">
+						<h2 className="text-2xl font-bold mb-4">Edit Test</h2>
+						<form onSubmit={handleUpdate} className="flex flex-col gap-4">
+							<label htmlFor="testName" className="font-medium">
+								Pre Selection Test Title
+							</label>
+							<input
+								type="text"
+								id="testName"
+								name="testName"
+								value={editFormData.testName}
+								onChange={handleInputChange}
+								className="border rounded-md p-2"
+								required
+							/>
+
+							<label htmlFor="passingGrade" className="font-medium">
+								Passing Grade
+							</label>
+							<input
+								type="number"
+								id="passingGrade"
+								name="passingGrade"
+								min={0}
+								max={100}
+								value={editFormData.passingGrade}
+								onChange={handleInputChange}
+								className="border rounded-md p-2"
+								required
+							/>
+
+							<label htmlFor="duration" className="font-medium">
+								Duration (in minutes)
+							</label>
+							<select
+								id="duration"
+								name="duration"
+								value={editFormData.duration}
+								onChange={handleInputChange}
+								className="border rounded-md p-2"
+								required
+							>
+								<option value={30}>30 Minutes</option>
+								<option value={45}>45 Minutes</option>
+								<option value={60}>60 Minutes</option>
+							</select>
+
+							<div className="flex justify-end mt-4">
+								<Button
+									type="submit"
+									className="bg-blue-500 text-white px-4 py-2 rounded-md"
+								>
+									Update Test
+								</Button>
+								<Button
+									type="button"
+									onClick={() => setEditFormOpen(false)}
+									className="ml-2 bg-gray-500 text-white px-4 py-2 rounded-md"
+								>
+									Cancel
+								</Button>
+							</div>
+						</form>
+					</div>
+				</div>
+			)}
+
+			{/* Delete Confirmation Modal */}
+			<Dialog open={isDialogOpen}>
+				<DialogContent>
+					<DialogHeader>
+						<ConfirmDelete
+							onDelete={() => {
+								// Implement delete logic here
+							}}
+							loadingState={false}
+							disableState={false}
+						/>
+					</DialogHeader>
+				</DialogContent>
+			</Dialog>
+		</div>
+	);
+}
+
+export default PreSelectionPost;
