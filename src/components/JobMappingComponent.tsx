@@ -30,8 +30,6 @@ const JobPostSection: React.FC = () => {
     const fetchData = async () => {
       try {
         const response = await getJobNewLp();
-        console.log(response);
-
         const mappedData = response.map((job: any) => ({
           job_id: job.job_id,
           job_title: job.job_title,

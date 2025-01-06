@@ -14,6 +14,7 @@ import { AppDispatch, RootState } from "@/store";
 import ModalContainer from "@/components/Modal/ModalContainer";
 import { closeModalAction, openModalAction } from "@/store/slices/ModalSlice";
 import UploadImage from "@/components/Form/UploadImage";
+import { Navbar } from "@/components/NavigationBar/Navbar";
 import ButtonComponent from "@/components/ButtonComponent";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -222,13 +223,7 @@ function ProfilePage() {
       >
         <UploadImage image={selectedImage as File} />
       </ModalContainer>
-      <NavbarComponent
-        findJobs={`a`}
-        skillAssessment={`a`}
-        exploreCompanies={`a`}
-        loginJobHunter={`a`}
-        loginCompanies={`a`}
-      />
+      <Navbar />
       <section className="p-4 ">
         <div
           className={`w-full flex flex-col gap-4 md:flex-row md:gap-6 md:max-w-screen-xl md:mx-auto`}

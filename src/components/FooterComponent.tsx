@@ -11,9 +11,10 @@ function FooterComponent() {
     jobhunter: {
       logo: "/logo/MainLogoWhite.svg",
       navbarItems: [
-        { label: "Find Jobs", href: "" },
-        { label: "Skill Assessments", href: "" },
-        { label: "Explore Companies", href: "" },
+        { label: "Find Jobs", href: "/jobs" },
+        { label: "Skill Assessments", href: "/skills-assessment" },
+        { label: "Explore Companies", href: "/company" },
+        { label: "Check Certificate", href: "/verify-certificate" },
       ],
     },
     company: {
@@ -26,9 +27,10 @@ function FooterComponent() {
     default: {
       logo: "/logo/MainLogoWhite.svg",
       navbarItems: [
-        { label: "Find Jobs", href: "" },
-        { label: "Skill Assessments", href: "" },
-        { label: "Explore Companies", href: "" },
+        { label: "Find Jobs", href: "/jobs" },
+        { label: "Skill Assessments", href: "/skills-assessment" },
+        { label: "Explore Companies", href: "/company" },
+        { label: "Check Certificate", href: "/verify-certificate" },
       ],
     },
   };
@@ -104,11 +106,13 @@ function FooterComponent() {
 
       {/* Navbar Links for Mobile */}
       <div className="flex flex-col md:hidden text-white text-sm text-center py-8 gap-3">
-        {navbarItems.map((item, index) => (
-          <Link key={index} href={item.href} className="hover:text-blue-400">
-            {item.label}
-          </Link>
-        ))}
+        {navbarItems.map(
+          (item: { label: string; href: string }, index: number) => (
+            <Link key={index} href={item.href} className="hover:text-blue-400">
+              {item.label}
+            </Link>
+          ),
+        )}
         <div>
           <p className="pt-8 text-sm">&copy; 2024 Pathway Limited</p>
         </div>
@@ -117,16 +121,18 @@ function FooterComponent() {
       {/* Navbar Links and Copyright Section */}
       <div className="hidden md:flex justify-between items-center py-8 text-white p-6">
         {/* Navbar Links */}
-        <div className="flex gap-6">
-          {navbarItems.map((item, index) => (
-            <Link
-              key={index}
-              href={item.href}
-              className="hover:text-blue-400 transition duration-200 text-xs"
-            >
-              {item.label}
-            </Link>
-          ))}
+        <div className="flex gap-4">
+          {navbarItems.map(
+            (item: { label: string; href: string }, index: number) => (
+              <Link
+                key={index}
+                href={item.href}
+                className="hover:text-blue-400 transition duration-200 text-xs"
+              >
+                {item.label}
+              </Link>
+            ),
+          )}
         </div>
 
         {/* Copyright Text */}

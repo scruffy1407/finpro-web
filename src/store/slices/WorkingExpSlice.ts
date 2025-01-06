@@ -141,7 +141,7 @@ const workExpSlice = createSlice({
       }
     },
     setDisable: (state, action) => {
-      state.pendingState.isDisable = action.payload;
+      state.pendingState.actionDisable = action.payload;
     },
     setSelectedItem: (state, action) => {
       state.selectedItemId = action.payload;
@@ -167,8 +167,6 @@ const workExpSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getWorkingExperience.fulfilled, (state, action) => {
-        console.log("SLICE", action.payload);
-
         if (Array.isArray(action.payload)) {
           const workingExpMap: WorkingExperience[] = action.payload.map(
             (workExp): WorkingExperience => {
@@ -190,7 +188,6 @@ const workExpSlice = createSlice({
           console.warn("Payload is not an array:", action.payload);
           state.workingExpList = [];
         }
-
         state.pendingState.isRender = true;
       })
       .addCase(deleteWorkingExperience.pending, (state) => {
@@ -218,7 +215,6 @@ const workExpSlice = createSlice({
         state.pendingState.actionDisable = true;
       })
       .addCase(addNewWorkingExperience.fulfilled, (state, action) => {
-        console.log(action.payload, "FAREL FAREL FAREL TESTING");
         state.workingExpList.unshift({
           jobHunterId: action.payload.jobHunterId,
           workingExperienceId: action.payload.work_experience_id,

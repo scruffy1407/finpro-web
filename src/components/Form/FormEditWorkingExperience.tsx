@@ -29,6 +29,7 @@ function FormEditWorkingExperience({
   const profileHandler = new ProfileHandler();
   const [isDisable, setIsDisable] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  console.log(workingExperienceId);
 
   const [editForm, setEditForm] = useState<WorkingExperience>({
     workingExperienceId: workingExperienceId,

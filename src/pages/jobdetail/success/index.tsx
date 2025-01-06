@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import ButtonComponent from "@/components/ButtonComponent";
 import NavbarComponent from "@/components/NavbarComponent";
 import FooterComponent from "@/components/FooterComponent";
+import { Navbar } from "@/components/NavigationBar/Navbar";
 
 const JobApplicationSuccess = () => {
   const router = useRouter();
@@ -17,13 +18,7 @@ const JobApplicationSuccess = () => {
   return (
     <div className="overflow-hidden mt-5">
       <div className="mx-4 w-auto">
-        <NavbarComponent
-          findJobs="Find Jobs"
-          skillAssessment="Skill Assessment"
-          exploreCompanies="Explore Companies"
-          loginJobHunter="Login"
-          loginCompanies="Login as Recruiter"
-        />
+        <Navbar />
       </div>
       {/* Main Content */}
       <div className="flex flex-col pt-20 justify-center items-center">
