@@ -23,6 +23,7 @@ import { AuthHandler } from "@/utils/auth.utils";
 import Cookies from "js-cookie";
 import { JobApplication } from "@/models/applicant.model";
 import { Navbar } from "@/components/NavigationBar/Navbar";
+import Head from "next/head";
 
 function JobDetail() {
   const authHandler = new AuthHandler();
@@ -168,6 +169,31 @@ function JobDetail() {
           />
         </>
       </ModalContainer>
+<!--     <div className="overflow-hidden mt-5"> -->
+       {/* Dynamic Meta Tags HEADING!! */}
+       <Head>
+        <title>{jobDetails ? `${jobDetails.title} at ${jobDetails.company}` : "Job Details"}</title>
+        <meta
+          property="og:title"
+          content={jobDetails ? `${jobDetails.title} at ${jobDetails.company}` : "Job Details"}
+        />
+        <meta
+          property="og:description"
+          content={
+            jobDetails
+              ? `Exciting job opportunity at ${jobDetails.company}. Click to learn more.`
+              : "Job opportunity details."
+          }
+        />
+        <meta
+          property="og:image"
+          content={jobDetails?.image || "/default-job-image.jpg"} // Fallback to default image
+        />
+        <meta
+          property="og:url"
+          content={`https://localhost:3000/jobdetail/${job_id}`}
+        />
+      </Head>
 
       <ModalContainer
         title={" Congratulations! You have successfully passed the test."}

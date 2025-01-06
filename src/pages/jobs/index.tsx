@@ -10,7 +10,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/pagination"; // Shadcn UI pagination
+} from "@/components/ui/pagination";
 import FooterComponent from "@/components/FooterComponent";
 import {
   setCurrentPage,
@@ -18,12 +18,18 @@ import {
 } from "@/store/slices/jobPaginationSlice";
 import { RootState } from "@/store";
 import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "@/store";
 import { useState } from "react";
 import { getJobPost } from "../api/api";
 import { Navbar } from "@/components/NavigationBar/Navbar";
 import { AuthHandler } from "@/utils/auth.utils";
 import ListSkeleton from "@/components/listSkeleton";
 import JobPostComponentSkeleton from "@/components/JobPostSkeleton";
+import { AuthHandler } from "@/utils/auth.utils";
+import { addBookmark, removeBookmark, fetchBookmarks } from "@/store/slices/bookmarkSlice";
+import Cookies from "js-cookie";
+import axios from "axios";
+        
 
 const JobPostPage: React.FC = () => {
   const authHandler = new AuthHandler();
@@ -31,6 +37,9 @@ const JobPostPage: React.FC = () => {
 
   const [jobPosts, setJobPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const bookmarks = useSelector(
+    (state: RootState) => state.bookmarks.bookmarks
+  );
 
   const { currentPage, totalPages } = useSelector(
     (state: RootState) => state.pagination,
@@ -38,7 +47,8 @@ const JobPostPage: React.FC = () => {
   const { jobTitle, categoryId, jobType, dateRange, sortOrder, companyCity } =
     useSelector((state: RootState) => state.searchQuery); // Access searchQuery from the store
 
-  const dispatch = useDispatch();
+//   const dispatch = useDispatch();
+const dispatch: AppDispatch = useDispatch();
 
   useEffect(() => {
     const fetchJobPosts = async () => {
@@ -82,7 +92,39 @@ const JobPostPage: React.FC = () => {
     dispatch,
   ]);
 
-  // Handle page change
+  const handleToggleBookmark = async (jobPostId: number) => {
+    try {
+      const token = Cookies.get("accessToken");
+      if (!token) {
+        console.error("Token is missing from cookies.");
+        return;
+      }
+
+      // Check if job is already bookmarked
+      const existingBookmark = bookmarks.find(
+        (bookmark) => bookmark.jobPostId === jobPostId
+      );
+
+      if (existingBookmark) {
+        await axios.post(
+          "http://localhost:8000/applyjob/bookmark/remove",
+          { wishlist_id: existingBookmark.wishlist_id },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        dispatch(removeBookmark(existingBookmark.wishlist_id));
+      } else {
+        const response = await axios.post(
+          "http://localhost:8000/applyjob/bookmark",
+          { jobPostId },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        dispatch(addBookmark(response.data.bookmark));
+      }
+    } catch (error) {
+      console.error("Failed to toggle bookmark:", error);
+    }
+  };
+
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
       dispatch(setCurrentPage(page));
@@ -112,8 +154,15 @@ const JobPostPage: React.FC = () => {
               className={"max-w-screen-xl mx-auto gap-6 grid grid-cols-3"}
             />
           ) : (
-            <JobListMappingComponent jobPosts={jobPosts} />
-          )}
+<JobListMappingComponent
+            jobPosts={jobPosts}
+			bookmarkedJobs={bookmarks.map((bookmark) => ({
+				...bookmark,
+				job_id: bookmark.jobPostId,
+			  }))}
+            onAddBookmark={handleToggleBookmark}
+            onRemoveBookmark={handleToggleBookmark}
+          />          )}
         </div>
 
         <Pagination>

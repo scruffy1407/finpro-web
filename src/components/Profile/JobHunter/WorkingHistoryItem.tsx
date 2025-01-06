@@ -21,8 +21,8 @@ interface WorkingHistoryProps {
   companyName: string;
   position: string;
   description: string;
-  // startDate: Date;
-  // endData: Date;
+  startDate: string;
+  endDate: string;
   onDelete?: () => void;
   onEdit?: () => void;
 }
@@ -33,17 +33,19 @@ function WorkingHistoryItem({
   position,
   description,
   companyId,
+  startDate,
+  endDate,
 }: WorkingHistoryProps) {
   const accessToken = Cookies.get("accessToken");
   const dispatch = useDispatch<AppDispatch>();
   const { innerId } = useSelector((state: RootState) => state.auth);
 
   const { pendingState } = useSelector(
-    (state: RootState) => state.workExperience,
+    (state: RootState) => state.workExperience
   );
 
   const { currentModalId, editId } = useSelector(
-    (state: RootState) => state.modalController,
+    (state: RootState) => state.modalController
   );
   const handleCloseModal = () => {
     dispatch(closeModalAction());
@@ -65,6 +67,8 @@ function WorkingHistoryItem({
           companyId={companyId}
           workingExperienceId={workingHistoryId as number}
           jobHunterId={innerId as number}
+          startDate={startDate}
+          endDate={endDate}
         />
       </ModalContainer>
 
@@ -82,7 +86,7 @@ function WorkingHistoryItem({
               deleteWorkingExperience({
                 token: accessToken as string,
                 workExp: workingHistoryId as number,
-              }),
+              })
             );
           }}
         />
@@ -109,7 +113,7 @@ function WorkingHistoryItem({
               <DropdownMenuItem
                 onClick={() =>
                   dispatch(
-                    openModalAction("editWorkingModal", workingHistoryId),
+                    openModalAction("editWorkingModal", workingHistoryId)
                   )
                 }
               >
@@ -118,7 +122,7 @@ function WorkingHistoryItem({
               <DropdownMenuItem
                 onClick={() =>
                   dispatch(
-                    openModalAction("deleteWorkingModal", workingHistoryId),
+                    openModalAction("deleteWorkingModal", workingHistoryId)
                   )
                 }
                 className={`text-red-500`}

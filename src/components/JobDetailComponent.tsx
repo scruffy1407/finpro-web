@@ -16,6 +16,7 @@ import LoadingLoader from "@/components/LoadingLoader";
 import { isBoolean } from "node:util";
 import SectionJoinApplicant from "@/components/SectionJoinApplicant";
 import { JobApplication } from "@/models/applicant.model";
+import { ShareButton } from "@/components/ShareButton";
 
 interface JobDetailProps {
   jobData: any;
@@ -34,6 +35,10 @@ export default function JobDetailComponent({
   const [error, setError] = useState<string>("");
   const { pendingState } = useSelector((state: RootState) => state.generalInfo);
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
+
+  const handleShare = (platform: string) => {
+    console.log(`Shared on ${platform}`);
+  };
 
   const formatSalary = (salary: number) => {
     return `${(salary / 1000000).toFixed(1)} jt`; // Format to 1 decimal place
@@ -320,6 +325,19 @@ export default function JobDetailComponent({
             </p>
           </div>
         </section>
+          <p className="text-sm text-neutral-600 flex gap-2">
+            <span>Company Size:</span>
+            <span className="text-neutral-900 text-right">
+              {mapCompanySize(jobData?.company?.company_size)}
+            </span>
+          </p>
+          <ShareButton
+          jobTitle="Senior Frontend Developer"
+          companyName="TechCorp Inc."
+          jobUrl={window.location.href}
+          onShare={handleShare}
+        />
+        </div>
       </div>
     </>
   );

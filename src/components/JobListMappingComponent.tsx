@@ -1,16 +1,27 @@
 import React from "react";
 import JobPostComponent from "./JobPostComponent";
 import { JobPostPropsReal } from "@/utils/interface";
-
 import Image from "next/image";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
+
+interface Bookmark {
+  job_id: number;
+}
 
 interface JobListMappingComponentProps {
-  jobPosts: JobPostPropsReal[]; // Define prop for job posts
+  jobPosts: JobPostPropsReal[];
+  bookmarkedJobs: Bookmark[];
+  onRemoveBookmark: (wishlistId: number) => void;
+  onAddBookmark: (jobPostId: number) => void;
 }
 
 const JobListMappingComponent: React.FC<JobListMappingComponentProps> = ({
   jobPosts,
+  onAddBookmark,
+  onRemoveBookmark,
 }) => {
+  const { bookmarks } = useSelector((state: RootState) => state.bookmarks);
   if (jobPosts.length === 0) {
     return (
       <div className="flex justify-center items-center">
@@ -25,12 +36,18 @@ const JobListMappingComponent: React.FC<JobListMappingComponentProps> = ({
   } else {
     return (
       <div className="max-w-screen-xl mx-auto grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-        {/* Map through the paginated data and render JobPostComponent for each job */}
-        {jobPosts.map((jobListPostReal: JobPostPropsReal, index: number) => (
-          <JobPostComponent
+        {jobPosts.map((jobListPostReal: JobPostPropsReal, index: number) => {
+          const isBookmarked = bookmarks.some(
+            (bookmark) => bookmark.jobPostId === Number(jobListPostReal.job_id)
+          );
+          return (
+              <JobPostComponent
             key={index}
             companyId={jobListPostReal.companyId}
             job_id={String(jobListPostReal.job_id)}
+                 isBookmarked={isBookmarked}
+                onAddBookmark={onAddBookmark}
+                onRemoveBookmark={onRemoveBookmark}
             logo={jobListPostReal.company.logo || "/burger.svg"}
             companyName={
               jobListPostReal.company.company_name || "something Wrong"
@@ -48,7 +65,8 @@ const JobListMappingComponent: React.FC<JobListMappingComponentProps> = ({
             experienceMin={jobListPostReal.job_experience_min}
             experienceMax={jobListPostReal.job_experience_max}
           />
-        ))}
+          );
+        })}
       </div>
     );
   }

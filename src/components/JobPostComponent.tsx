@@ -2,9 +2,52 @@ import React from "react";
 import { formatDistanceToNow } from "date-fns";
 import Image from "next/image";
 import ButtonComponent from "./ButtonComponent";
-import { JobPostProps } from "@/utils/interface";
 import Link from "next/link";
 import { useRouter } from "next/router";
+
+export interface JobPostProps {
+  logo: string;
+  companyName: string;
+  job_title: string;
+  company_province: string;
+  jobType: string;
+  created_at: string;
+  salaryMin: number;
+  salaryMax: number;
+  salaryShow?: boolean;
+  jobSpace?: string;
+  experienceMin?: number;
+  experienceMax?: number;
+  job_id: string;
+  companyId: number;
+}
+
+export interface JobBookmark {
+  wishlist_id: number;
+  jobPost: {
+    job_id: number;
+    job_title: string;
+    salary_min: number;
+    salary_max: number;
+    job_type: string;
+    job_space: string;
+    job_experience_min: number;
+    job_experience_max: number;
+    salary_show: boolean;
+    created_at: string;
+    company: {
+      company_name: string;
+      company_city: string;
+      logo: string;
+    };
+  };
+}
+
+export interface JobPostComponentProps extends JobPostProps {
+  isBookmarked: boolean;
+  onAddBookmark: (jobId: number) => void;
+  onRemoveBookmark: (jobId: number) => void;
+}
 
 function JobPostComponent({
   logo,
@@ -21,18 +64,21 @@ function JobPostComponent({
   experienceMax,
   job_id,
   companyId,
-}: JobPostProps) {
+  isBookmarked,
+  onAddBookmark,
+  onRemoveBookmark,
+}: JobPostComponentProps) {
   const router = useRouter();
-  const timeAgo = formatDistanceToNow(new Date(created_at), {
-    addSuffix: true,
-  });
+  const validDate = new Date(created_at);
+  const timeAgo = isNaN(validDate.getTime())
+    ? "Invalid Date"
+    : formatDistanceToNow(validDate, { addSuffix: true });
   const formatSalary = (salary: number) => {
-    return `${(salary / 1000000).toFixed(1)} jt`; // Format to 1 decimal place
+    return `${(salary / 1000000).toFixed(1)} jt`;
   };
 
-  const handleCompanyClick = (event: any) => {
-    event.stopPropagation(); // Prevent event bubbling
-
+  const handleCompanyClick = (event: React.MouseEvent<HTMLSpanElement>) => {
+    event.stopPropagation();
     router.push(`/company/${companyId}`);
   };
 
@@ -60,7 +106,19 @@ function JobPostComponent({
                 {companyName}
               </span>
             </div>
-            <ButtonComponent type="ButtonBookmark" />
+            <ButtonComponent
+              type="ButtonBookmark"
+              isBookmarked={isBookmarked}
+              onClickBookmark={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                if (isBookmarked) {
+                  onRemoveBookmark(Number(job_id));
+                } else {
+                  onAddBookmark(Number(job_id));
+                }
+              }}
+            />
           </div>
           <div className="flex flex-col gap-1">
             <h2 className="text-lg font-bold">{job_title}</h2>

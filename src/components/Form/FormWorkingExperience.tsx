@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { ProfileHandler } from "@/utils/profile.utils";
-import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store";
 import Cookies from "js-cookie";
@@ -23,7 +22,7 @@ function FormWorkingExperience() {
   const { innerId } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch<AppDispatch>();
   const { pendingState } = useSelector(
-    (state: RootState) => state.workExperience,
+    (state: RootState) => state.workExperience
   );
 
   const [formData, setFormData] = useState<WorkingExperience>({
@@ -32,22 +31,22 @@ function FormWorkingExperience() {
     companyId: null,
     jobTitle: "",
     companyName: "",
-    startDate: null,
-    endDate: null,
+    startDate: "",
+    endDate: "",
   });
 
   const options = (inputValue: string, callback: (options: []) => void) => {
     fetchCompanyData(inputValue)
       .then((data) => callback(data))
-      .catch(() => callback([])); // Handle errors with an empty array
+      .catch(() => callback([]));
   };
 
   async function fetchCompanyData(keyword: string) {
     try {
       const response = await profileHandler.searchCompany(keyword);
       return response.data;
-    } catch (e: unknown) {
-      return []; // Handle errors with an empty array
+    } catch {
+      return [];
     }
   }
 
@@ -58,12 +57,14 @@ function FormWorkingExperience() {
       addNewWorkingExperience({
         token: accessToken as string,
         formData: formData,
-      }),
+      })
     );
     dispatch(closeModalAction());
   }
 
-  function handleChange(e: any) {
+  function handleChange(
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) {
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -75,7 +76,7 @@ function FormWorkingExperience() {
     selectedOption: SingleValue<{
       value: number | null;
       label: string;
-    }> | null,
+    }> | null
   ) {
     setFormData({
       ...formData,
@@ -84,14 +85,25 @@ function FormWorkingExperience() {
   }
 
   useEffect(() => {
+    const startDate = new Date(formData.startDate);
+    const endDate = new Date(formData.endDate);
+    const isInvalidDateRange = startDate > endDate;
+
     dispatch(
       setDisable(
         formData.jobDescription === "" ||
           formData.jobTitle === "" ||
-          formData.companyId === null,
-      ),
+          formData.companyId === null ||
+          isInvalidDateRange
+      )
     );
-  }, [formData.jobDescription, formData.jobTitle, formData.companyId]);
+  }, [
+    formData.jobDescription,
+    formData.jobTitle,
+    formData.companyId,
+    formData.startDate,
+    formData.endDate,
+  ]);
 
   return (
     <form onSubmit={handleSubmitWork} className="flex flex-col gap-5">
@@ -135,6 +147,28 @@ function FormWorkingExperience() {
         />
       </div>
 
+      {/* START DATE & END DATE */}
+      <div className="mb-4">
+        <label className="block text-sm font-medium">Start Date</label>
+        <input
+          type="date"
+          className="input"
+          value={formData.startDate}
+          onChange={handleChange}
+          name="startDate"
+        />
+      </div>
+      <div className="mb-4">
+        <label className="block text-sm font-medium">End Date</label>
+        <input
+          type="date"
+          className="input"
+          value={formData.endDate}
+          onChange={handleChange}
+          name="endDate"
+        />
+      </div>
+
       {/*DESCRIPTION*/}
       <div>
         <Label
@@ -149,7 +183,7 @@ function FormWorkingExperience() {
           name={`jobDescription`}
         />
       </div>
-
+      
       <Button
         disabled={pendingState.actionDisable}
         variant="primary"
@@ -157,6 +191,7 @@ function FormWorkingExperience() {
       >
         {pendingState.actionLoading ? LoadingLoader() : "Add New Experience"}
       </Button>
+      
     </form>
   );
 }

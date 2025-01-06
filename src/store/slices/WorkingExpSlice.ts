@@ -1,9 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { toast } from "sonner";
-
 import { ProfileHandler } from "@/utils/profile.utils";
 import { reviewResponse } from "@/models/company.model";
-import { closeModalAction } from "@/store/slices/ModalSlice";
 
 interface ParamsGetWorkExp {
   token: string;
@@ -16,14 +14,17 @@ export interface WorkingExperience {
   companyName: string;
   jobTitle: string;
   jobDescription: string;
-
   jobReview?: reviewResponse[];
+  startDate: string;
+  endDate: string;
 }
 interface PendingState {
   actionLoading: boolean;
   actionDisable: boolean;
   dataLoading: boolean;
   isRender: boolean;
+  isLoading: boolean;
+  isDisable: boolean;
 }
 interface WorkingExpList {
   workingExpList: WorkingExperience[];
@@ -47,22 +48,33 @@ const initialState: WorkingExpList = {
     jobDescription: "",
     jobTitle: "",
     jobReview: [],
+    startDate: "",
+    endDate: "",
   },
   pendingState: {
     actionLoading: false,
     actionDisable: false,
-    isRender: false,
     dataLoading: false,
+    isRender: false,
+    isLoading: false,
+    isDisable: false,
   },
+};
+const formatDate = (dateString: string): string => {
+  const date = new Date(dateString);
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+  return `${year}-${month}-${day}`;
 };
 
 export const getWorkingExperience = createAsyncThunk(
-  "user/company/workExprience",
+  "user/company/workExperience",
   async ({ token, wReview }: ParamsGetWorkExp) => {
     try {
       const response = await profileHandler.getWorkingExperience(
         token,
-        wReview,
+        wReview
       );
       if (response.status === 200) {
         return response.data;
@@ -72,7 +84,7 @@ export const getWorkingExperience = createAsyncThunk(
     } catch (e: unknown) {
       return e;
     }
-  },
+  }
 );
 
 export const addNewWorkingExperience = createAsyncThunk(
@@ -84,7 +96,8 @@ export const addNewWorkingExperience = createAsyncThunk(
         {
           ...data.formData,
           jobHunterId: data.formData.jobHunterId as number,
-        },
+          companyId: data.formData.companyId ?? null,
+        }
       );
       if (response.status === 201) {
         return response.data;
@@ -94,7 +107,7 @@ export const addNewWorkingExperience = createAsyncThunk(
     } catch (e) {
       return e;
     }
-  },
+  }
 );
 
 export const deleteWorkingExperience = createAsyncThunk(
@@ -103,7 +116,7 @@ export const deleteWorkingExperience = createAsyncThunk(
     try {
       const response = await profileHandler.deleteWorkingExperience(
         data.token,
-        data.workExp,
+        data.workExp
       );
       if (response === 200) {
         return { status: response, workExpId: data.workExp };
@@ -113,7 +126,7 @@ export const deleteWorkingExperience = createAsyncThunk(
     } catch (e) {
       throw e;
     }
-  },
+  }
 );
 
 const workExpSlice = createSlice({
@@ -140,7 +153,7 @@ const workExpSlice = createSlice({
       const updatedExperience = action.payload;
       const experienceIndex = state.workingExpList.findIndex(
         (exp) =>
-          exp.workingExperienceId === updatedExperience.workingExperienceId,
+          exp.workingExperienceId === updatedExperience.workingExperienceId
       );
 
       if (experienceIndex !== -1) {
@@ -154,21 +167,27 @@ const workExpSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getWorkingExperience.fulfilled, (state, action) => {
-        const workingExpMap: WorkingExperience[] = action.payload.map(
-          (workExp): WorkingExperience => {
-            return {
-              workingExperienceId: workExp.work_experience_id,
-              companyId: workExp.companyId,
-              companyName: workExp.company_name,
-              jobTitle: workExp.job_title,
-              jobDescription: workExp.job_description,
-              jobHunterId: workExp.jobHunterId,
-              jobReview: workExp.JobReview,
-            };
-          },
-        );
-        state.workingExpList = workingExpMap;
-
+        if (Array.isArray(action.payload)) {
+          const workingExpMap: WorkingExperience[] = action.payload.map(
+            (workExp): WorkingExperience => {
+              return {
+                workingExperienceId: workExp.work_experience_id,
+                companyId: workExp.companyId,
+                companyName: workExp.company_name,
+                jobTitle: workExp.job_title,
+                jobDescription: workExp.job_description,
+                jobHunterId: workExp.jobHunterId,
+                jobReview: workExp.JobReview,
+                startDate: formatDate(workExp.start_date),
+                endDate: formatDate(workExp.end_date),
+              };
+            }
+          );
+          state.workingExpList = workingExpMap;
+        } else {
+          console.warn("Payload is not an array:", action.payload);
+          state.workingExpList = [];
+        }
         state.pendingState.isRender = true;
       })
       .addCase(deleteWorkingExperience.pending, (state) => {
@@ -182,7 +201,7 @@ const workExpSlice = createSlice({
         } = action.payload;
 
         const deletedIndex = state.workingExpList.findIndex(
-          (exp) => exp.workingExperienceId === deletedData.workExpId,
+          (exp) => exp.workingExperienceId === deletedData.workExpId
         );
         if (deletedIndex !== -1) {
           state.workingExpList.splice(deletedIndex, 1);
@@ -204,6 +223,8 @@ const workExpSlice = createSlice({
           jobDescription: action.payload.job_description,
           jobTitle: action.payload.job_title,
           jobReview: [],
+          startDate: formatDate(action.payload.start_date),
+          endDate: formatDate(action.payload.end_date),
         });
         toast.success("Success add new working experience");
       });
