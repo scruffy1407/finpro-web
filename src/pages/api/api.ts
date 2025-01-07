@@ -7,35 +7,35 @@ const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
 const accessToken = Cookies.get("accessToken");
 
 const api = axios.create({
-  baseURL,
+	baseURL,
 });
 
 interface GetJobPosts {
-  page: number;
-  limit: number;
-  job_title?: string;
-  categoryId?: number;
-  jobType?: string;
-  jobSpace?: string;
-  dateRange?: string;
-  sortorder?: string;
+	page: number;
+	limit: number;
+	job_title?: string;
+	categoryId?: number;
+	jobType?: string;
+	jobSpace?: string;
+	dateRange?: string;
+	sortorder?: string;
 }
 
 export async function getJobNewLp() {
-  const response = await job.get("jobNewLp");
-  return response.data;
+	const response = await job.get("jobNewLp");
+	return response.data;
 }
 
 export async function getJobPost(
-  currentPage: number,
-  searchQuery: {
-    jobTitle?: string;
-    categoryId?: string;
-    jobType?: string;
-    dateRange?: string;
-    sortOrder?: string;
-    companyCity?: string;
-  },
+	currentPage: number,
+	searchQuery: {
+		jobTitle?: string;
+		categoryId?: string;
+		jobType?: string;
+		dateRange?: string;
+		sortOrder?: string;
+		companyCity?: string;
+	}
 ) {
 	const { jobTitle, categoryId, jobType, dateRange, sortOrder, companyCity } =
 		searchQuery;
@@ -80,23 +80,23 @@ export async function getJobPost(
 }
 
 export const getProvince = async () => {
-  const response = await location.get("/get-province");
-  return response;
+	const response = await location.get("/get-province");
+	return response;
 };
 
 export const getCityByProvince = async (provinceId: number) => {
-  const response = await location.get(`/get-city/${provinceId}`);
-  return response;
+	const response = await location.get(`/get-city/${provinceId}`);
+	return response;
 };
 
 export const searchLocation = async () => {
-  const response = await location.get("search-location");
-  return response;
+	const response = await location.get("search-location");
+	return response;
 };
 
 export async function getCategories() {
-  const response = await job.get("categories");
-  return response.data;
+	const response = await job.get("categories");
+	return response.data;
 }
 
 export async function getJobPostDash({
@@ -119,11 +119,10 @@ export async function getJobPostDash({
 
 	if (sortOrder) {
 		queryString += `&sortOrder=${sortOrder}`;
-	} 
+	}
 	if (!sortOrder) {
 		queryString += `&sortOrder=desfc`;
-	} 
-
+	}
 
 	// Add the Authorization header
 	const config = {
@@ -144,24 +143,30 @@ export async function getJobPostDash({
 	}
 }
 
-export async function deleteJobPostDash(job_Id: number): Promise<{ message: string }> {
+export async function deleteJobPostDash(
+	job_Id: number
+): Promise<{ message: string }> {
 	try {
-	  // Perform the DELETE request
-	  const response = await job.put(`job/${job_Id}`, {}, {
-		headers: {
-		  Authorization: `Bearer ${accessToken}`, // Include your token
-		},
-	  });
-	  console.log(`Requesting DELETE on job/${job_Id}`);
-	  
-	  // Assuming the response from the server contains a message property
-	  // Return the response with the success message
-	  return response.data; // Ensure response.data contains the message
+		// Perform the DELETE request
+		const response = await job.put(
+			`/delete/job/${job_Id}`,
+			{},
+			{
+				headers: {
+					Authorization: `Bearer ${accessToken}`, // Include your token
+				},
+			}
+		);
+		console.log(`Requesting DELETE on job/${job_Id}`);
+
+		// Assuming the response from the server contains a message property
+		// Return the response with the success message
+		return response.data; // Ensure response.data contains the message
 	} catch (error) {
-	  // Handle errors, e.g., log or throw the error
-	  console.error("Error deleting job post:", error);
-	  throw error; // Rethrow the error to be caught by the calling function
+		// Handle errors, e.g., log or throw the error
+		console.error("Error deleting job post:", error);
+		throw error; // Rethrow the error to be caught by the calling function
 	}
-  }
+}
 
 export default api;

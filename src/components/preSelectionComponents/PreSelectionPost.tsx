@@ -6,6 +6,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
 import ConfirmDelete from "@/components/Modal/ConfirmDelete";
 import Link from "next/link";
+import {
+	Popover,
+	PopoverTrigger,
+	PopoverContent,
+} from "@/components/ui/popover";
+import { DotsVerticalIcon } from "@radix-ui/react-icons";
 
 interface PreSelectionTestProps {
 	test_id: number;
@@ -109,6 +115,33 @@ function PreSelectionPost() {
 		}
 	};
 
+	// Delete logic (soft delete by updating the test status)
+	const handleDelete = async () => {
+		if (!selectedTest) return;
+
+		try {
+			// Send PUT request to soft delete the test
+			const response = await axios.put(
+				`http://localhost:8000/api/company/softdeletepretest/${selectedTest.test_id}`,
+				{},
+				{
+					headers: { Authorization: `Bearer ${accessToken}` },
+				}
+			);
+
+			if (response.data.message) {
+				alert(response.data.message);
+				setPreSelectionTests((prev) =>
+					prev.filter((test) => test.test_id !== selectedTest.test_id)
+				);
+				setDialogOpen(false);
+			}
+		} catch (error) {
+			console.error("Error deleting test:", error);
+			alert("Failed to delete the test. Please try again.");
+		}
+	};
+
 	return (
 		<div className="space-y-4">
 			{preSelectionTest.length > 0 ? (
@@ -119,36 +152,68 @@ function PreSelectionPost() {
 					>
 						<div>
 							<h3 className="text-lg font-bold p-4">{test.test_name}</h3>
-							<p className="mx-4">Passing Grade: {test.passing_grade}</p>
-							<p className="mx-4 mb-4">Duration: {test.duration} minutes</p>
+							<div className="flex flex-col gap-6 mx-4 mb-4">
+								<p className="text-sm">
+									<span className="font-medium">Passing Grade:</span>{" "}
+									{test.passing_grade}
+								</p>
+								<p className="text-sm">
+									<span className="font-medium">Duration:</span> {test.duration}{" "}
+									minutes
+								</p>
+							</div>
 						</div>
-						<div className="flex gap-2 items-center">
-							<Button variant="outline" onClick={() => handleEdit(test)}>
-								Edit Test
-							</Button>
-							{/* Conditional Button */}
-							{test._count.testQuestions === 25 ? (
-								<Button variant="outline">
-									<Link href={`/edit-questions/${test.test_id}`}>
-										Edit Questions
-									</Link>
-								</Button>
-							) : (
-								<Button variant="outline">
-									<Link href={`/add-questions/${test.test_id}`}>
-										Add Questions
-									</Link>
-								</Button>
-							)}
-							<Button
-								variant="destructive"
-								onClick={() => {
-									setSelectedTest(test);
-									setDialogOpen(true);
-								}}
-							>
-								Delete Test
-							</Button>
+
+						<div className="flex gap-2">
+							<Popover>
+								{/* Three-dot Vertical Icon */}
+								<PopoverTrigger asChild>
+									<Button variant="ghost" className="p-2">
+										<DotsVerticalIcon className="h-5 w-5" />
+									</Button>
+								</PopoverTrigger>
+
+								{/* Popover Content */}
+								<PopoverContent
+									align="end"
+									side="bottom"
+									className="w-40 p-2 space-y-2"
+								>
+									<Button
+										variant="outline"
+										className="w-full"
+										onClick={() => handleEdit(test)}
+									>
+										Edit Test
+									</Button>
+
+									{/* Conditional Edit/Add Questions Button */}
+									{test._count.testQuestions === 25 ? (
+										<Button variant="outline" className="w-full">
+											<Link href={`/edit-questions/${test.test_id}`}>
+												Edit Questions
+											</Link>
+										</Button>
+									) : (
+										<Button variant="outline" className="w-full">
+											<Link href={`/add-questions/${test.test_id}`}>
+												Add Questions
+											</Link>
+										</Button>
+									)}
+
+									<Button
+										variant="destructive"
+										className="w-full"
+										onClick={() => {
+											setSelectedTest(test);
+											setDialogOpen(true);
+										}}
+									>
+										Delete Test
+									</Button>
+								</PopoverContent>
+							</Popover>
 						</div>
 					</div>
 				))
@@ -232,7 +297,7 @@ function PreSelectionPost() {
 					<DialogHeader>
 						<ConfirmDelete
 							onDelete={() => {
-								// Implement delete logic here
+								handleDelete();
 							}}
 							loadingState={false}
 							disableState={false}

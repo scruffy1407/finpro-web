@@ -9,7 +9,7 @@ import FooterComponent from "@/components/FooterComponent";
 
 function JobDashBoard() {
 	const authHandler = new AuthHandler();
-	authHandler.authorizeUser();
+	// authHandler.authorizeUser();
 	const router = useRouter;
 
 

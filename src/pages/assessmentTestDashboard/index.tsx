@@ -1,12 +1,12 @@
 import React from "react";
 import NavbarComponent from "@/components/NavbarComponent";
 import { AuthHandler } from "@/utils/auth.utils";
-import PreSelectionDashLeft from "@/components/preSelectionComponents/PreSelectionDashLeft";
+import AssessmentDashLeft from "@/components/AssessmentComponents/AssessmentDashLeft";
 import FooterComponent from "@/components/FooterComponent";
-import PreSelectionPost from "@/components/preSelectionComponents/PreSelectionPost";
-
+// import PreSelectionPost from "@/components/preSelectionComponents/PreSelectionPost";
+import AssessmentDashPost from "@/components/AssessmentComponents/AssessmentDashPost";
 function AssessmentDashboard() {
-	const authHandler = new AuthHandler();
+	// const authHandler = new AuthHandler();
 	// authHandler.authorizeUser();
 
 	return (
@@ -22,11 +22,11 @@ function AssessmentDashboard() {
 			<div className="mt-10">
 				<div className="flex w-auto ">
 					<div>
-						<PreSelectionDashLeft />
+						<AssessmentDashLeft />
 					</div>
 					<div className="w-full ml-6">
 						<div className="mt-4">
-							<PreSelectionPost />
+							<AssessmentDashPost />
 						</div>
 					</div>
 				</div>

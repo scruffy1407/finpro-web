@@ -2,35 +2,13 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
-import PreSelectionTestCreateForm from "./PreSelectionTestCreateForm";
+// import PreSelectionTestCreateForm from "./PreSelectionTestCreateForm";
+import CreateAssessmentTestForm from "./AssessmentTestCreateForm";
 import axios from "axios";
 
-function PreSelectionDashLeft() {
+function AssessmentDashLeft() {
 	const accessToken = Cookies.get("accessToken");
 	const [showForm, setShowForm] = useState(false);
-	const [preSelectionTest, setPreSelectionTests] = useState<any[]>([]);
-
-	useEffect(() => {
-		const fetchPreSelectionTests = async () => {
-			try {
-				const response = await axios.get(
-					"http://localhost:8000/api/company/viewpretest",
-					{
-						headers: {
-							Authorization: `Bearer ${accessToken}`,
-						},
-					}
-				);
-				const data = response.data;
-				if (data.message === "Pre-selection tests fetched successfully") {
-					setPreSelectionTests(data.data);
-				}
-			} catch (error) {
-				console.error("Error fetching pre-selection tests:", error);
-			}
-		};
-		fetchPreSelectionTests();
-	}, [accessToken]);
 
 	return (
 		<div className="bg-white flex flex-col gap-6 w-full h-fit p-5 rounded-xl md:w-[250px] max-w-screen-xl">
@@ -38,17 +16,17 @@ function PreSelectionDashLeft() {
 				<div className={"flex flex-col gap-1"}>
 					<h2 className="text-2xl font-bold">Dashboard</h2>
 					<p className=" text-sm text-neutral-600 ">
-						Manage all available Test here
+						Manage all available Assessment here
 					</p>
 				</div>
 			</div>
 
 			<div className="flex flex-col gap-3">
 				<Button variant="primary" onClick={() => setShowForm(true)}>
-					Create Test
+					Create Assessment
 				</Button>
 
-				<PreSelectionTestCreateForm
+				<CreateAssessmentTestForm
 					showForm={showForm}
 					setShowForm={setShowForm}
 				/>
@@ -62,13 +40,11 @@ function PreSelectionDashLeft() {
 
 			<div className={"flex gap-3 items-start"}>
 				<div className={"flex flex-col gap-3 w-full"}>
-					<h2 className="text-xl font-bold">PreSelection Test </h2>
+					<h2 className="text-xl font-bold">Assessment Test</h2>
 				</div>
 			</div>
 		</div>
 	);
-
-	
 }
 
-export default PreSelectionDashLeft;
+export default AssessmentDashLeft;
