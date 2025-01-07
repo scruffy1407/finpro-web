@@ -59,6 +59,7 @@ const JobApplicantDetail: React.FC = () => {
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const [jobDetails, setJobDetails] = useState<JobDetailsResponse | null>(null);
   const [applicants, setApplicants] = useState<Applicant[]>([]);
+  const [applicantLoading, setApplicantLoading] = useState<boolean>(false);
   const [selectedView, setSelectedView] = useState<ViewSelection>(
     ViewSelection.AllApplicant,
   );
@@ -124,6 +125,7 @@ const JobApplicantDetail: React.FC = () => {
       return;
     }
     try {
+      setApplicantLoading(true);
       const queryString = `?get=${fetchType}`;
       console.log("QUERY", fetchType);
       const response = await axios.get(
@@ -147,14 +149,18 @@ const JobApplicantDetail: React.FC = () => {
           }),
         );
         setApplicants(applicantData);
+        setApplicantLoading(false);
       } else {
         console.error("No Applicant Found");
+        setApplicantLoading(false);
       }
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status === 401) {
         router.push("/dashboard/company");
+        setApplicantLoading(false);
       } else {
         console.error("Error fetching job applicants:", error);
+        setApplicantLoading(false);
       }
     }
   };
@@ -268,6 +274,7 @@ const JobApplicantDetail: React.FC = () => {
                 <ApplicantTable
                   applicants={applicants}
                   onStatusChange={handleStatusChange}
+                  isLoading={applicantLoading}
                 />
               </div>
             </div>

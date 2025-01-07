@@ -1,4 +1,4 @@
-export type JobStatus = "onreview" | "accepted" | "rejected";
+export type JobStatus = "onreview" | "accepted" | "rejected" | "interview";
 
 export enum JobApplicationStatus {
   Failed = "failed",
