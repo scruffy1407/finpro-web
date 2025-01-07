@@ -99,4 +99,18 @@ export class CompanyUtils {
       return e;
     }
   }
+
+  async verifyApply(token: string, jobId: number, apply: string) {
+    const queryString = `?job=${jobId}&apply=${apply}`;
+    try {
+      const response = await api.get(`/applyjob/verify-apply${queryString}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.status === 200;
+    } catch (e) {
+      return false;
+    }
+  }
 }

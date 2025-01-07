@@ -30,7 +30,7 @@ function JobDetail() {
   const router = useRouter();
   const { job_id } = router.query;
   const [applicantData, setApplicantData] = useState<null | JobApplication>(
-    null
+    null,
   );
   const [jobData, setJobData] = useState<any | null>(null);
   const [relatedPost, setRelatedPost] = useState<any[] | null>(null);
@@ -38,7 +38,7 @@ function JobDetail() {
   const [validateLoading, setValiateLoading] = useState<boolean>(false);
   const dispatch = useDispatch<AppDispatch>();
   const { currentModalId } = useSelector(
-    (state: RootState) => state.modalController
+    (state: RootState) => state.modalController,
   );
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const { validApply, pendingState, listProvince, listCity, cityId } =
@@ -52,7 +52,7 @@ function JobDetail() {
   const fetchJobDetail = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/company/jobDetails/${job_id}`
+        `http://localhost:8000/api/company/jobDetails/${job_id}`,
       );
 
       if (response.status === 200) {
@@ -76,7 +76,7 @@ function JobDetail() {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       console.log("VALIDATE USER JOIN", response);
       if (response.status === 200 && response.data.code === "JOIN") {
@@ -122,26 +122,32 @@ function JobDetail() {
     await dispatch(getGeneralInfo(token as string));
   }
 
-  useEffect(() => {
-    if (isLoggedIn) {
-      setValiateLoading(true);
-      if (!pendingState.isRender) {
-        handleGetGeneralInfo();
-      }
-      validateUserJob();
-      setValiateLoading(false);
-    }
-  }, [job_id]);
+  // useEffect(() => {
+  //   if (isLoggedIn) {
+  //     setValiateLoading(true);
+  //     if (!pendingState.isRender) {
+  //       handleGetGeneralInfo();
+  //     }
+  //     validateUserJob();
+  //     setValiateLoading(false);
+  //   }
+  // }, [job_id, isLoggedIn]);
 
   useEffect(() => {
     if (job_id) {
       setDataLoading(true);
       fetchJobDetail();
       if (isLoggedIn) {
+        setValiateLoading(true);
         validateUserJob();
+        if (!pendingState.isRender) {
+          handleGetGeneralInfo();
+        }
+        setValiateLoading(false);
       }
+      setDataLoading(false);
     }
-  }, [job_id]);
+  }, [job_id, isLoggedIn]);
 
   return (
     <>
@@ -172,16 +178,12 @@ function JobDetail() {
       {/* Dynamic Meta Tags HEADING!! */}
       <Head>
         <title>
-          {jobData
-            ? `${jobData.title} at ${jobData.company}`
-            : "Job Details"}
+          {jobData ? `${jobData.title} at ${jobData.company}` : "Job Details"}
         </title>
         <meta
           property="og:title"
           content={
-            jobData
-              ? `${jobData.title} at ${jobData.company}`
-              : "Job Details"
+            jobData ? `${jobData.title} at ${jobData.company}` : "Job Details"
           }
         />
         <meta
