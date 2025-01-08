@@ -114,6 +114,11 @@ interface ParamsSetInterview {
   interviewData: InterviewData;
 }
 
+interface ParamsEditInterview {
+  token: string;
+  interviewData: InterviewData;
+}
+
 export const getApplicantData = createAsyncThunk(
   "company/getApplicant",
   async ({ token, fetchType, jobId }: ParamsGetApplicant) => {
@@ -200,6 +205,20 @@ export const handleSetInterview = createAsyncThunk(
   },
 );
 
+export const handleEditInterview = createAsyncThunk(
+  "company/editInterview",
+  async ({ token, interviewData }: ParamsEditInterview) => {
+    try {
+      const response = await companyUtils.updateInterview(token, interviewData);
+      console.log("RESPONSEEE", response);
+      return response.data;
+    } catch (e) {
+      toast.error("Failed to update schedule, Please refresh your browser");
+      return [];
+    }
+  },
+);
+
 const applicantSlice = createSlice({
   name: "applicantList",
   initialState,
@@ -210,6 +229,7 @@ const applicantSlice = createSlice({
         state.pendingState.dataLoading = true;
       })
       .addCase(getApplicantData.fulfilled, (state, action) => {
+        console.log(action.payload);
         state.applicantList = action.payload.map(
           (applicant: ApplicantData) => ({
             id: applicant.application_id.toString(),
@@ -260,7 +280,7 @@ const applicantSlice = createSlice({
       })
       .addCase(getApplicantData.rejected, (state) => {
         state.pendingState.dataLoading = false;
-        toast.success(
+        toast.error(
           "Failed to get applicant information, please refresh your browser",
         );
       })
@@ -279,10 +299,9 @@ const applicantSlice = createSlice({
         state.pendingState.setNewInterviewLoading = true;
       })
       .addCase(handleSetInterview.fulfilled, (state, action) => {
-        console.log(action);
         const applicantId = action.payload.applicationId;
         state.applicantList = state.applicantList.map((applicant) =>
-          applicant.id === applicantId
+          applicant.id === applicantId.toString()
             ? {
                 ...applicant,
                 interviewStatus: action.payload.interview_status,
@@ -297,6 +316,34 @@ const applicantSlice = createSlice({
         );
         state.pendingState.setNewInterviewLoading = false;
         toast.success("Successfully set interview");
+      })
+      .addCase(handleEditInterview.pending, (state) => {
+        state.pendingState.setNewInterviewLoading = true;
+      })
+      .addCase(handleEditInterview.fulfilled, (state, action) => {
+        console.log(action.payload);
+        const applicantId = action.payload.applicationId;
+
+        state.applicantList = state.applicantList.map((applicant) =>
+          applicant.id === applicantId.toString()
+            ? {
+                ...applicant,
+                interviewStatus: action.payload.interview_status,
+                interviewDate: action.payload.interview_date,
+                interviewDescription: action.payload.interview_descrption,
+                interviewUrl: action.payload.interview_url,
+                interviewTimeStart: action.payload.interview_time_start,
+                interviewTimeEnd: action.payload.interview_time_end,
+                interviewId: action.payload.interview_id,
+              }
+            : applicant,
+        );
+
+        state.pendingState.setNewInterviewLoading = false;
+        toast.success("Successfully update interview");
+      })
+      .addCase(handleEditInterview.rejected, (state) => {
+        state.pendingState.setNewInterviewLoading = false;
       });
   },
 });

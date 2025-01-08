@@ -136,4 +136,26 @@ export class CompanyUtils {
       return e;
     }
   }
+
+  async updateInterview(token: string, interviewData: InterviewData) {
+    try {
+      const response = await api.put(
+        "/api/company/application/interview",
+        interviewData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      console.log("RESPONSE", response.data);
+      if (response.status === 200) {
+        return response.data;
+      } else {
+        return [];
+      }
+    } catch (e) {
+      return e;
+    }
+  }
 }

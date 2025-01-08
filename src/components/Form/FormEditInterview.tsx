@@ -4,6 +4,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import LoadingLoader from "@/components/LoadingLoader";
 import { format } from "date-fns";
+import Cookies from "js-cookie";
+import { toast } from "sonner";
+import { handleEditInterview } from "@/store/slices/applicantSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/store";
 
 interface EditInterviewProps {
   interviewId: number;
@@ -24,8 +29,11 @@ function FormEditInterview({
   interviewDescription,
   applicantId,
 }: EditInterviewProps) {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const dispatch = useDispatch<AppDispatch>();
   const [isDisable, setIsDisable] = useState<boolean>(false);
+  const { pendingState } = useSelector(
+    (state: RootState) => state.applicantList,
+  );
 
   const [interviewData, setInterviewData] = useState<InterviewData>({
     applicationId: applicantId,
@@ -37,7 +45,20 @@ function FormEditInterview({
     interviewId: interviewId,
   });
 
-  console.log(interviewDate);
+  async function submitEditInterview(e: any) {
+    e.preventDefault();
+    const token = Cookies.get("accessToken");
+    if (!token) {
+      toast.error("Please refresh your browser, or try to login again");
+      return;
+    }
+    await dispatch(
+      handleEditInterview({
+        token: token as string,
+        interviewData: interviewData,
+      }),
+    );
+  }
 
   // Validate function to check if all fields are filled
   useEffect(() => {
@@ -67,7 +88,7 @@ function FormEditInterview({
   console.log(interviewData);
 
   return (
-    <form className={`flex flex-col gap-4`}>
+    <form onSubmit={submitEditInterview} className={`flex flex-col gap-4`}>
       {/* Expected Salary */}
       <div className="flex gap-4">
         <div className={"w-full"}>
@@ -151,7 +172,9 @@ function FormEditInterview({
       {/* Save & Apply Button */}
       <div className="flex justify-start">
         <Button disabled={isDisable} variant={"primary"} size={"default"}>
-          {isLoading ? LoadingLoader() : "Update Interview"}
+          {pendingState.setNewInterviewLoading
+            ? LoadingLoader()
+            : "Update Interview"}
         </Button>
       </div>
     </form>
