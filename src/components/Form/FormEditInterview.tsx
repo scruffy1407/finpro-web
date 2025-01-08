@@ -1,53 +1,43 @@
 import React, { useEffect, useState } from "react";
+import { InterviewData } from "@/components/Form/FormSetNewInterview";
+import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import LoadingLoader from "@/components/LoadingLoader";
-import { Textarea } from "@/components/ui/textarea";
-import Cookies from "js-cookie";
-import { CompanyUtils } from "@/utils/company.utils";
-import { toast } from "sonner";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/store";
-import { handleSetInterview } from "@/store/slices/applicantSlice";
+import { format } from "date-fns";
 
-// interviewId?: number;
-// applicationId: number;
-// interviewDate: Date;
-// interviewTimeStart: Date;
-// interviewTimeEnd: Date;
-// interviewDescrption: string;
-// interviewUrl?: string;
-// interviewStatus?: InterviewStatus;
-
-export interface InterviewData {
-  applicationId: number;
+interface EditInterviewProps {
+  interviewId: number;
+  applicantId: number;
   interviewDate: string;
   interviewTimeStart: string;
   interviewTimeEnd: string;
   interviewUrl: string;
   interviewDescription: string;
-  interviewId?: number;
 }
 
-interface SetNewInterview {
-  applicantId: number;
-}
-
-function FormSetNewInterview({ applicantId }: SetNewInterview) {
-  const dispatch = useDispatch<AppDispatch>();
-  const { pendingState } = useSelector(
-    (state: RootState) => state.applicantList,
-  );
-
+function FormEditInterview({
+  interviewDate,
+  interviewId,
+  interviewTimeEnd,
+  interviewTimeStart,
+  interviewUrl,
+  interviewDescription,
+  applicantId,
+}: EditInterviewProps) {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isDisable, setIsDisable] = useState<boolean>(false);
 
   const [interviewData, setInterviewData] = useState<InterviewData>({
     applicationId: applicantId,
-    interviewDate: "",
-    interviewTimeStart: "14:00",
-    interviewTimeEnd: "14:30",
-    interviewUrl: "",
-    interviewDescription: "",
+    interviewDate: format(new Date(interviewDate), "yyyy-MM-dd"),
+    interviewTimeStart: interviewTimeStart,
+    interviewTimeEnd: interviewTimeEnd,
+    interviewUrl: interviewUrl,
+    interviewDescription: interviewDescription,
+    interviewId: interviewId,
   });
+
+  console.log(interviewDate);
 
   // Validate function to check if all fields are filled
   useEffect(() => {
@@ -64,21 +54,6 @@ function FormSetNewInterview({ applicantId }: SetNewInterview) {
     }
   }, [interviewData]);
 
-  async function submitInterview(e: any) {
-    e.preventDefault();
-    const token = Cookies.get("accessToken");
-    if (!token) {
-      toast.error("Please refresh your browser, or try to login again");
-      return;
-    }
-    await dispatch(
-      handleSetInterview({
-        token: token as string,
-        interviewData: interviewData,
-      }),
-    );
-  }
-
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
@@ -92,7 +67,7 @@ function FormSetNewInterview({ applicantId }: SetNewInterview) {
   console.log(interviewData);
 
   return (
-    <form className={`flex flex-col gap-4`} onSubmit={submitInterview}>
+    <form className={`flex flex-col gap-4`}>
       {/* Expected Salary */}
       <div className="flex gap-4">
         <div className={"w-full"}>
@@ -176,13 +151,11 @@ function FormSetNewInterview({ applicantId }: SetNewInterview) {
       {/* Save & Apply Button */}
       <div className="flex justify-start">
         <Button disabled={isDisable} variant={"primary"} size={"default"}>
-          {pendingState.setNewInterviewLoading
-            ? LoadingLoader()
-            : "Set Interview"}
+          {isLoading ? LoadingLoader() : "Update Interview"}
         </Button>
       </div>
     </form>
   );
 }
 
-export default FormSetNewInterview;
+export default FormEditInterview;

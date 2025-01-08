@@ -5,10 +5,9 @@ import { Applicant, JobStatus } from "@/models/applicant.model";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";
-import { toast } from "sonner";
 import { AuthHandler } from "@/utils/auth.utils";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/store";
 import { Navbar } from "@/components/NavigationBar/Navbar";
 import {
   Select,
@@ -18,6 +17,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { getApplicantData } from "@/store/slices/applicantSlice";
+
 interface JobDetailsResponse {
   job_id: number;
   job_title: string;
@@ -34,6 +35,17 @@ interface JobDetailsResponse {
   };
 }
 
+interface InterviewProps {
+  interview_id: number;
+  applicationId: number;
+  interview_date: Date;
+  interview_time_start: Date;
+  interview_time_end: Date;
+  interview_descrption: string;
+  interview_status: string;
+  interview_url: string;
+}
+
 interface ApplicantData {
   application_id: number;
   jobHunter: {
@@ -43,6 +55,7 @@ interface ApplicantData {
   resume: string | null;
   created_at: string;
   application_status: JobStatus;
+  interview: InterviewProps[];
 }
 
 enum ViewSelection {
@@ -56,10 +69,13 @@ const JobApplicantDetail: React.FC = () => {
   const authHandler = new AuthHandler();
   const pagePermission = "company";
   authHandler.authorizeUser(pagePermission);
+  const dispatch = useDispatch<AppDispatch>();
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
+  const { applicantList, pendingState } = useSelector(
+    (state: RootState) => state.applicantList,
+  );
+
   const [jobDetails, setJobDetails] = useState<JobDetailsResponse | null>(null);
-  const [applicants, setApplicants] = useState<Applicant[]>([]);
-  const [applicantLoading, setApplicantLoading] = useState<boolean>(false);
   const [selectedView, setSelectedView] = useState<ViewSelection>(
     ViewSelection.AllApplicant,
   );
@@ -75,99 +91,21 @@ const JobApplicantDetail: React.FC = () => {
   };
 
   const handleSelectChange = (value) => {
-    console.log(value);
     setSelectedView(value); // Update the state with the selected value
-  };
-  console.log(selectedView);
-  const handleStatusChange = async (id: string, status: JobStatus) => {
-    try {
-      const accessToken = Cookies.get("accessToken");
-      if (!accessToken) {
-        console.error("Access token not found");
-        return;
-      }
-
-      const response = await axios.put(
-        `http://localhost:8000/api/company/applications/`,
-        {
-          application_id: id,
-          application_status: status,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        },
-      );
-      if (response.status === 200) {
-        setApplicants((prev) =>
-          prev.map((applicant) =>
-            applicant.id === id ? { ...applicant, status } : applicant,
-          ),
-        );
-        toast.success("Applicant Status Updated Successfully");
-      } else {
-        console.error("Failed to update status on server", response.data);
-      }
-    } catch (error) {
-      if (axios.isAxiosError(error) && error.response?.status === 401) {
-        router.push("/dashboard/company");
-      } else {
-        console.error("Error updating application status:", error);
-      }
-    }
-  };
-
-  const fetchApplicantDetails = async (fetchType: string) => {
-    const accessToken = Cookies.get("accessToken");
-    if (!accessToken) {
-      console.error("Access token not found");
-      return;
-    }
-    try {
-      setApplicantLoading(true);
-      const queryString = `?get=${fetchType}`;
-      console.log("QUERY", fetchType);
-      const response = await axios.get(
-        `http://localhost:8000/api/company/jobapplicants/${jobId}${queryString}`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        },
-      );
-      console.log("RESPONSE", response);
-      if (response.status === 200) {
-        const applicantData = response.data.data.applicants.map(
-          (applicant: ApplicantData) => ({
-            id: applicant.application_id.toString(),
-            name: applicant.jobHunter.name,
-            expectedSalary: formatCurrency(Number(applicant.expected_salary)),
-            resumeLink: applicant.resume ? applicant.resume : null,
-            applyDate: applicant.created_at,
-            status: applicant.application_status as JobStatus,
-          }),
-        );
-        setApplicants(applicantData);
-        setApplicantLoading(false);
-      } else {
-        console.error("No Applicant Found");
-        setApplicantLoading(false);
-      }
-    } catch (error) {
-      if (axios.isAxiosError(error) && error.response?.status === 401) {
-        router.push("/dashboard/company");
-        setApplicantLoading(false);
-      } else {
-        console.error("Error fetching job applicants:", error);
-        setApplicantLoading(false);
-      }
-    }
   };
 
   useEffect(() => {
     if (jobId && isLoggedIn) {
-      fetchApplicantDetails(selectedView);
+      const accessToken = Cookies.get("accessToken");
+
+      dispatch(
+        getApplicantData({
+          jobId: Number(jobId),
+          token: accessToken as string,
+          fetchType: selectedView,
+        }),
+      );
+      // fetchApplicantDetails(selectedView);
     }
   }, [jobId, router, isLoggedIn, selectedView]);
 
@@ -272,9 +210,8 @@ const JobApplicantDetail: React.FC = () => {
                 </div>
 
                 <ApplicantTable
-                  applicants={applicants}
-                  onStatusChange={handleStatusChange}
-                  isLoading={applicantLoading}
+                  applicants={applicantList}
+                  isLoading={pendingState.dataLoading}
                 />
               </div>
             </div>

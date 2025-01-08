@@ -3,21 +3,22 @@ import { Applicant, JobStatus } from "@/models/applicant.model";
 import LoadingLoader from "@/components/LoadingLoader";
 import { Button } from "@/components/ui/button";
 import ModalContainer from "@/components/Modal/ModalContainer";
-import FormEditWorkingExperience from "@/components/Form/FormEditWorkingExperience";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store";
 import { closeModalAction, openModalAction } from "@/store/slices/ModalSlice";
 import FormSetNewInterview from "@/components/Form/FormSetNewInterview";
+import FormEditInterview from "@/components/Form/FormEditInterview";
+import { format } from "date-fns";
+import { handleStatusChange } from "@/store/slices/applicantSlice";
+import Cookies from "js-cookie";
 
 interface ApplicantTableProps {
   applicants: Applicant[];
-  onStatusChange: (id: string, status: JobStatus) => void;
   isLoading: boolean;
 }
 
 export const ApplicantTable: React.FC<ApplicantTableProps> = ({
   applicants,
-  onStatusChange,
   isLoading = true,
 }) => {
   const dispatch = useDispatch<AppDispatch>();
@@ -73,7 +74,94 @@ export const ApplicantTable: React.FC<ApplicantTableProps> = ({
                     onClose={handleCloseModal}
                     title={`Set Interview Schedule`}
                   >
-                    <FormSetNewInterview />
+                    <FormSetNewInterview applicantId={Number(applicant.id)} />
+                  </ModalContainer>
+                  <ModalContainer
+                    isOpen={
+                      currentModalId === "editInterviewSchedule" &&
+                      editId === Number(applicant.interviewId || -1)
+                    }
+                    onClose={handleCloseModal}
+                    title={`Edit Interview Schedule`}
+                  >
+                    <FormEditInterview
+                      interviewId={applicant.interviewId}
+                      applicantId={Number(applicant.id) || -1}
+                      interviewTimeEnd={applicant.interviewTimeEnd || ""}
+                      interviewTimeStart={applicant.interviewTimeStart || ""}
+                      interviewDate={applicant.interviewDate || ""}
+                      interviewDescription={
+                        applicant.interviewDescription || ""
+                      }
+                      interviewUrl={applicant.interviewUrl || ""}
+                    />
+                  </ModalContainer>
+                  <ModalContainer
+                    isOpen={
+                      currentModalId === "ScheduleModal" &&
+                      editId === Number(applicant.id)
+                    }
+                    onClose={handleCloseModal}
+                    title={`Interview Schedule`}
+                  >
+                    <>
+                      <div className={"grid grid-cols-2 gap-4"}>
+                        <p className={"text-sm text-neutral-600 "}>
+                          Interview Date
+                        </p>
+                        <p className={"text-sm font-semibold text-neutral-950"}>
+                          {format(
+                            new Date(applicant.interviewDate as string),
+                            "dd, MMM yyyy",
+                          )}
+                        </p>
+
+                        <p className={"text-sm text-neutral-600 "}>
+                          Interview Time
+                        </p>
+                        <p className={"text-sm font-semibold text-neutral-950"}>
+                          {applicant.interviewTimeStart} -{" "}
+                          {applicant.interviewTimeEnd}
+                        </p>
+
+                        <p className={"text-sm text-neutral-600 "}>
+                          Interview Link
+                        </p>
+                        <p className={"text-sm font-semibold text-neutral-950"}>
+                          {applicant.interviewUrl}
+                        </p>
+                      </div>
+                      <div
+                        className={"flex items-center gap-4 justify-between"}
+                      >
+                        <Button
+                          variant={"link"}
+                          size={"sm"}
+                          onClick={() => {
+                            dispatch(closeModalAction());
+                            dispatch(
+                              openModalAction(
+                                "editInterviewSchedule",
+                                Number(applicant.interviewId),
+                              ),
+                            );
+                          }}
+                        >
+                          Edit Schedule
+                        </Button>
+
+                        <div className={"flex items-center gap-4"}>
+                          <p
+                            className={"text-sm text-neutral-600 font-semibold"}
+                          >
+                            Marks as
+                          </p>
+                          <Button variant={"outline"} size={"sm"}>
+                            Completed
+                          </Button>
+                        </div>
+                      </div>
+                    </>
                   </ModalContainer>
                   <tr key={applicant.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -98,12 +186,16 @@ export const ApplicantTable: React.FC<ApplicantTableProps> = ({
                     <td className="px-6 py-4 whitespace-nowrap">
                       <select
                         value={applicant.status}
-                        onChange={(e) =>
-                          onStatusChange(
-                            applicant.id,
-                            e.target.value as JobStatus,
-                          )
-                        }
+                        onChange={(e) => {
+                          const token = Cookies.get("accessToken");
+                          dispatch(
+                            handleStatusChange({
+                              applicantId: applicant.id,
+                              status: e.target.value as JobStatus,
+                              token: token as string,
+                            }),
+                          );
+                        }}
                         className={`rounded-full px-3 py-1 text-sm font-semibold ${
                           applicant.status === "accepted"
                             ? "text-green-800 bg-green-100"
@@ -121,18 +213,33 @@ export const ApplicantTable: React.FC<ApplicantTableProps> = ({
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       {applicant.status === "interview" ? (
                         <Button
-                          onClick={() =>
-                            dispatch(
-                              openModalAction(
-                                "setNewScheduleModal",
-                                Number(applicant.id),
-                              ),
-                            )
-                          }
+                          onClick={() => {
+                            if (
+                              applicant.interviewStatus === "scheduled" &&
+                              applicant.status === "interview"
+                            ) {
+                              dispatch(
+                                openModalAction(
+                                  "ScheduleModal",
+                                  Number(applicant.id),
+                                ),
+                              );
+                            } else {
+                              dispatch(
+                                openModalAction(
+                                  "setNewScheduleModal",
+                                  Number(applicant.id),
+                                ),
+                              );
+                            }
+                          }}
                           variant={"outline"}
                           size={"xs"}
                         >
-                          Set Interview Schedule
+                          {applicant.interviewStatus === "scheduled" &&
+                          applicant.status === "interview"
+                            ? "Interview Scheduled"
+                            : "Set Interview Schedule"}
                         </Button>
                       ) : (
                         "-"

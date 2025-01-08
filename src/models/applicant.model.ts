@@ -17,6 +17,13 @@ export interface Applicant {
   resumeLink: string;
   applyDate: string;
   status: JobStatus;
+  interviewStatus?: string;
+  interviewDate?: string;
+  interviewDescription?: string;
+  interviewUrl?: string;
+  interviewTimeStart?: string;
+  interviewTimeEnd?: string;
+  interviewId: number;
 }
 export interface JobApplication {
   applicationId: string;

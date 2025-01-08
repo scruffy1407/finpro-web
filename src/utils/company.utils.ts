@@ -1,6 +1,7 @@
 import api from "@/pages/api/api";
-import { ApplyJob, reviewResponse } from "@/models/company.model";
+import { reviewResponse } from "@/models/company.model";
 import { toast } from "sonner";
+import { InterviewData } from "@/components/Form/FormSetNewInterview";
 
 export class CompanyUtils {
   async getCompanyPageDetail(companyId: number) {
@@ -111,6 +112,28 @@ export class CompanyUtils {
       return response.status === 200;
     } catch (e) {
       return false;
+    }
+  }
+
+  async setInterview(token: string, interviewData: InterviewData) {
+    try {
+      const response = await api.post(
+        "/api/company/application/interview",
+        interviewData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      console.log("RESPONSE", response.data);
+      if (response.status === 201) {
+        return response.data;
+      } else {
+        return [];
+      }
+    } catch (e) {
+      return e;
     }
   }
 }
