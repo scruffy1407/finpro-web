@@ -29,6 +29,45 @@ export const ApplicantTable: React.FC<ApplicantTableProps> = ({
   const handleCloseModal = () => {
     dispatch(closeModalAction());
   };
+
+  const renderStatusSelection = (applicantStatus: string) => {
+    if (applicantStatus === "onreview") {
+      return (
+        <>
+          <option value="onreview">On Review</option>
+          <option value="interview">Interview</option>
+          <option value="rejected">Rejected</option>
+        </>
+      );
+    } else if (applicantStatus === "interview") {
+      return (
+        <>
+          <option value="interview">Interview</option>
+          <option value="rejected">Rejected</option>
+          <option value="accepted">Accepted</option>
+        </>
+      );
+    } else if (applicantStatus === "accepted") {
+      return (
+        <>
+          <option value="accepted">Accepted</option>
+        </>
+      );
+    } else if (applicantStatus === "rejected") {
+      return (
+        <>
+          <option value="rejected">Rejected</option>
+        </>
+      );
+    } else {
+      return (
+        <>
+          <option value="error">Please refresh</option>
+        </>
+      );
+    }
+  };
+
   return (
     <>
       <div className="overflow-x-auto">
@@ -134,21 +173,25 @@ export const ApplicantTable: React.FC<ApplicantTableProps> = ({
                       <div
                         className={"flex items-center gap-4 justify-between"}
                       >
-                        <Button
-                          variant={"link"}
-                          size={"sm"}
-                          onClick={() => {
-                            dispatch(closeModalAction());
-                            dispatch(
-                              openModalAction(
-                                "editInterviewSchedule",
-                                Number(applicant.interviewId),
-                              ),
-                            );
-                          }}
-                        >
-                          Edit Schedule
-                        </Button>
+                        {applicant.status === "interview" ? (
+                          <Button
+                            variant={"link"}
+                            size={"sm"}
+                            onClick={() => {
+                              dispatch(closeModalAction());
+                              dispatch(
+                                openModalAction(
+                                  "editInterviewSchedule",
+                                  Number(applicant.interviewId),
+                                ),
+                              );
+                            }}
+                          >
+                            Edit Schedule
+                          </Button>
+                        ) : (
+                          ""
+                        )}
 
                         <div className={"flex items-center gap-4"}>
                           <p
@@ -184,39 +227,53 @@ export const ApplicantTable: React.FC<ApplicantTableProps> = ({
                       {applicant.expectedSalary.toLocaleString()}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <select
-                        value={applicant.status}
-                        onChange={(e) => {
-                          const token = Cookies.get("accessToken");
-                          dispatch(
-                            handleStatusChange({
-                              applicantId: applicant.id,
-                              status: e.target.value as JobStatus,
-                              token: token as string,
-                            }),
-                          );
-                        }}
-                        className={`rounded-full px-3 py-1 text-sm font-semibold ${
-                          applicant.status === "accepted"
-                            ? "text-green-800 bg-green-100"
-                            : applicant.status === "rejected"
-                              ? "text-red-800 bg-red-100"
-                              : "text-yellow-800 bg-yellow-100"
-                        }`}
-                        disabled={applicant.status !== "onreview"}
-                      >
-                        <option value="onreview">On Review</option>
-                        <option value="interview">Interview</option>
-                        <option value="rejected">Rejected</option>
-                      </select>
+                      {!(
+                        applicant.status === "accepted" ||
+                        applicant.status === "rejected"
+                      ) ? (
+                        <select
+                          value={applicant.status}
+                          onChange={(e) => {
+                            const token = Cookies.get("accessToken");
+                            dispatch(
+                              handleStatusChange({
+                                applicantId: applicant.id,
+                                status: e.target.value as JobStatus,
+                                token: token as string,
+                              }),
+                            );
+                          }}
+                          className={`rounded-full px-3 py-1 text-sm font-semibold ${
+                            applicant.status === "interview"
+                              ? "text-yellow-800 bg-yellow-100"
+                              : "text-neutral-950 bg-grey-100"
+                          }`}
+                        >
+                          {renderStatusSelection(applicant.status)}
+                        </select>
+                      ) : (
+                        <div
+                          className={`rounded-full px-3 py-1 text-sm font-semibold ${applicant.status === "accepted" ? "text-green-900 bg-green-100" : "text-red-900 bg-red-100"}`}
+                        >
+                          {applicant.status}
+                        </div>
+                      )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
-                      {applicant.status === "interview" ? (
+                      {applicant.status === "interview" ||
+                      (applicant.status === "accepted" &&
+                        applicant.interviewId) ||
+                      (applicant.status === "rejected" &&
+                        applicant.interviewId) ? (
                         <Button
                           onClick={() => {
                             if (
-                              applicant.interviewStatus === "scheduled" &&
-                              applicant.status === "interview"
+                              (applicant.interviewStatus === "scheduled" &&
+                                applicant.status === "interview") ||
+                              (applicant.interviewStatus === "scheduled" &&
+                                applicant.status === "accepted") ||
+                              (applicant.interviewStatus === "scheduled" &&
+                                applicant.status === "rejected")
                             ) {
                               dispatch(
                                 openModalAction(
@@ -236,8 +293,12 @@ export const ApplicantTable: React.FC<ApplicantTableProps> = ({
                           variant={"outline"}
                           size={"xs"}
                         >
-                          {applicant.interviewStatus === "scheduled" &&
-                          applicant.status === "interview"
+                          {(applicant.interviewStatus === "scheduled" &&
+                            applicant.status === "interview") ||
+                          (applicant.interviewStatus === "scheduled" &&
+                            applicant.status === "accepted") ||
+                          (applicant.interviewStatus === "scheduled" &&
+                            applicant.status === "rejected")
                             ? "Interview Scheduled"
                             : "Set Interview Schedule"}
                         </Button>

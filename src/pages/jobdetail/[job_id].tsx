@@ -41,8 +41,9 @@ function JobDetail() {
     (state: RootState) => state.modalController,
   );
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
-  const { validApply, pendingState, listProvince, listCity, cityId } =
-    useSelector((state: RootState) => state.generalInfo);
+  const { validApply, pendingState, listProvince, cityId } = useSelector(
+    (state: RootState) => state.generalInfo,
+  );
   const callbackPath = "/auth/login/jobhunter?callback=ini-bosss";
 
   const handleCloseModal = () => {
@@ -78,7 +79,6 @@ function JobDetail() {
           },
         },
       );
-      console.log("VALIDATE USER JOIN", response);
       if (response.status === 200 && response.data.code === "JOIN") {
         setApplicantData({
           jobHunterId: response.data.data.jobHunterId,
@@ -121,17 +121,6 @@ function JobDetail() {
     const token = Cookies.get("accessToken");
     await dispatch(getGeneralInfo(token as string));
   }
-
-  // useEffect(() => {
-  //   if (isLoggedIn) {
-  //     setValiateLoading(true);
-  //     if (!pendingState.isRender) {
-  //       handleGetGeneralInfo();
-  //     }
-  //     validateUserJob();
-  //     setValiateLoading(false);
-  //   }
-  // }, [job_id, isLoggedIn]);
 
   useEffect(() => {
     if (job_id) {

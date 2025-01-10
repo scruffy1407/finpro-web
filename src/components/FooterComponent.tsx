@@ -7,7 +7,12 @@ import Link from "next/link";
 function FooterComponent() {
   const userRole = useSelector((state: RootState) => state.auth.user_role);
 
-  const roleConfig = {
+  type RoleType = "jobhunter" | "company" | "developer" | "default";
+
+  const roleConfig: Record<
+    RoleType,
+    { logo: string; navbarItems: { label: string; href: string }[] }
+  > = {
     jobhunter: {
       logo: "/logo/MainLogoWhite.svg",
       navbarItems: [
@@ -24,6 +29,13 @@ function FooterComponent() {
         { label: "Test Templates", href: "" },
       ],
     },
+    developer: {
+      logo: "/logo/CompanyLogo.svg",
+      navbarItems: [
+        { label: "Dashboard", href: "" },
+        { label: "Manage Assessment", href: "" },
+      ],
+    },
     default: {
       logo: "/logo/MainLogoWhite.svg",
       navbarItems: [
@@ -35,7 +47,7 @@ function FooterComponent() {
     },
   };
 
-  const { logo, navbarItems } = roleConfig[userRole || "default"];
+  const { logo, navbarItems } = roleConfig[(userRole as RoleType) || "default"];
 
   return (
     <div className="max-w-screen-xl mx-auto bg-sky-950 border rounded-xl mb-16">

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import * as Icons from "lucide-react";
 import { ProfileMenu } from "./ProfileMenu";
 import { MobileMenu } from "./MobileMenu";
 import {
@@ -26,6 +25,8 @@ export function Navbar() {
   const pendingState = useSelector(
     (state: RootState) => state.auth.pendingState,
   );
+
+  console.log("USER ROLE", userRole);
 
   const theme = themeConfig[(userRole as UserRole) || "jobhunter"];
   const navigation = navItemConfig[(userRole as UserRole) || "jobhunter"];

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { JobDetails } from "@/components/JobDetailsApplicant";
 import { ApplicantTable } from "@/components/ApplicantTable";
-import { Applicant, JobStatus } from "@/models/applicant.model";
+import { JobStatus } from "@/models/applicant.model";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";
