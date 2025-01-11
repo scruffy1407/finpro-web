@@ -28,15 +28,11 @@ const EditQuestions = () => {
 			try {
 				// Fetch the test data
 				const response = await axios.get(
-					`http://localhost:8000/api/company/viewtestbyPretestId/${test_id}`,
+					`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/company/viewtestbyPretestId/${test_id}`,
 					{
 						headers: { Authorization: `Bearer ${accessToken}` },
 					}
 				);
-
-				// Log the entire response data for debugging
-				console.log("Fetched test details:", response.data);
-
 				// Ensure question_id is correctly assigned
 				const questionsWithId = response.data.data.testQuestions.map(
 					(q: {
@@ -92,15 +88,10 @@ const EditQuestions = () => {
 				correct_answer: question.correct_answer,
 			})),
 		};
-
-		console.log("Updated request body:", updatedQuestions);
-
 		try {
-			console.log(`http://localhost:8000/api/company/updatetest/${test_id}`);
-
 			// Send the request to update the test questions
 			const response = await axios.put(
-				`http://localhost:8000/api/company/updatetest/${test_id}`,
+				`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/company/updatetest/${test_id}`,
 				updatedQuestions,
 				{
 					headers: {
@@ -109,10 +100,6 @@ const EditQuestions = () => {
 					},
 				}
 			);
-
-			// Check for a success response
-			console.log("API Response:", response.data); // Check the full response data
-
 			if (response.status === 200) {
 				alert("Test questions updated successfully!");
 				router.push("/preSelectionDashboard"); // Navigate back to the homepage or another page

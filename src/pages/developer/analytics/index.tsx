@@ -87,22 +87,22 @@ function AnalyticsDashboard() {
         categoryResponse,
         additionalResponse,
       ] = await Promise.all([
-        axios.get("http://localhost:8000/api/dev/analytics/gender", {
+        axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/dev/analytics/gender`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
-        axios.get("http://localhost:8000/api/dev/analytics/locationprovince", {
+        axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/dev/analytics/locationprovince`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
-        axios.get("http://localhost:8000/api/dev/analytics/agegroups", {
+        axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/dev/analytics/agegroups`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
-        axios.get("http://localhost:8000/api/dev/analytics/salarytrends", {
+        axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/dev/analytics/salarytrends`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
-        axios.get("http://localhost:8000/api/dev/analytics/category", {
+        axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/dev/analytics/category`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
-        axios.get("http://localhost:8000/api/dev/analytics/additionaldata", {
+        axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/dev/analytics/additionaldata`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
       ]);

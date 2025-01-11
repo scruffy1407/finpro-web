@@ -25,9 +25,6 @@ export default function executionPretest() {
 	const testId = router.query.test_id ? String(router.query.test_id) : ""; // Extract test_id from the route
 	const jobId = router.query.job_id ? String(router.query.job_id) : ""; // Extract job_id from the query string
 
-	console.log("Route Test ID:", testId); // Logs 18
-	console.log("Query Job ID:", jobId); // Logs 48
-
 	useEffect(() => {
 		const fetchTestData = async () => {
 			// Ensure that router.query.test_id is available before making the request
@@ -41,8 +38,6 @@ export default function executionPretest() {
 				? router.query.test_id[0].trim()
 				: String(router.query.test_id).trim();
 
-			console.log("This is testId:", testId);
-
 			// Ensure the testId is valid before making the request
 			if (!testId) {
 				setError("Invalid test ID.");
@@ -53,10 +48,7 @@ export default function executionPretest() {
 				const token = accessToken;
 
 				// Use the testId directly in the URL path
-				const apiUrl = `http://localhost:8000/api/company/viewpretestbyIdhead/${testId}`; // Correct format for URL
-
-				console.log("API URL:", apiUrl);
-
+				const apiUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/company/viewpretestbyIdhead/${testId}`; // Correct format for URL
 				const response = await axios.get(apiUrl, {
 					headers: {
 						Authorization: `Bearer ${token}`, // Add Bearer token in the headers
@@ -110,7 +102,7 @@ export default function executionPretest() {
 			const token = accessToken;
 
 			// Call the API to apply for the test
-			const apiUrl = `http://localhost:8000/api/jobhunter/applytest/${jobId}`;
+			const apiUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/jobhunter/applytest/${jobId}`;
 			const response = await axios.post(
 				apiUrl,
 				{},

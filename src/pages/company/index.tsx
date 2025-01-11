@@ -70,10 +70,7 @@ const CompanyPage: React.FC = () => {
     setIsLoading(false);
   }
 
-  console.log(companyList);
-
   async function handleSearch() {
-    console.log("COMPANY CITY", companyCity);
     await fetchCompany(1, companyName, companyCity);
     dispatch(resetPaginationState());
   }

@@ -25,7 +25,6 @@ function CompanyHighlight({
 }: CompanyHighlight) {
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const router = useRouter();
-  console.log(router.pathname);
   const currentUrl = window.location.href;
 
   const callbackPath = `/auth/login/jobhunter?callback=${currentUrl}`;

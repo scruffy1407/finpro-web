@@ -62,15 +62,12 @@ export class CompanyUtils {
 					Authorization: `Bearer ${token}`,
 				},
 			});
-			console.log(response);
 			if (response.status === 201) {
 				return response.status;
 			} else {
-				console.log("execute");
 				return response.data.message;
 			}
 		} catch (e) {
-			console.log(e.response);
 			return e.response;
 		}
 	}
@@ -78,7 +75,7 @@ export class CompanyUtils {
 	async applyJobSub(token: string, data: FormData) {
 		try {
 			const response = await axios.put(
-				"http://localhost:8000/api/applyjobtest/applyjobtest",
+				`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/applyjobtest/applyjobtest`,
 				data,
 				{
 					headers: {
@@ -86,12 +83,10 @@ export class CompanyUtils {
 					},
 				}
 			);
-			console.log("Response of apply JOb Sub:", response);
 			if (response.status === 200) {
 				// Check for 200 instead of 201
 				return response;
 			} else {
-				console.log("execute");
 				return response.data.message;
 			}
 		} catch (error) {
@@ -109,7 +104,6 @@ export class CompanyUtils {
 		currentPage?: number,
 		limit?: number
 	) {
-		console.log("UTILS", companyLocation);
 		let queryString = `?page=${currentPage}&limit=${limit || 12}`;
 
     try {

@@ -29,14 +29,11 @@ const EditQuestions = () => {
 			try {
 				// Fetch the test data
 				const response = await axios.get(
-					`http://localhost:8000/api/dev/getassessquestbyId/${skill_assessment_id}`,
+					`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/dev/getassessquestbyId/${skill_assessment_id}`,
 					{
 						headers: { Authorization: `Bearer ${accessToken}` },
 					}
 				);
-
-				console.log("Fetched test details:", response.data); // Log the entire response
-
 				// Ensure the response contains 'assessmentTest' and 'questions'
 				const questions = response.data.assessmentTest?.questions;
 
@@ -108,15 +105,10 @@ const EditQuestions = () => {
 			correct_answer: question.correct_answer,
 		}));
 
-		console.log("Updated request body:", {
-			skillAssessmentId: updatedSkillAssessmentId, // Now passing as a number
-			questions: updatedQuestions,
-		});
-
 		try {
 			// Send the request to update the test questions
 			const response = await axios.put(
-				`http://localhost:8000/api/dev/editquest`,
+				`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/dev/editquest`,
 				{
 					skillAssessmentId: updatedSkillAssessmentId, // Pass number here
 					questions: updatedQuestions,
@@ -128,9 +120,6 @@ const EditQuestions = () => {
 					},
 				}
 			);
-
-			console.log("API Response:", response.data);
-
 			if (response.status === 200) {
 				alert("Test questions updated successfully!");
 				router.push("/assessmentTestDashboard");

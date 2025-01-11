@@ -130,7 +130,7 @@ export const getApplicantData = createAsyncThunk(
       const queryString = `?get=${fetchType}`;
 
       const response = await axios.get(
-        `http://localhost:8000/api/company/jobapplicants/${jobId}${queryString}`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/company/jobapplicants/${jobId}${queryString}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -153,7 +153,7 @@ export const handleStatusChange = createAsyncThunk(
   async ({ status, applicantId, token }: ParamsUpdateStatus) => {
     try {
       const response = await axios.put(
-        `http://localhost:8000/api/company/applications/`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/company/applications/`,
         {
           application_id: applicantId,
           application_status: status,
@@ -196,7 +196,6 @@ export const handleSetInterview = createAsyncThunk(
         token as string,
         interviewData,
       );
-      console.log("SLICE INTERVIEW", response);
       return response.data;
     } catch (e) {
       toast.error("Failed to set schedule, Please refresh your browser");
@@ -210,7 +209,6 @@ export const handleEditInterview = createAsyncThunk(
   async ({ token, interviewData }: ParamsEditInterview) => {
     try {
       const response = await companyUtils.updateInterview(token, interviewData);
-      console.log("RESPONSEEE", response);
       return response.data;
     } catch (e) {
       toast.error("Failed to update schedule, Please refresh your browser");
@@ -229,7 +227,6 @@ const applicantSlice = createSlice({
         state.pendingState.dataLoading = true;
       })
       .addCase(getApplicantData.fulfilled, (state, action) => {
-        console.log(action.payload);
         state.applicantList = action.payload.map(
           (applicant: ApplicantData) => ({
             id: applicant.application_id.toString(),
@@ -321,7 +318,6 @@ const applicantSlice = createSlice({
         state.pendingState.setNewInterviewLoading = true;
       })
       .addCase(handleEditInterview.fulfilled, (state, action) => {
-        console.log(action.payload);
         const applicantId = action.payload.applicationId;
 
         state.applicantList = state.applicantList.map((applicant) =>

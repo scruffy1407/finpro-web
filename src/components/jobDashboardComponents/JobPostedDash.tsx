@@ -54,15 +54,7 @@ function JobPostedDash() {
   const handleDelete = async (jobId: number) => {
     setLoadingState(true);
     try {
-      // Debug: Log the jobId being passed
-      console.log("Attempting to delete job post with jobId:", jobId);
-
-      // Delete the job post using only jobId
-      const response = await deleteJobPostDash(jobId); // Ensure you're sending just the jobId
-
-      // Debug: Log the response from the deleteJobPostDash function
-      console.log("Response from deleteJobPostDash:", response);
-
+      const response = await deleteJobPostDash(jobId);
       if (response?.message) {
         alert(response.message);
       } else {
@@ -160,9 +152,7 @@ function JobPostedDash() {
   };
 
   useEffect(() => {
-    console.log(isLoggedIn, pendingState.dataLoading);
     if (isLoggedIn && token !== undefined) {
-      console.log(isLoggedIn, pendingState.dataLoading, token);
       fetchData(token);
     }
   }, [isLoggedIn]);

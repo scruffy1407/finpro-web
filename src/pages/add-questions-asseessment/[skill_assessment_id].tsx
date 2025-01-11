@@ -21,27 +21,6 @@ const AddQuestions = () => {
 		},
 	]);
 
-	// Fetch test details
-	// useEffect(() => {
-	// 	const fetchTestDetails = async () => {
-	// 		if (!test_id) return; // Wait until test_id is available
-	// 		try {
-	// 			const response = await axios.get(
-	// 				`http://localhost:8000/api/company/viewpretestbyId/${test_id}`, // Use the new API to get test name
-	// 				{
-	// 					headers: { Authorization: `Bearer ${accessToken}` },
-	// 				}
-	// 			);
-	// 			console.log("Fetched test details:", response);
-	// 			setTestName(response.data.data.test_name); // Assume test_name is part of the response
-	// 		} catch (error) {
-	// 			console.error("Error fetching test details:", error);
-	// 			alert("Failed to fetch test details.");
-	// 		}
-	// 	};
-	// 	fetchTestDetails();
-	// }, [test_id, accessToken]);
-
 	const handleInputChange = (
 		index: number,
 		field: keyof (typeof questions)[0],
@@ -79,7 +58,7 @@ const AddQuestions = () => {
 
 		try {
 			const response = await axios.post(
-				`http://localhost:8000/api/dev/createquest/${skill_assessment_id}`,
+				`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/dev/createquest/${skill_assessment_id}`,
 				{ questions },
 				{
 					headers: {

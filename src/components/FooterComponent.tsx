@@ -8,8 +8,6 @@ import { UserRole } from "@/components/NavigationBar/navigation";
 function FooterComponent({ pageRole }: { pageRole: UserRole }) {
   const userRole = useSelector((state: RootState) => state.auth.user_role);
 
-  console.log(pageRole);
-
   const roleConfig: Record<
     UserRole,
     { logo: string; navbarItems: { label: string; href: string }[] }

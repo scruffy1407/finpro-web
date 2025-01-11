@@ -29,8 +29,6 @@ function FormEditWorkingExperience({
   const profileHandler = new ProfileHandler();
   const [isDisable, setIsDisable] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  console.log(workingExperienceId);
-
   const [editForm, setEditForm] = useState<WorkingExperience>({
     workingExperienceId: workingExperienceId,
     jobHunterId: jobHunterId,
@@ -123,8 +121,6 @@ function FormEditWorkingExperience({
     editForm.startDate,
     editForm.endDate,
   ]);
-
-  console.log(editForm, "INI DATA EDITNYA!!! 123123");
   return (
     <form onSubmit={handleEditWork} className="flex flex-col gap-5">
       <div>

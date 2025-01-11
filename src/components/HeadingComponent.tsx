@@ -1,5 +1,4 @@
 import React from "react";
-import ButtonComponent from "./ButtonComponent";
 import { HeadingProps } from "@/utils/interface";
 import { Button } from "@/components/ui/button";
 

@@ -74,14 +74,12 @@ function CompanyGeneralInfoSection() {
       const response = await profileHandler.getProfileCompany(
         accessToken as string
       );
-      console.log(response, "HUHUHIHI!!!");
       if (!response.data.cityId) {
         handleGetProvince();
         setFormGeneralInfo({
           ...response.data,
         });
       } else {
-        console.log("has city", response);
         const userLocation = await handleGetUseLocation(response.data.cityId);
         await handleGetProvince();
         await handleGetCity(userLocation.provinceId);
@@ -105,8 +103,6 @@ function CompanyGeneralInfoSection() {
       toast.error("Something went wrong, please refresh your browser");
     }
   }
-  console.log(formGeneralInfo, "INI FORM GENERAL INFO!!!");
-
   async function handleGetProvince() {
     try {
       const response = await locationHandler.getAllProvince();
@@ -131,7 +127,6 @@ function CompanyGeneralInfoSection() {
   async function handleGetUseLocation(cityId: number) {
     try {
       const response = await locationHandler.getUserLocation(cityId);
-      console.log(response.data, "INI jadakdsndnsdnskd");
       return response.data;
     } catch (e) {
       console.error(e, "Something went wrong, please refresh your browser");
@@ -206,9 +201,6 @@ function CompanyGeneralInfoSection() {
     });
     setDisable(false);
   }
-
-  console.log(formGeneralInfo, "abis handleinput bro");
-
   async function handleSubmitChange(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
@@ -238,8 +230,6 @@ function CompanyGeneralInfoSection() {
     }
 
     try {
-      console.log("LAGI SUBMIT BROO", formGeneralInfo);
-
       const response = await profileHandler.updateInfoCompany(
         accessToken as string,
         formGeneralInfo
@@ -262,7 +252,6 @@ function CompanyGeneralInfoSection() {
       console.error(e, "Something went wrong, please refresh your browser");
       toast.error("Something went wrong, please refresh your browser");
     }
-    console.log("Submitting formGeneralInfo:", formGeneralInfo);
   }
 
   const noOptionsMessage = (obj: { inputValue: string }) => {

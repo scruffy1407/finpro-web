@@ -24,8 +24,6 @@ export default function ConfirmationCard({ plan }: { plan: SubscriptionPlan }) {
 
   const handlePayment = async () => {
     // TODO: Implement Midtrans payment integration
-
-    console.log("Proceeding to payment for plan:");
     const token = Cookies.get("accessToken");
     let subscriptionId: number = 1;
     if (plan.subsParam === "standard-plan") {
@@ -42,12 +40,10 @@ export default function ConfirmationCard({ plan }: { plan: SubscriptionPlan }) {
           subscriptionId,
         );
         if (response.status === 201) {
-          console.log(response.data.data.transaction);
           const redirectUrl = response?.data.data.transaction.redirect_url;
 
           await router.push(`${redirectUrl}`);
         } else if (response.status === 400) {
-          console.log("exec");
           setIsLoading(false);
           setIsDisable(false);
           toast.error(response.response.data.message);
@@ -66,7 +62,7 @@ export default function ConfirmationCard({ plan }: { plan: SubscriptionPlan }) {
     } catch (err: unknown) {
       setIsLoading(false);
       setIsDisable(false);
-      console.log(err);
+      console.error(err);
       toast.error(
         "Failed to procced the payment, please try again or refresh your browser",
       );

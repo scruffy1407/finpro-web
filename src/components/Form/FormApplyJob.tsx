@@ -34,8 +34,6 @@ const FormJobApplication = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Log the form data for debugging
-    console.log("Form Data before submission:", applyJobForm);
     const token = Cookies.get("accessToken");
 
     if (applyJobForm.expected_salary === "" || applyJobForm.resume === null) {
@@ -90,9 +88,6 @@ const FormJobApplication = ({
       } else {
         response = await companyUtils.applyJob(token as string, applyJobData);
       }
-
-      console.log("API Response terakhir:", response);
-
       if (
         (response.status === 200 || response.status === 201) &&
         response.data?.success
@@ -100,18 +95,18 @@ const FormJobApplication = ({
         toast.success("Application sent successfully");
         setIsLoading(false);
         setIsDisable(false);
-        // Refresh the current page
         setTimeout(() => {
           router.push(
-            `http://localhost:3000/jobdetail/apply-success?job=${jobId}&apply=true`,
+            `${process.env.CLIENT_URL}/jobdetail/apply-success?job=${jobId}&apply=true`,
           );
-        }, 2000); // Delay for the user to see the success toast
+        }, 2000);
       } else {
         toast.error(response.data?.message || "Submission failed");
         setIsLoading(false);
         setIsDisable(false);
       }
     } catch (error) {
+      console.error("Failed to submit application", error);
       toast.error(
         "Failed to submit your application, please try again or refresh your browser",
       );

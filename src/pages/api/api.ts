@@ -130,10 +130,6 @@ export async function getJobPostDash({
 			Authorization: `Bearer ${accessToken}`,
 		},
 	};
-
-	console.log("THIS IS QUERRY STRING ");
-	console.log(queryString);
-
 	try {
 		const response = await job.get(queryString, config); // Make the API request
 		return response.data.data; // Return the data part of the response
@@ -157,8 +153,6 @@ export async function deleteJobPostDash(
 				},
 			}
 		);
-		console.log(`Requesting DELETE on job/${job_Id}`);
-
 		// Assuming the response from the server contains a message property
 		// Return the response with the success message
 		return response.data; // Ensure response.data contains the message

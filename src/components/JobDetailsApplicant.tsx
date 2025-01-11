@@ -42,12 +42,12 @@ export const JobDetails: React.FC<JobDetailsProps> = ({
           return;
         }
         const response = await axios.get(
-          `http://localhost:8000/api/company/jobstatus/${jobId}`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/company/jobstatus/${jobId}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },
-          },
+          }
         );
 
         if (response.status === 200) {
@@ -74,19 +74,19 @@ export const JobDetails: React.FC<JobDetailsProps> = ({
       }
 
       const response = await axios.put(
-        `http://localhost:8000/api/company/job/${jobId}/status`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/company/job/${jobId}/status`,
         { status: !jobStatus },
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
-        },
+        }
       );
 
       if (response.status === 200) {
         setJobStatus(!jobStatus);
         toast.success(
-          `Job status updated to ${!jobStatus ? "Active" : "Inactive"}`,
+          `Job status updated to ${!jobStatus ? "Active" : "Inactive"}`
         );
       } else {
         toast.error("Failed to update job status.");

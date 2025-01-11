@@ -69,14 +69,14 @@ const JobPostSection: React.FC = () => {
 
       if (existingBookmark) {
         await axios.post(
-          "http://localhost:8000/applyjob/bookmark/remove",
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/applyjob/bookmark/remove`,
           { wishlist_id: existingBookmark.wishlist_id },
           { headers: { Authorization: `Bearer ${token}` } }
         );
         dispatch(removeBookmark(existingBookmark.wishlist_id));
       } else {
         const response = await axios.post(
-          "http://localhost:8000/applyjob/bookmark",
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/applyjob/bookmark`,
           { jobPostId },
           { headers: { Authorization: `Bearer ${token}` } }
         );

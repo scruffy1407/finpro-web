@@ -31,7 +31,7 @@ const BookmarkPage: React.FC = () => {
         return;
       }
       const response = await axios.get(
-        "http://localhost:8000/applyjob/bookmark",
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/applyjob/bookmark`,
         {
           headers: { Authorization: `Bearer ${token}` },
         },
@@ -57,7 +57,7 @@ const BookmarkPage: React.FC = () => {
       }
 
       const response = await axios.post(
-        "http://localhost:8000/applyjob/bookmark",
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/applyjob/bookmark`,
         { jobPostId },
         { headers: { Authorization: `Bearer ${token}` } },
       );
@@ -77,7 +77,7 @@ const BookmarkPage: React.FC = () => {
       }
 
       await axios.post(
-        "http://localhost:8000/applyjob/bookmark/remove",
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/applyjob/bookmark/remove`,
         { wishlist_id: wishlistId },
         { headers: { Authorization: `Bearer ${token}` } },
       );

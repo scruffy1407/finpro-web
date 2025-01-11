@@ -36,7 +36,6 @@ function Index() {
       const response = await api.get(
         `/api/user//verify-certificate/${inputValue}`,
       );
-      console.log(response);
       if (response.status === 200) {
         if (response.data.code === "NO_EXIST") {
           setIsShow(false);

@@ -14,7 +14,7 @@ function PreSelectionDashLeft() {
 		const fetchPreSelectionTests = async () => {
 			try {
 				const response = await axios.get(
-					"http://localhost:8000/api/company/viewpretest",
+					`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/company/viewpretest`,
 					{
 						headers: {
 							Authorization: `Bearer ${accessToken}`,

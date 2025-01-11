@@ -10,8 +10,6 @@ interface companyInfoProps extends TabsContentProps {
 }
 
 function CompanyInfoTab({ value, data, totalJob }: companyInfoProps) {
-  console.log("INNER DATA", data);
-
   return (
     <TabsContent
       className={`flex flex-col gap-4 mt-0 data-[state=active]:flex data-[state=inactive]:hidden`}

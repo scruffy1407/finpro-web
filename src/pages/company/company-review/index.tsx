@@ -70,8 +70,6 @@ function Index() {
       [ratingType]: newRating,
     }));
   };
-  console.log("WORK EXP LIST :", workingExpList);
-
   async function handleFethingExperience() {
     const accessToken = Cookies.get("accessToken");
     await dispatch(
@@ -113,7 +111,6 @@ function Index() {
         token as string,
         reviewForm,
       );
-      console.log(response);
       if (response.status === 201) {
         toast.success("Thank for your review");
         dispatch(addJobs({ index: indexSelect, reviewForm: reviewForm }));
@@ -121,7 +118,6 @@ function Index() {
           scroll: false,
         });
       } else {
-        console.log("init");
         const message = response.data.message;
         toast.error(message);
       }

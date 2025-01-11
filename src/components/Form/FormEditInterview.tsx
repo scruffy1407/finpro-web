@@ -85,8 +85,6 @@ function FormEditInterview({
     }));
   };
 
-  console.log(interviewData);
-
   return (
     <form onSubmit={submitEditInterview} className={`flex flex-col gap-4`}>
       {/* Expected Salary */}

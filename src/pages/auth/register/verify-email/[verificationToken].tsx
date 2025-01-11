@@ -10,15 +10,9 @@ const VerifyEmail = () => {
   const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
 
   useEffect(() => {
-    // Debugging: Log the token and router.query
-    console.log("router.query:", router.query); // Check if the token is in query
-    console.log(verificationToken, "INI VERIFICATION TOKEN!!!"); // Check the token value
-
-    // Only trigger the API call when the verificationToken is available
     if (verificationToken) {
-      console.log(verificationToken, "ini yang ke-2tokenya")
       axios
-        .get(`http://localhost:8000/auth/verify-email/${verificationToken}`)
+        .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/verify-email/${verificationToken}`)
         .then(() => {
           setStatus("success");
         })

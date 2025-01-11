@@ -37,18 +37,8 @@ export default function Quiz() {
 	const { toast } = useToast();
 	const router = useRouter();
 	const jobId = router.query.job_id; // Extract `job_id` from the URL
-
-	console.log("AM i geeting this jobHunterId ?");
-
 	const jobHunterId = Number(router.query.jobHunterId) || 0; // Extract `jobHunterId` from query
-	console.log(jobHunterId);
-	console.log("Am i getting this applicaitonId ?");
 	const applicationId = Number(router.query.applicationId) || 0; // Extract `applicationId` from query
-	console.log(applicationId);
-	console.log("Am i getting this Test_id?");
-
-	console.log(jobId);
-
 	const [quizState, setQuizState] = useState<QuizState>({
 		currentQuestionIndex: 0,
 		answers: {}, // Initially empty, but will have { questionId: chosenAnswer }
@@ -89,22 +79,18 @@ export default function Quiz() {
 			const token = Cookies.get("accessToken");
 			try {
 				const response = await axios.get(
-					`http://localhost:8000/api/jobhunter/getquestions/${jobId}`,
+					`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/jobhunter/getquestions/${jobId}`,
 					{
 						headers: {
 							Authorization: `Bearer ${token}`,
 						},
 					}
 				);
-
-				console.log("API Response:", response.data); // Log the raw API response
-
 				if (response.status === 200) {
-					setQuestions(response.data.questions); // Assuming the API returns an array of questions
-					setDuration(response.data.duration); // Update duration from API response
+					setQuestions(response.data.questions);
+					setDuration(response.data.duration);
 					setQuizState((prev) => {
 						const updatedState = { ...prev, testId: response.data.testId };
-						console.log("Updated State:", updatedState); // Log the updated state
 						return updatedState;
 					});
 					setError(null);
@@ -126,7 +112,6 @@ export default function Quiz() {
 	}, [jobId]);
 
 	useEffect(() => {
-		console.log("Updated testId:", quizState.testId);
 	}, [quizState.testId]);
 
 	const currentQuestion = questions[quizState.currentQuestionIndex];
@@ -216,7 +201,7 @@ export default function Quiz() {
 
 		try {
 			const response = await axios.post(
-				"http://localhost:8000/api/jobhunter/handlingtest",
+				`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/jobhunter/handlingtest`,
 				submission,
 				{
 					headers: {
@@ -276,7 +261,7 @@ export default function Quiz() {
 
 		try {
 			const response = await axios.post(
-				"http://localhost:8000/api/jobhunter/updatescoreinterval",
+				`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/jobhunter/updatescoreinterval`,
 				submission,
 				{
 					headers: {
@@ -285,8 +270,6 @@ export default function Quiz() {
 					},
 				}
 			);
-			// You can log or process the response here if needed
-			console.log("Periodic Update Response:", response.data);
 		} catch (error) {
 			if (axios.isAxiosError(error) && error.response) {
 				console.error("API Error:", error.response.statusText);

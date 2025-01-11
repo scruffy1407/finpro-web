@@ -41,10 +41,9 @@ function AssessmentDashPost() {
 		const fetchAssessmentTest = async () => {
 			try {
 				const response = await axios.get(
-					"http://localhost:8000/api/dev/getassessmenttestdash"
+					`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/dev/getassessmenttestdash`
 				);
 				const data = response.data; // The response should have data and pagination
-				console.log("Fetched Data:", data); // Check the structure in the console
 
 				if (data.data) {
 					setAssessmentTests(data.data); // Use data.data to access the tests
@@ -98,7 +97,7 @@ function AssessmentDashPost() {
 
 			// Send the request with FormData
 			const response = await axios.put(
-				"http://localhost:8000/api/dev/update/assessmenttest",
+				`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/dev/update/assessmenttest`,
 				formData,
 				{
 					headers: {
@@ -141,7 +140,7 @@ function AssessmentDashPost() {
 
 		try {
 			const response = await axios.put(
-				`http://localhost:8000/api/dev/delete/assessmenttest/${selectedTest.skill_assessment_id}`,
+				`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/dev/delete/assessmenttest/${selectedTest.skill_assessment_id}`,
 				{},
 				{
 					headers: { Authorization: `Bearer ${accessToken}` },

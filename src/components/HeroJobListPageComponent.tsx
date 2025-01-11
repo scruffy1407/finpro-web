@@ -20,7 +20,6 @@ function HeroJobListPageComponent() {
 			sortOrder: "", // Default value or pass value from your inputs
 		};
 		dispatch(setSearchQuery(searchQuery)); // Dispatch action to update search query in the store
-		console.log("Search query:", searchQuery);
 	};
 
 	return (

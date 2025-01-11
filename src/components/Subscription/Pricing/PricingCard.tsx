@@ -25,7 +25,6 @@ export function PricingCard({
   const router = useRouter();
   const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
   const dispatch = useDispatch<AppDispatch>();
-  console.log(isLoggedIn);
 
   function handleClick() {
     if (!isLoggedIn) {

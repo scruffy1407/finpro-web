@@ -24,7 +24,7 @@ function JobDashLeft({}) {
     async function fetchMetrics() {
       try {
         const response = await fetch(
-          "http://localhost:8000/api/company/companydashjob",
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/company/companydashjob`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`, // Replace with actual token

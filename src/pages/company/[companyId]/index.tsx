@@ -47,8 +47,6 @@ function CompanyPage() {
     // Return the average rating
     return Number((sum / (totalReviews * 4)).toFixed(2)); // 4 ratings per review
   };
-
-  console.log("LIST JOB", jobList);
   async function handleFetchingData() {
     setIsLoading(true);
     try {
@@ -59,7 +57,6 @@ function CompanyPage() {
       const companyDetail: companyDetailResponse = response.data;
 
       // SET COMPANY INFO
-      console.log(response);
       setCompanyInfo(companyDetail);
       setJobList(companyDetail.listJob);
       setReviewList(companyDetail.listReview);
@@ -71,7 +68,6 @@ function CompanyPage() {
   }
 
   useEffect(() => {
-    console.log(companyId);
     if (companyId) {
       handleFetchingData();
     }

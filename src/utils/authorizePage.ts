@@ -6,7 +6,7 @@ import { RootState, AppDispatch } from "@/store";
 import { refreshUserToken, validateUserToken } from "@/store/slices/authSlice";
 
 function AuthorizeUser(
-  pagePermission?: "jobhunter" | "company",
+  pagePermission?: "jobhunter" | "company" | "developer",
   owned?: string, // comparison data
 ) {
   const router = useRouter();
@@ -42,7 +42,6 @@ function AuthorizeUser(
         await dispatch(validateUserToken(accessToken as string));
       }
     } catch (e: unknown) {
-      console.log("ERRORRR", e);
       router.push("/");
       return;
     }
@@ -54,7 +53,6 @@ function AuthorizeUser(
 
   // useEffect(() => {
   //   if (!initialRender.current) {
-  //     console.log("exec");
   //     if (!isLoggedIn) {
   //       router.push("/");
   //       return;

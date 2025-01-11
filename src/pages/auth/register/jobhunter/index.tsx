@@ -46,7 +46,7 @@ const JobhunterRegister: React.FC = () => {
     try {
       registerSchema.parse(payload);
       const response = await axios.post(
-        "http://localhost:8000/auth/register",
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/register`,
         payload,
         {
           headers: {

@@ -59,7 +59,6 @@ export class ProfileHandler {
   }
 
   async updateInfoJobhunter(token: string, data: JobHunterGeneralInfo) {
-    console.log(data);
     const updateData: JobHunterGeneralInfo = {
       jobHunterId: Number(data.jobHunterId),
       name: data.name,
@@ -95,7 +94,6 @@ export class ProfileHandler {
   }
 
   async updateInfoCompany(token: string, data: CompanyGeneralInfo) {
-    console.log(data);
     const updateData: CompanyGeneralInfo = {
       companyId: Number(data.companyId),
       company_name: data.company_name,
@@ -186,7 +184,6 @@ export class ProfileHandler {
         }
       );
       if (response.status === 201) {
-        console.log(response);
         return response.data;
       } else {
         return response;
@@ -208,7 +205,6 @@ export class ProfileHandler {
           },
         }
       );
-      console.log(response);
       if (response.status === 204) {
         return response.status;
       } else {
@@ -247,7 +243,6 @@ export class ProfileHandler {
         `api/user/company/search-company?q=${keyword}`
       );
       if (response.status === 200) {
-        console.log(response);
         return response.data;
       }
     } catch (err: unknown) {
@@ -259,8 +254,6 @@ export class ProfileHandler {
     try {
       const response = await api.get(`/api/user/company/get-data/${companyId}`);
       if (response.status === 200) {
-        console.log(response);
-        return response.data;
       }
     } catch (err: unknown) {
       const error = err as AxiosError;
@@ -275,7 +268,6 @@ export class ProfileHandler {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log("EDUCATION", response);
       if (response.status === 200) {
         return response.data;
       } else {
@@ -335,7 +327,6 @@ export class ProfileHandler {
   }
 
   async editEducation(token: string, data: Education) {
-    console.log();
     try {
       const response = await api.put(
         `api/user/job-hunter/education/edit/${data.educationId}`,
@@ -346,7 +337,6 @@ export class ProfileHandler {
           },
         }
       );
-      console.log(response);
       if (response.status === 200) {
         return response.data;
       } else {

@@ -27,13 +27,11 @@ const AddQuestions = () => {
 			if (!test_id) return; // Wait until test_id is available
 			try {
 				const response = await axios.get(
-					`http://localhost:8000/api/company/viewpretestbyId/${test_id}`, // Use the new API to get test name
+					`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/company/viewpretestbyId/${test_id}`, // Use the new API to get test name
 					{
 						headers: { Authorization: `Bearer ${accessToken}` },
 					}
 				);
-				console.log("THIS IS REPOSNSE WOPHUD LOOKING FDORN");
-				console.log(response);
 				setTestName(response.data.data.test_name); // Assume test_name is part of the response
 			} catch (error) {
 				console.error("Error fetching test details:", error);
@@ -80,7 +78,7 @@ const AddQuestions = () => {
 
 		try {
 			const response = await axios.post(
-				`http://localhost:8000/api/company/createtest/${test_id}`,
+				`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/company/createtest/${test_id}`,
 				{ questions },
 				{
 					headers: {

@@ -30,9 +30,6 @@ function ManageSubscription() {
 
   async function fetchTransaction(token: string) {
     const response = await paymentHandler.getTransaction(token);
-
-    console.log("INNER RESPONSE", response);
-
     const mappedData: SubscriptionProps[] = [];
 
     response.data.map((transaction) => {
@@ -79,7 +76,6 @@ function ManageSubscription() {
   };
 
   useEffect(() => {
-    console.log(isLoggedIn, user_role);
     if (isLoggedIn && user_role === "jobhunter") {
       fetchTransaction(token as string);
     }

@@ -51,8 +51,6 @@ export class PaymentHandler {
           },
         },
       );
-
-      console.log("RESPONSE", response);
       if (response.status === 200) {
         return response;
       } else {
@@ -70,7 +68,6 @@ export class PaymentHandler {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log("RESPONSE", response);
       if (response.status === 200) {
         return response.data;
       } else {

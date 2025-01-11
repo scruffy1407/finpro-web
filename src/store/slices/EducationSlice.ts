@@ -87,7 +87,6 @@ export const getEducation = createAsyncThunk(
   async (token: string) => {
     try {
       const response = await profileHandler.getEducation(token);
-      console.log('Add Education Response:', response.data); // Debug log
       if (response.status === 200) {
         return response.data;
       } else {

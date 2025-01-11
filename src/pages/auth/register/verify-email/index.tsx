@@ -23,7 +23,7 @@ const VerifyEmail = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/auth/resend-verification",
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/resend-verification`,
         { email: userEmail },
       );
 

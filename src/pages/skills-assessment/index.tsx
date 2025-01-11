@@ -60,7 +60,6 @@ function Index() {
   };
 
   async function handleClick() {
-    console.log(isLoggedIn);
     if (!isLoggedIn) {
       dispatch(openModalAction("needToLoginModal"));
       return;

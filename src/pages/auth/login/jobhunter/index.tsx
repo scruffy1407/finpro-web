@@ -25,8 +25,6 @@ function JobHunterLogin() {
     user_role: UserRole.JOBHUNTER,
     callback: router.query.callback || "",
   });
-  console.log(loginForm.callback);
-
   const [btnDisable, setBtnDisable] = useState(false);
 
   useEffect(() => {

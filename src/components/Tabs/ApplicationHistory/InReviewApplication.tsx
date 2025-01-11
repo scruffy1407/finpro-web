@@ -34,14 +34,12 @@ function StatusTab({ activeTab, value }: statusProps) {
     offset: number = 0,
     token: string,
   ) {
-    console.log("exec");
     const response = await userApplication.fetchUserApplication(
       limit,
       offset,
       token,
       value,
     );
-    console.log(response);
 
     const mappedData: ApplicationHistoryCardProps[] = [];
     response.data.map((application) => {
@@ -63,7 +61,6 @@ function StatusTab({ activeTab, value }: statusProps) {
       setInitialLoading(false);
     }
   }
-  console.log(activeTab);
   async function handleLoadMore() {
     if (token) {
       setIsLoading(true);

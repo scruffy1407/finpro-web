@@ -39,7 +39,7 @@ function PreSelectionPost() {
 	const fetchPreSelectionTests = async () => {
 		try {
 			const response = await axios.get(
-				"http://localhost:8000/api/company/viewpretest",
+				`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/company/viewpretest`,
 				{
 					headers: { Authorization: `Bearer ${accessToken}` },
 				}
@@ -91,7 +91,7 @@ function PreSelectionPost() {
 
 		try {
 			const response = await axios.put(
-				`http://localhost:8000/api/company/updatepretest/${selectedTest.test_id}`,
+				`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/company/updatepretest/${selectedTest.test_id}`,
 				body,
 				{
 					headers: { Authorization: `Bearer ${accessToken}` },
@@ -122,7 +122,7 @@ function PreSelectionPost() {
 		try {
 			// Send PUT request to soft delete the test
 			const response = await axios.put(
-				`http://localhost:8000/api/company/softdeletepretest/${selectedTest.test_id}`,
+				`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/company/softdeletepretest/${selectedTest.test_id}`,
 				{},
 				{
 					headers: { Authorization: `Bearer ${accessToken}` },

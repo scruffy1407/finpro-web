@@ -1,8 +1,6 @@
 export const calculateAverageRating = (reviews: any[]) => {
   // Extract the ratings for each review
   const totalReviews = reviews.length;
-  console.log("INI ADALAH REVIEWS ", reviews);
-
   if (totalReviews === 0) return 0; // If no reviews, return 0
 
   const sum = reviews.reduce((acc, review) => {

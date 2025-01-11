@@ -26,7 +26,6 @@ function ForgotPassword() {
     e.preventDefault();
     setIsLoading(true);
     const response: string | number = await authHandler.sendResetEmail(email);
-    console.log(response);
     if (response === 200) {
       setSuccess(true);
     } else if (response === "GOOGLE") {

@@ -50,7 +50,7 @@ const CertificatePage = () => {
       try {
         const token = Cookies.get("accessToken");
         const response = await axios.get(
-          "http://localhost:8000/api/certificate/certificate",
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/certificate/certificate`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -93,7 +93,6 @@ const CertificatePage = () => {
 
   // Show PDF of selected certificate
   const handleShowCertificate = (certificate: Certificate) => {
-    console.log("Certificate selected:", certificate);
     setSelectedCertificate(certificate);
     setShowPDF(true);
   };

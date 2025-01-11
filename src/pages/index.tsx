@@ -32,7 +32,6 @@ function Home() {
           onClick={() => router.push("/jobs")}
         />
         <JobMappingComponent />
-        {/* NOTE THAT THIS BUTTON PART IS CONDITIONAL ONLY AND ONLY SHOWS ON MOBILE VIEW! */}
         <Button variant={"outline"} className={"mt-6 w-full md:hidden"}>
           Explore More
         </Button>
@@ -45,7 +44,6 @@ function Home() {
           onClick={() => router.push("/company")}
         />
         <CompanyMappingComponent />
-        {/* NOTE THAT THIS BUTTON PART IS CONDITIONAL ONLY AND ONLY SHOWS ON MOBILE VIEW! */}
         <Button variant={"outline"} className={"mt-6 w-full md:hidden"}>
           Explore More
         </Button>

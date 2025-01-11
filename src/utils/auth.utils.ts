@@ -131,7 +131,6 @@ export class AuthHandler {
 
   async refreshUserAcessToken(refreshToken: string) {
     try {
-      console.log(refreshToken);
       // Get new access token
       const response = await api.post(
         "/api/user/auth/refresh-token",
@@ -142,12 +141,9 @@ export class AuthHandler {
           },
         },
       );
-
-      console.log("RESPONSE REFRESHACCESSTOKEn", response);
       if (response.status === 200) {
         // Get New Access Token
         const newAccessToken = response.data.data;
-        console.log("NEW TOKEN", newAccessToken);
         const in60Minutes = 60 / (24 * 60);
 
         // Check if return access token
@@ -229,7 +225,7 @@ export class AuthHandler {
     }
   }
 
-  authorizeUser(pagePermission?: "jobhunter" | "company", compare?: string) {
+  authorizeUser(pagePermission?: "jobhunter" | "company" | "developer", compare?: string) {
     AuthorizeUser(pagePermission, compare);
   }
 }

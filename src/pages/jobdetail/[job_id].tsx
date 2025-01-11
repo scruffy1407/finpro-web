@@ -55,14 +55,12 @@ function JobDetail() {
   const fetchJobDetail = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/company/jobDetails/${job_id}`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/company/jobDetails/${job_id}`,
       );
 
       if (response.status === 200) {
         setJobData(response.data.jobPostDetail);
         setRelatedPost(response.data.relatedJobPosts);
-        console.log("THIS IS RESPONSE DATA FETCHECHECEHCH");
-        console.log(response);
       } else {
         setJobData(null);
         setRelatedPost(null);
@@ -71,20 +69,18 @@ function JobDetail() {
       console.error("Error fetching job details:", err);
     }
   };
-  console.log("BUHTHBFEJBHEHWJBF");
 
   const validateUserJob = async () => {
     const token = Cookies.get("accessToken");
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/user/job-hunter/validate/${job_id}`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user/job-hunter/validate/${job_id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         },
       );
-      console.log("VALIDATE USER JOIN", response);
       if (response.status === 200 && response.data.code === "JOIN") {
         setApplicantData({
           jobHunterId: response.data.data.jobHunterId,
@@ -149,9 +145,7 @@ function JobDetail() {
       setDataLoading(false);
     }
   }, [job_id, isLoggedIn]);
-
-  console.log("Current applicantData state:", applicantData);
-
+  
   return (
     <>
       <ModalContainer
@@ -214,7 +208,7 @@ function JobDetail() {
         />
         <meta
           property="og:url"
-          content={`https://localhost:3000/jobdetail/${job_id}`}
+          content={`${process.env.NEXT_PUBLIC_API_BASE_URL}/jobdetail/${job_id}`}
         />
       </Head>
 

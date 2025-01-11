@@ -86,7 +86,7 @@ function ProfilePage() {
     setLoading(true);
     try {
       const token = Cookies.get("accessToken");
-      const response = await axios.get("http://localhost:8000/api/cv/cv", {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/cv/cv`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -98,8 +98,6 @@ function ProfilePage() {
         cvData?.jobHunterSubscription?.subscription_active || false;
       setJobHunterSubscriptionId(jobHunterSubscriptionId);
       setSubscriptionActive(subscriptionActive);
-      console.log("jobHunterSubscriptionId:", jobHunterSubscriptionId);
-      console.log("subscriptionActive:", subscriptionActive);
 
       const transformedData: ProfileData = {
         name: cvData.name,
@@ -159,7 +157,7 @@ function ProfilePage() {
   const fetchGenerationQuota = async () => {
     try {
       const token = Cookies.get("accessToken");
-      const response = await axios.get("http://localhost:8000/api/cv/cvquota", {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/cv/cvquota`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setRemainingGenerations(response.data.remaining);
@@ -176,7 +174,7 @@ function ProfilePage() {
     try {
       const token = Cookies.get("accessToken");
       const response = await axios.post(
-        "http://localhost:8000/api/cv/cvgenerate",
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/cv/cvgenerate`,
         {},
         {
           headers: {

@@ -32,7 +32,6 @@ const companySearchQuerySlice = createSlice({
     setCompanySearch(state, action) {
       // Merge the partial updates with the current state
       Object.assign(state, action.payload);
-      console.log("PAYLOAD", action.payload);
     },
     resetPaginationState(state) {
       state.pagination.currentPage = 1;

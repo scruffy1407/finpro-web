@@ -61,7 +61,6 @@ function GeneralInfoSection() {
           ...response.data,
         });
       } else {
-        console.log("has city", response);
         const userLocation = await handleGetUseLocation(response.data.cityId);
         await handleGetProvince();
         await handleGetCity(userLocation.provinceId);
@@ -109,7 +108,6 @@ function GeneralInfoSection() {
   async function handleGetUseLocation(cityId: number) {
     try {
       const response = await locationHandler.getUserLocation(cityId);
-      console.log(response.data);
       return response.data;
     } catch (e) {
       console.error(e, "Something went wrong,please refresh your browser");
@@ -196,7 +194,6 @@ function GeneralInfoSection() {
       toast.error("Please do not leave your name empty.");
       return;
     }
-    console.log(formGeneralInfo.locationProvince, formGeneralInfo.locationCity);
     if (
       formGeneralInfo.locationProvince !== "" &&
       formGeneralInfo.locationCity === null

@@ -42,7 +42,7 @@ const CreateJobForm: React.FC<CreateJobFormProps> = ({
 	useEffect(() => {
 		const fetchPreSelectionTests = async () => {
 			const response = await fetch(
-				"http://localhost:8000/api/company/viewpretest",
+				`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/company/viewpretest`,
 				{
 					method: "GET",
 					headers: {
@@ -72,7 +72,6 @@ const CreateJobForm: React.FC<CreateJobFormProps> = ({
 	}, []);
 	//debugging purposed
 	useEffect(() => {
-		console.log("Current categories:", category);
 	}, [category]);
 
 	const handleInputChange = (
@@ -129,16 +128,13 @@ const CreateJobForm: React.FC<CreateJobFormProps> = ({
 			preSelectionTestId: Number(formData.preSelectionTestId),
 			categoryId: Number(formData.categoryId),
 			salary_min: Number(formData.salary_min),
-			salary_max: formData.salary_max ? Number(formData.salary_max) : null, // Null if unchecked
+			salary_max: formData.salary_max ? Number(formData.salary_max) : null,
 			job_experience_min: Number(formData.job_experience_min),
-			expired_date: new Date(formData.expired_date).toISOString(), // Convert to ISO format
+			expired_date: new Date(formData.expired_date).toISOString(),
 		};
 
-		console.log("Transformed Data Submitted:", transformedData);
-		console.log("Form Data Submitted:", formData);
-
 		try {
-			const response = await fetch("http://localhost:8000/api/company/job", {
+			const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/company/job`, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
@@ -149,7 +145,7 @@ const CreateJobForm: React.FC<CreateJobFormProps> = ({
 
 			if (response.ok) {
 				alert("Job created successfully!");
-				setShowForm(false); // Close the form on success
+				setShowForm(false);
 			} else {
 				const errorData = await response.json();
 				console.error("Error:", errorData);

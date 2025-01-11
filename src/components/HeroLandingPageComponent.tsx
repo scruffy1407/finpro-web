@@ -24,7 +24,6 @@ export default function HeroComponent() {
 
 		// Dispatch the search query to Redux store
 		dispatch(setSearchQuery(searchQuery));
-		console.log("Search query dispatched:", searchQuery);
 
 		// Navigate to the JobPostPage with the search parameters
 		router.push({

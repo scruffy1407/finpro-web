@@ -88,9 +88,7 @@ function FormSetNewInterview({ applicantId }: SetNewInterview) {
       [name]: value,
     }));
   };
-
-  console.log(interviewData);
-
+  
   return (
     <form className={`flex flex-col gap-4`} onSubmit={submitInterview}>
       {/* Expected Salary */}

@@ -47,12 +47,6 @@ const JobEditForm: React.FC<UpdateJobFormProps> = ({
 	const [loading, setLoading] = useState(false); // Loading state
 
 	const jobIdFetched = useRef<string | null>(null); // Ensure ref can handle null as well
-
-	// console.log("This is Job Id dari EDIT FORM");
-	// console.log(job_id);
-	// console.log("Number of Applicants passed");
-	// console.log(number_applicants);
-
 	function formatExpiredDate(data: any) {
 		if (!data) return ""; // Return empty string for invalid input
 		const date = new Date(data);
@@ -66,7 +60,7 @@ const JobEditForm: React.FC<UpdateJobFormProps> = ({
 	useEffect(() => {
 		const fetchPreSelectionTests = async () => {
 			const response = await fetch(
-				"http://localhost:8000/api/company/viewpretest",
+				`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/company/viewpretest`,
 				{
 					method: "GET",
 					headers: {
@@ -104,12 +98,9 @@ const JobEditForm: React.FC<UpdateJobFormProps> = ({
 				setLoading(true); // Start loading
 
 				const response = await axios.get(
-					`http://localhost:8000/api/company/jobDetails/${job_id}`
+					`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/company/jobDetails/${job_id}`
 				);
-
 				const jobPostDetail = response.data.jobPostDetail;
-				console.log(response);
-
 				setFormData((prevFormData) => ({
 					...prevFormData,
 
@@ -138,10 +129,6 @@ const JobEditForm: React.FC<UpdateJobFormProps> = ({
 
 		fetchJobDetail();
 	}, []); // Depend on both job_id and showForm
-
-	console.log("DATA YANG MUNCUL untuk Form");
-	console.log(formData);
-
 	const handleInputChange = (
 		e: React.ChangeEvent<
 			HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -196,16 +183,13 @@ const JobEditForm: React.FC<UpdateJobFormProps> = ({
 			preSelectionTestId: Number(formData.preSelectionTestId),
 			categoryId: Number(formData.category_id),
 			salary_min: Number(formData.salary_min),
-			salary_max: formData.salary_max ? Number(formData.salary_max) : null, // Null if unchecked
+			salary_max: formData.salary_max ? Number(formData.salary_max) : null,
 			job_experience_min: Number(formData.job_experience_min),
-			expired_date: new Date(formData.expired_date).toISOString(), // Convert to ISO format
+			expired_date: new Date(formData.expired_date).toISOString(),
 		};
-
-		console.log("Transformed Data Submitted:", transformedData);
-
 		try {
 			const response = await axios.put(
-				`http://localhost:8000/api/company/job/${job_id}`,
+				`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/company/job/${job_id}`,
 				transformedData,
 				{
 					headers: {

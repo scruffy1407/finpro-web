@@ -1,5 +1,4 @@
 export default function BenefitsList({ benefits }: { benefits: string[] }) {
-  console.log("BENEFITRS", benefits);
   return (
     <div className="p-6 border-b border-gray-200">
       <h3 className="font-bold text-gray-800 mb-4">{`What's Included:`}</h3>

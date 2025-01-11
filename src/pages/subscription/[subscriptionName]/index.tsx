@@ -19,7 +19,6 @@ export default function ConfirmationPage() {
       // Validate subscriptionName against available plans
       const validPlan = Object.values(planData).find(
         (plan: SubscriptionPlan) => {
-          console.log("PLAN", plan);
           return plan.subsParam === subscriptionName;
         },
       );

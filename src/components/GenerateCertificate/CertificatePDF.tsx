@@ -70,7 +70,6 @@ const CertificatePDF: React.FC<CertificatePDFProps> = ({
   profile,
   certificates,
 }) => {
-  console.log(certificates, "THOMMY2.0");
   return (
     <Document>
       {certificates.map((certificate, index) => (

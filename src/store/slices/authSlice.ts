@@ -70,11 +70,9 @@ export const loginUser = createAsyncThunk(
           withCredentials: true,
         },
       );
-      console.log("RESPONSE FAREL API", response.data.data);
       const { access_token, refresh_token, data } = response.data.data;
       Cookies.set("accessToken", access_token, { expires: 1 / 24 });
       Cookies.set("refreshToken", refresh_token, { expires: 3 });
-      console.log("DATAAA INI FAREL", data);
 
       return { access_token, refresh_token, data };
     } catch (err: unknown) {
@@ -164,7 +162,6 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
-        console.log("PAYLOAD", action.payload);
         if (
           action.payload?.data.jobHunter &&
           action.payload?.data.jobHunter.length > 0
@@ -223,7 +220,6 @@ const authSlice = createSlice({
         state.pendingState.dataLoading = true;
       })
       .addCase(validateUserToken.fulfilled, (state, action) => {
-        console.log("PAYLOAD", action.payload);
         if (action.payload.jobHunter && action.payload.jobHunter.length > 0) {
           state.isLoggedIn = true;
           state.name = action.payload.jobHunter[0].name;

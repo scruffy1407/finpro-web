@@ -33,11 +33,6 @@ const PreSelectionTestCreateForm: React.FC<CreatePreSelectionFormProps> = ({
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
-
-		// Example: log formData or send it to API
-		console.log("Form Data Submitted:", formData);
-
-		// Add your API call here using `accessToken` for authorization if needed
 	};
 
 	return (

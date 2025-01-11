@@ -46,7 +46,7 @@ export const fetchBookmarks = createAsyncThunk(
       }
 
       const response = await axios.get(
-        "http://localhost:8000/applyjob/bookmark",
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/applyjob/bookmark`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }

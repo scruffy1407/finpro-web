@@ -14,14 +14,19 @@ import { LocationOptionReal } from "@/utils/interface";
 import { getCategories, searchLocation } from "@/pages/api/api";
 import { AppDispatch, RootState } from "@/store";
 import { useDispatch, useSelector } from "react-redux";
-import { setSearchQuery } from "@/store/slices/searchQuerySlice"; // Import the action
+import { setSearchQuery } from "@/store/slices/searchQuerySlice";
 
 const customStyles = {
   control: (provided: any) => ({
     ...provided,
     borderRadius: "12px",
-    padding: "1px", // Adjust the value for the border radius
+    zIndex: 999,
+    padding: "1px",
     borderColor: "rgb(228 228 261)",
+  }),
+  menu: (provided: any) => ({
+    ...provided,
+    zIndex: 9999,
   }),
 };
 
@@ -49,10 +54,10 @@ function SearchBarComponent({ onSearch }: SearchBarProps) {
   // Local state for input values
   const [localJobTitle, setLocalJobTitle] = useState<string>(jobTitle || "");
   const [localCategoryId, setLocalCategoryId] = useState<string>(
-    categoryId || "",
+    categoryId || ""
   );
   const [localCompanyCity, setLocalCompanyCity] = useState<string>(
-    companyCity || "",
+    companyCity || ""
   );
 
   // Fetch categories and locations on mount
@@ -74,7 +79,7 @@ function SearchBarComponent({ onSearch }: SearchBarProps) {
           response.data.data.map((location: any) => ({
             label: location.name,
             value: location.city_id,
-          })),
+          }))
         );
       } catch (error) {
         console.error("Error fetching locations:", error);
@@ -110,10 +115,8 @@ function SearchBarComponent({ onSearch }: SearchBarProps) {
   const handleLocationChange = (selectedOption: any) => {
     if (selectedOption) {
       setLocalCompanyCity(selectedOption.label);
-      dispatchUpdate({ companyCity: selectedOption.label });
     } else {
       setLocalCompanyCity("");
-      dispatchUpdate({ companyCity: "" });
     }
   };
 
@@ -122,7 +125,7 @@ function SearchBarComponent({ onSearch }: SearchBarProps) {
     return new Promise<LocationOptionReal[]>((resolve) => {
       setTimeout(() => {
         const filteredCities = locations.filter((location) =>
-          location.label.toLowerCase().includes(inputValue.toLowerCase()),
+          location.label.toLowerCase().includes(inputValue.toLowerCase())
         );
         resolve(filteredCities);
       }, 500);
@@ -182,12 +185,9 @@ function SearchBarComponent({ onSearch }: SearchBarProps) {
         <AsyncSelect
           cacheOptions
           defaultOptions
-          loadOptions={loadOptions} // Load cities based on search term
+          loadOptions={loadOptions}
           placeholder="Search Location"
-          styles={customStyles} // Apply custom styles here
-          value={
-            companyCity ? { label: companyCity, value: companyCity } : null
-          } // Set to null if location is cleared
+          styles={customStyles}
           onChange={handleLocationChange}
           isClearable={true}
         />

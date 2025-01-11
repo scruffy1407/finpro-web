@@ -62,20 +62,17 @@ function Payment() {
       if (response.status === 400) {
         setOrderNotFound(true);
       }
-      console.log(response);
     } else if (transactionStatus === "pending" && token) {
       const response = await paymentHandler.verifyPayment(
         token as string,
         "pending",
         orderId,
       );
-      console.log(response.data.data);
       setValidStatus(response.data.data);
 
       if (response.status === 400) {
         setOrderNotFound(true);
       }
-      console.log(response);
     }
     setIsLoading(false);
   }
@@ -85,7 +82,6 @@ function Payment() {
       handleValidatePayment();
     }
   }, [orderId]);
-  console.log(validStatus);
 
   const renderContent = () => {
     if (

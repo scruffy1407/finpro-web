@@ -62,7 +62,7 @@ const CreateAssessmentTestForm: React.FC<CreateAssessmentTestFormProps> = ({
 			const accessToken =
 				"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo2MSwicm9sZV90eXBlIjoiZGV2ZWxvcGVyIiwidmVyaWZpZWQiOmZhbHNlLCJpYXQiOjE3MzYyNDM4NjcsImV4cCI6MTczNjI0NzQ2N30.OGME8BGw8AvW22Et3_iWg5mUffXqKzlaZx7voD-yKIU";
 			const response = await axios.post(
-				"http://localhost:8000/api/dev/createassessment",
+				`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/dev/createassessment`,
 				form,
 				{
 					headers: {
@@ -78,7 +78,6 @@ const CreateAssessmentTestForm: React.FC<CreateAssessmentTestFormProps> = ({
 				response.data.message === "Assessment test created successfully!"
 			) {
 				alert("Assessment test created");
-				console.log("Navigating to /assessmentTestDashboard");
 				window.location.reload();
 				setShowForm(false);
 			} else {

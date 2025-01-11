@@ -21,7 +21,6 @@ const JobApplicationPopup = ({ onSubmit, onClose }: JobApplicationProps) => {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       setCvFile(event.target.files[0]);
-      console.log("Selected file:", event.target.files[0]); // For debugging
     }
   };
 

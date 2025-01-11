@@ -118,7 +118,7 @@ const JobApplicantDetail: React.FC = () => {
       }
       try {
         const response = await axios.get(
-          `http://localhost:8000/api/company/jobpostinformation/${jobId}`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/company/jobpostinformation/${jobId}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,

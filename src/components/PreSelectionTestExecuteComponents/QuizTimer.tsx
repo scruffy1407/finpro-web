@@ -23,7 +23,7 @@ export function QuizTimer({
 
 			try {
 				const response = await axios.get(
-					`http://localhost:8000/api/jobhunter/gettesttime/${applicationId}`,
+					`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/jobhunter/gettesttime/${applicationId}`,
 					{
 						headers: { Authorization: `Bearer ${token}` },
 					}
