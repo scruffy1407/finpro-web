@@ -9,6 +9,7 @@ const accessToken = Cookies.get("accessToken");
 const api = axios.create({
 	baseURL,
 });
+const applySub = axios.create({});
 
 interface GetJobPosts {
 	page: number;
