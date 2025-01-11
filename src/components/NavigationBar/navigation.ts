@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { LucideIcon } from "lucide-react";
 
-export type UserRole = "company" | "jobhunter" | "developer";
+export type UserRole = "company" | "jobhunter" | "developer" | "default";
 
 export interface NavigationItem {
   name: string;
@@ -104,7 +104,6 @@ export const MobileNavigation: Record<UserRole, NavigationItem[]> = {
     { name: "Post a Job", href: "/post-job", icon: FileText },
     { name: "Candidates", href: "/candidates", icon: Users },
     { name: "Company Profile", href: "/company-profile", icon: Building },
-    { name: "Messages", href: "/messages", icon: MessageSquare },
   ],
   developer: [
     { name: "Find Jobs", href: "/jobs", icon: Briefcase },

@@ -23,6 +23,7 @@ import Cookies from "js-cookie";
 import { JobApplication } from "@/models/applicant.model";
 import { Navbar } from "@/components/NavigationBar/Navbar";
 import Head from "next/head";
+import ForbiddenCompanyAction from "@/components/Modal/ForbiddenCompanyAction";
 
 function JobDetail() {
   const authHandler = new AuthHandler();
@@ -40,7 +41,9 @@ function JobDetail() {
   const { currentModalId } = useSelector(
     (state: RootState) => state.modalController,
   );
-  const { isLoggedIn } = useSelector((state: RootState) => state.auth);
+  const { isLoggedIn, user_role } = useSelector(
+    (state: RootState) => state.auth,
+  );
   const { validApply, pendingState, listProvince, cityId } = useSelector(
     (state: RootState) => state.generalInfo,
   );
@@ -102,15 +105,19 @@ function JobDetail() {
 
   const handleApplyJob = async () => {
     if (isLoggedIn) {
-      if (validApply) {
-        dispatch(openModalAction("applyJobModal"));
-      } else {
-        if (listProvince.length === 0) {
-          await dispatch(handleGetUseLocation(cityId as number));
-          await dispatch(handleGetcity(cityId as number));
-          await dispatch(handleGetProvince());
+      if (user_role === "jobhunter") {
+        if (validApply) {
+          dispatch(openModalAction("applyJobModal"));
+        } else {
+          if (listProvince.length === 0) {
+            await dispatch(handleGetUseLocation(cityId as number));
+            await dispatch(handleGetcity(cityId as number));
+            await dispatch(handleGetProvince());
+          }
+          dispatch(openModalAction("completeInformationModal"));
         }
-        dispatch(openModalAction("completeInformationModal"));
+      } else {
+        dispatch(openModalAction("companyForbiddenModal"));
       }
     } else {
       dispatch(openModalAction("needToLoginModal"));
@@ -126,7 +133,7 @@ function JobDetail() {
     if (job_id) {
       setDataLoading(true);
       fetchJobDetail();
-      if (isLoggedIn) {
+      if (isLoggedIn && user_role === "jobhunter") {
         setValiateLoading(true);
         validateUserJob();
         if (!pendingState.isRender) {
@@ -162,6 +169,13 @@ function JobDetail() {
             jobId={Number(job_id)}
           />
         </>
+      </ModalContainer>
+
+      <ModalContainer
+        isOpen={currentModalId === "companyForbiddenModal"}
+        onClose={handleCloseModal}
+      >
+        <ForbiddenCompanyAction />
       </ModalContainer>
 
       {/* Dynamic Meta Tags HEADING!! */}
@@ -268,7 +282,7 @@ function JobDetail() {
 
       <div className="overflow-hidden mt-5">
         <div className="mx-4 w-auto">
-          <Navbar />
+          <Navbar pageRole={"jobhunter"} />
         </div>
         <div className="mx-4 md:w-auto">
           {/* DUMMY CICK ONAPPLYJOB TO SHOW THE FE!! */}
@@ -292,7 +306,7 @@ function JobDetail() {
         </div>
 
         <div className="mx-4 mt-20 mb-5">
-          <FooterComponent />
+          <FooterComponent pageRole={"jobhunter"} />
         </div>
       </div>
     </>

@@ -124,6 +124,31 @@ const authSlice = createSlice({
     updateName: (state, action) => {
       state.name = action.payload;
     },
+    logoutUser: (state) => {
+      // Clear cookies
+      Cookies.remove("accessToken");
+      Cookies.remove("refreshToken");
+
+      // Reset state
+      state.baseId = null;
+      state.innerId = null;
+      state.photo = "";
+      state.email = "";
+      state.name = "";
+      state.password = "";
+      state.user_role = null;
+      state.isLoading = false;
+      state.isLoggedIn = false;
+      state.error = null;
+      state.subscriptionActive = false;
+      state.subscriptionId = 1;
+      state.accessToken = "";
+      state.refreshToken = "";
+      state.callback = "";
+      state.pendingState = {
+        dataLoading: false,
+      };
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -225,6 +250,7 @@ const authSlice = createSlice({
   },
 });
 
-export const { resetState, updateName, updatePhoto } = authSlice.actions;
+export const { resetState, updateName, updatePhoto, logoutUser } =
+  authSlice.actions;
 
 export default authSlice.reducer;

@@ -13,7 +13,7 @@ function JobDashBoard() {
 
   return (
     <div className=" max-w-screen-xl mx-auto overflow-hidden">
-      <Navbar />
+      <Navbar pageRole={"company"} />
 
       <div className="mt-10">
         <div className="flex">

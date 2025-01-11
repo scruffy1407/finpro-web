@@ -10,7 +10,6 @@ export class CompanyUtils {
         `/api/company/company-detail/${companyId}`,
       );
       if (response.status === 200) {
-        console.log("SUPER INNER", response.data);
         return response.data;
       } else {
         return {};
@@ -60,15 +59,12 @@ export class CompanyUtils {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log(response);
       if (response.status === 201) {
         return response.status;
       } else {
-        console.log("execute");
         return response.data.message;
       }
     } catch (e) {
-      console.log(e.response);
       return e.response;
     }
   }
@@ -79,7 +75,6 @@ export class CompanyUtils {
     currentPage?: number,
     limit?: number,
   ) {
-    console.log("UTILS", companyLocation);
     let queryString = `?page=${currentPage}&limit=${limit || 12}`;
 
     if (companyName) {
@@ -126,7 +121,6 @@ export class CompanyUtils {
           },
         },
       );
-      console.log("RESPONSE", response.data);
       if (response.status === 201) {
         return response.data;
       } else {
@@ -148,7 +142,6 @@ export class CompanyUtils {
           },
         },
       );
-      console.log("RESPONSE", response.data);
       if (response.status === 200) {
         return response.data;
       } else {

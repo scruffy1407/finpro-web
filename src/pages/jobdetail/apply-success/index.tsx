@@ -109,7 +109,7 @@ const JobApplicationSuccess = () => {
   };
   return (
     <>
-      <Navbar />
+      <Navbar pageRole={"jobhunter"} />
       {/* Main Content */}
       <div className="flex flex-col justify-center items-center mt-10">
         {isLoading

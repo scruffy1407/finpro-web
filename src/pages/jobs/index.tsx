@@ -25,10 +25,13 @@ import { Navbar } from "@/components/NavigationBar/Navbar";
 import { AuthHandler } from "@/utils/auth.utils";
 import ListSkeleton from "@/components/listSkeleton";
 import JobPostComponentSkeleton from "@/components/JobPostSkeleton";
-import { addBookmark, removeBookmark, fetchBookmarks } from "@/store/slices/bookmarkSlice";
+import {
+  addBookmark,
+  removeBookmark,
+  fetchBookmarks,
+} from "@/store/slices/bookmarkSlice";
 import Cookies from "js-cookie";
 import axios from "axios";
-        
 
 const JobPostPage: React.FC = () => {
   const authHandler = new AuthHandler();
@@ -37,17 +40,15 @@ const JobPostPage: React.FC = () => {
   const [jobPosts, setJobPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const bookmarks = useSelector(
-    (state: RootState) => state.bookmarks.bookmarks
+    (state: RootState) => state.bookmarks.bookmarks,
   );
-
   const { currentPage, totalPages } = useSelector(
     (state: RootState) => state.pagination,
   );
   const { jobTitle, categoryId, jobType, dateRange, sortOrder, companyCity } =
     useSelector((state: RootState) => state.searchQuery); // Access searchQuery from the store
 
-//   const dispatch = useDispatch();
-const dispatch: AppDispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
 
   useEffect(() => {
     const fetchJobPosts = async () => {
@@ -101,21 +102,21 @@ const dispatch: AppDispatch = useDispatch();
 
       // Check if job is already bookmarked
       const existingBookmark = bookmarks.find(
-        (bookmark) => bookmark.jobPostId === jobPostId
+        (bookmark) => bookmark.jobPostId === jobPostId,
       );
 
       if (existingBookmark) {
         await axios.post(
           "http://localhost:8000/applyjob/bookmark/remove",
           { wishlist_id: existingBookmark.wishlist_id },
-          { headers: { Authorization: `Bearer ${token}` } }
+          { headers: { Authorization: `Bearer ${token}` } },
         );
         dispatch(removeBookmark(existingBookmark.wishlist_id));
       } else {
         const response = await axios.post(
           "http://localhost:8000/applyjob/bookmark",
           { jobPostId },
-          { headers: { Authorization: `Bearer ${token}` } }
+          { headers: { Authorization: `Bearer ${token}` } },
         );
         dispatch(addBookmark(response.data.bookmark));
       }
@@ -134,7 +135,7 @@ const dispatch: AppDispatch = useDispatch();
     <div className="mt-5 mx-4">
       <div className="flex flex-col w-full">
         <div>
-          <Navbar />
+          <Navbar pageRole={"jobhunter"} />
         </div>
 
         <div>
@@ -153,15 +154,16 @@ const dispatch: AppDispatch = useDispatch();
               className={"max-w-screen-xl mx-auto gap-6 grid grid-cols-3"}
             />
           ) : (
-<JobListMappingComponent
-            jobPosts={jobPosts}
-			bookmarkedJobs={bookmarks.map((bookmark) => ({
-				...bookmark,
-				job_id: bookmark.jobPostId,
-			  }))}
-            onAddBookmark={handleToggleBookmark}
-            onRemoveBookmark={handleToggleBookmark}
-          />          )}
+            <JobListMappingComponent
+              jobPosts={jobPosts}
+              bookmarkedJobs={bookmarks.map((bookmark) => ({
+                ...bookmark,
+                job_id: bookmark.jobPostId,
+              }))}
+              onAddBookmark={handleToggleBookmark}
+              onRemoveBookmark={handleToggleBookmark}
+            />
+          )}
         </div>
 
         <Pagination>

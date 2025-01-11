@@ -20,9 +20,14 @@ import Link from "next/link";
 interface MobileMenuProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
+  pageRole: UserRole;
 }
 
-export function MobileMenu({ isOpen, onOpenChange }: MobileMenuProps) {
+export function MobileMenu({
+  isOpen,
+  onOpenChange,
+  pageRole,
+}: MobileMenuProps) {
   const userRole = useSelector((state: RootState) => state.auth.user_role);
   const userName = useSelector((state: RootState) => state.auth.name);
   const userPhoto = useSelector((state: RootState) => state.auth.photo);

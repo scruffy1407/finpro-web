@@ -64,7 +64,7 @@ function Index() {
 
   return (
     <main className={"py-4"}>
-      <Navbar />
+      <Navbar pageRole={"jobhunter"} />
       <section className={"mt-10"}>
         <div
           className={

@@ -150,7 +150,7 @@ function Index() {
 
       {/*MAIN*/}
       <main className={"px-4 "}>
-        <Navbar />
+        <Navbar pageRole={"jobhunter"} />
         <section className={"w-full mt-10"}>
           <div
             className={

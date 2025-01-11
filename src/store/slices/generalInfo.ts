@@ -106,7 +106,6 @@ function applyValidity(data: JobHunterGeneralInfo) {
 
 const handleInputChange = (state: any, action: any, targetObject: any) => {
   const { name, value } = action.payload;
-  console.log("INNER CHANGE", state, action, targetObject);
 
   switch (name) {
     case "name":

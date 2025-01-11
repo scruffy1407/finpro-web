@@ -146,7 +146,7 @@ const JobApplicantDetail: React.FC = () => {
   return (
     <div className="overflow-hidden mt-5">
       <div className="mx-4 w-auto">
-        <Navbar />
+        <Navbar pageRole={"company"} />
       </div>
 
       <div className="min-h-screen bg-sky-50 p-6">

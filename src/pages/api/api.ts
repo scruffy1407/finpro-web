@@ -144,6 +144,7 @@ export async function getJobPostDash({
 
 export async function deleteJobPostDash(
   job_Id: number,
+  token: string,
 ): Promise<{ message: string }> {
   try {
     // Perform the DELETE request
@@ -152,7 +153,7 @@ export async function deleteJobPostDash(
       {},
       {
         headers: {
-          Authorization: `Bearer ${accessToken}`, // Include your token
+          Authorization: `Bearer ${token}`, // Include your token
         },
       },
     );

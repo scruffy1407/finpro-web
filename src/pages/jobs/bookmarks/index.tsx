@@ -91,7 +91,7 @@ const BookmarkPage: React.FC = () => {
 
   return (
     <div className="mt-5 mx-4">
-      <Navbar />
+      <Navbar pageRole={"jobhunter"} />
 
       <div className="mx-auto">
         <div className="max-w-screen-xl mx-auto bg-white mt-5 rounded-xl px-4 md:px-0">
