@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import NavbarComponent from "@/components/NavbarComponent";
 import HeroJobListPageComponent from "@/components/HeroJobListPageComponent";
 import SelectionJobsComponents from "@/components/SelectionJobsComponent";
 import JobListMappingComponent from "@/components/JobListMappingComponent";
@@ -25,10 +24,13 @@ import { Navbar } from "@/components/NavigationBar/Navbar";
 import { AuthHandler } from "@/utils/auth.utils";
 import ListSkeleton from "@/components/listSkeleton";
 import JobPostComponentSkeleton from "@/components/JobPostSkeleton";
-import { addBookmark, removeBookmark, fetchBookmarks } from "@/store/slices/bookmarkSlice";
+import {
+  addBookmark,
+  removeBookmark,
+  setBookmarks,
+} from "@/store/slices/bookmarkSlice";
 import Cookies from "js-cookie";
 import axios from "axios";
-        
 
 const JobPostPage: React.FC = () => {
   const authHandler = new AuthHandler();
@@ -39,15 +41,13 @@ const JobPostPage: React.FC = () => {
   const bookmarks = useSelector(
     (state: RootState) => state.bookmarks.bookmarks
   );
-
   const { currentPage, totalPages } = useSelector(
-    (state: RootState) => state.pagination,
+    (state: RootState) => state.pagination
   );
   const { jobTitle, categoryId, jobType, dateRange, sortOrder, companyCity } =
-    useSelector((state: RootState) => state.searchQuery); // Access searchQuery from the store
+    useSelector((state: RootState) => state.searchQuery);
 
-//   const dispatch = useDispatch();
-const dispatch: AppDispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
 
   useEffect(() => {
     const fetchJobPosts = async () => {
@@ -61,12 +61,8 @@ const dispatch: AppDispatch = useDispatch();
           sortOrder,
           companyCity,
         });
-
-        // Check if response is valid and set job posts
         if (response?.data?.data) {
           setJobPosts(response.data.data);
-
-          // Update pagination state in Redux
           const { totalJobPosts, totalPages } = response.data;
           dispatch(setPaginationData({ totalJobPosts, totalPages }));
         } else {
@@ -79,7 +75,29 @@ const dispatch: AppDispatch = useDispatch();
       }
     };
 
+    const fetchBookmarks = async () => {
+      try {
+        const token = Cookies.get("accessToken");
+        if (!token) {
+          console.error("Token is missing from cookies.");
+          return;
+        }
+        const response = await axios.get(
+          "http://localhost:8000/applyjob/bookmark",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        const jobWishlist = response.data.bookmarks?.jobWishlist || [];
+        dispatch(setBookmarks(jobWishlist));
+      } catch (error) {
+        console.error("Failed to fetch bookmarks:", error);
+      }
+    };
+
     fetchJobPosts();
+    fetchBookmarks();
   }, [
     currentPage,
     jobTitle,
@@ -98,8 +116,6 @@ const dispatch: AppDispatch = useDispatch();
         console.error("Token is missing from cookies.");
         return;
       }
-
-      // Check if job is already bookmarked
       const existingBookmark = bookmarks.find(
         (bookmark) => bookmark.jobPostId === jobPostId
       );
@@ -153,15 +169,16 @@ const dispatch: AppDispatch = useDispatch();
               className={"max-w-screen-xl mx-auto gap-6 grid grid-cols-3"}
             />
           ) : (
-<JobListMappingComponent
-            jobPosts={jobPosts}
-			bookmarkedJobs={bookmarks.map((bookmark) => ({
-				...bookmark,
-				job_id: bookmark.jobPostId,
-			  }))}
-            onAddBookmark={handleToggleBookmark}
-            onRemoveBookmark={handleToggleBookmark}
-          />          )}
+            <JobListMappingComponent
+              jobPosts={jobPosts}
+              bookmarkedJobs={bookmarks.map((bookmark) => ({
+                ...bookmark,
+                job_id: bookmark.jobPostId,
+              }))}
+              onAddBookmark={handleToggleBookmark}
+              onRemoveBookmark={handleToggleBookmark}
+            />
+          )}
         </div>
 
         <Pagination>

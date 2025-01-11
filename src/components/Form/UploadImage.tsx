@@ -1,7 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { UpdateImage } from "@/models/auth.model";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store";
 import { ProfileHandler } from "@/utils/profile.utils";
@@ -10,6 +9,7 @@ import { toast } from "sonner";
 import { closeModalAction } from "@/store/slices/ModalSlice";
 import { updatePhoto } from "@/store/slices/authSlice";
 import LoadingLoader from "@/components/LoadingLoader";
+import { AxiosResponse } from "axios";
 
 interface Props {
   image: File;
@@ -20,7 +20,8 @@ function UploadImage({ image }: Props) {
   const [selectedImage, setSelectedImage] = useState<File>(image);
   const [isLoading, setIsLoading] = useState(false);
   const hiddenFileInput = useRef<HTMLInputElement>(null);
-  const { innerId } = useSelector((state: RootState) => state.auth);
+
+  const { innerId, user_role } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch<AppDispatch>();
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,37 +37,39 @@ function UploadImage({ image }: Props) {
     data.append("id", (innerId as number).toString());
     data.append("image", selectedImage);
 
+    setIsLoading(true);
     try {
-      const response = await profileHandler.updateProfileImage(
+      const response = (await profileHandler.updateProfileImage(
         accessToken as string,
         data,
-      );
-      console.log(response);
+        user_role as string
+      )) as AxiosResponse;
       if (response.status === 200) {
         toast.success("Image uploaded successfully.");
         dispatch(updatePhoto(response.data.data));
         dispatch(closeModalAction());
       } else {
-        toast.error("Maximal image size is only 1MB");
+        toast.error("Maximum image size is 1MB");
       }
     } catch (e) {
+      console.error(e, "Failed to update image.");
       toast.error("Failed to update image.");
+    } finally {
+      setIsLoading(false);
     }
   }
 
-  console.log(innerId);
-
   return (
-    <div className={"flex flex-col justify-centers items-center gap-6"}>
+    <div className="flex flex-col justify-center items-center gap-6">
       <Image
         width={128}
         height={128}
-        alt={`preview profile image`}
+        alt="preview profile image"
         src={URL.createObjectURL(selectedImage as File)}
-        className="rounded-full w-[128px] h-[128px] border border-neutral-100 object-cover "
+        className="rounded-full w-[128px] h-[128px] border border-neutral-100 object-cover"
       />
-      <label className={`inline-block`} htmlFor="fileUpload">
-        <span className=" cursor-pointer underline">Change Image</span>
+      <label className="inline-block" htmlFor="fileUpload">
+        <span className="cursor-pointer underline">Change Image</span>
       </label>
       <input
         type="file"
@@ -77,11 +80,10 @@ function UploadImage({ image }: Props) {
         ref={hiddenFileInput}
         onChange={handleImageChange}
       />
-
       <Button
         onClick={handleUploadImage}
-        className={`w-full sm:w-fit`}
-        variant={"primary"}
+        className="w-full sm:w-fit"
+        variant="primary"
       >
         {isLoading ? LoadingLoader() : "Upload & Save"}
       </Button>

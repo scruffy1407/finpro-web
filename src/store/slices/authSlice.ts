@@ -14,6 +14,7 @@ interface LoginState {
   photo?: string;
   email: string;
   name?: string;
+  phone_number?: string | null;
   password?: string;
   user_role: string | null;
   isLoading?: boolean;
@@ -56,6 +57,7 @@ export const loginUser = createAsyncThunk<
     user_role: string;
     name: string;
     photo: string | null;
+    phone_number?: string | null;
   },
   { email: string; password: string; user_role: string },
   { rejectValue: string }
@@ -68,7 +70,7 @@ export const loginUser = createAsyncThunk<
       {
         headers: { "Content-Type": "application/json" },
         withCredentials: true,
-      },
+      }
     );
 
     const { access_token, refresh_token, user } = response.data.data;
@@ -77,7 +79,14 @@ export const loginUser = createAsyncThunk<
     Cookies.set("accessToken", access_token, { expires: 1 / 24 });
     Cookies.set("refreshToken", refresh_token, { expires: 3 });
 
-    return { access_token, refresh_token, user_role, name, photo };
+    return {
+      access_token,
+      refresh_token,
+      user_role,
+      name,
+      photo,
+      phone_number: user?.phone_number || null,
+    };
   } catch (err: unknown) {
     if (err instanceof z.ZodError) {
       return rejectWithValue(err.errors[0]?.message || "Validation failed");
@@ -103,14 +112,14 @@ export const validateUserToken = createAsyncThunk(
     } catch (e: unknown) {
       return e;
     }
-  },
+  }
 );
 
 export const refreshUserToken = createAsyncThunk(
   "auth/refreshAccessToken",
   async (refreshToken: string) => {
     await authHandler.refreshUserAcessToken(refreshToken);
-  },
+  }
 );
 
 const authSlice = createSlice({
@@ -126,6 +135,9 @@ const authSlice = createSlice({
     updateName: (state, action) => {
       state.name = action.payload;
     },
+    updatePhone: (state, action) => {
+      state.phone_number = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -140,6 +152,9 @@ const authSlice = createSlice({
         state.refreshToken = action.payload.refresh_token;
         state.name = action.payload.name;
         state.photo = action.payload.photo as string;
+        state.phone_number = action.payload.phone_number
+          ? String(action.payload.phone_number)
+          : null;
         state.isLoggedIn = true;
       })
       .addCase(loginUser.rejected, (state, action) => {
@@ -171,20 +186,22 @@ const authSlice = createSlice({
           state.user_role = "company";
           state.innerId = action.payload.company[0].company_id;
           state.photo = action.payload.company[0].logo;
+          state.phone_number = action.payload.phone_number || null;
         }
         state.pendingState.dataLoading = false;
         state.isLoading = false;
       })
-      .addCase(refreshUserToken.pending, (state, action) => {
+      .addCase(refreshUserToken.pending, (state) => {
         state.pendingState.dataLoading = true;
       })
-      .addCase(refreshUserToken.fulfilled, (state, action) => {
+      .addCase(refreshUserToken.fulfilled, (state) => {
         state.pendingState.dataLoading = false;
         state.isLoading = false;
       });
   },
 });
 
-export const { resetState, updateName, updatePhoto } = authSlice.actions;
+export const { resetState, updateName, updatePhoto, updatePhone } =
+  authSlice.actions;
 
 export default authSlice.reducer;

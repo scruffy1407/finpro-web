@@ -172,16 +172,14 @@ function JobDetail() {
       {/* Dynamic Meta Tags HEADING!! */}
       <Head>
         <title>
-          {jobData
-            ? `${jobData.title} at ${jobData.company}`
+          {jobData && jobData.job_title && jobData.company
+            ? `${jobData.job_title} at ${jobData.company.company_name}`
             : "Job Details"}
         </title>
         <meta
           property="og:title"
           content={
-            jobData
-              ? `${jobData.title} at ${jobData.company}`
-              : "Job Details"
+            jobData ? `${jobData.title} at ${jobData.company}` : "Job Details"
           }
         />
         <meta
