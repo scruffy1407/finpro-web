@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { LucideIcon } from "lucide-react";
 
-export type UserRole = "company" | "jobhunter";
+export type UserRole = "company" | "jobhunter" | "developer" | "default";
 
 export interface NavigationItem {
   name: string;
@@ -50,6 +50,12 @@ export const themeConfig: Record<UserRole, ThemeConfig> = {
     textColor: "text-white",
     hoverColor: "text-sky-500",
   },
+  developer: {
+    logo: "/logo/MainLogo.svg",
+    bgColor: "bg-white",
+    textColor: "text-neutral-600",
+    hoverColor: "text-blue-500",
+  },
 };
 
 export const navItemConfig: Record<UserRole, NavigationItem[]> = {
@@ -61,6 +67,10 @@ export const navItemConfig: Record<UserRole, NavigationItem[]> = {
   company: [
     { name: "Job List", href: "/post-job", icon: FileText },
     { name: "Test Template", href: "/candidates", icon: Users },
+  ],
+  developer: [
+    { name: "Dashboard", href: "/post-job", icon: FileText },
+    { name: "Manage Assessment", href: "/candidates", icon: Users },
   ],
 };
 
@@ -76,10 +86,9 @@ export const dropDownItemConfig: Record<UserRole, NavigationItem[]> = {
     { name: "Saved Jobs", href: "/jobs/bookmarks", icon: BookmarkCheck },
   ],
   company: [
-    { name: "Post a Job", href: "/post-job", icon: FileText },
-    { name: "Candidates", href: "/candidates", icon: Users },
     { name: "Company Profile", href: "/company-profile", icon: Building },
   ],
+  developer: [{ name: "", href: "", icon: Building }],
 };
 
 export const MobileNavigation: Record<UserRole, NavigationItem[]> = {
@@ -95,6 +104,10 @@ export const MobileNavigation: Record<UserRole, NavigationItem[]> = {
     { name: "Post a Job", href: "/post-job", icon: FileText },
     { name: "Candidates", href: "/candidates", icon: Users },
     { name: "Company Profile", href: "/company-profile", icon: Building },
-    { name: "Messages", href: "/messages", icon: MessageSquare },
+  ],
+  developer: [
+    { name: "Find Jobs", href: "/jobs", icon: Briefcase },
+    { name: "Skill Assessment", href: "/skills-assessment", icon: Brain },
+    { name: "Explore Companies", href: "/companies", icon: Building2 },
   ],
 };

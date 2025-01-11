@@ -1,9 +1,14 @@
 import React from "react";
 import Image from "next/image";
+import dynamic from "next/dynamic"; // For navigation
+
 import { useDispatch } from "react-redux";
-import SearchBarComponent from "./SearchBarComponent";
+const SearchBarComponent = dynamic(
+  () => import("@/components/SearchBarComponent"),
+  { ssr: false },
+);
 import { setSearchQuery } from "@/store/slices/searchQuerySlice"; // Redux action
-import { useRouter } from "next/router"; // For navigation
+import { useRouter } from "next/router";
 
 export default function HeroComponent() {
   const dispatch = useDispatch();
@@ -34,33 +39,30 @@ export default function HeroComponent() {
   };
 
   return (
-    <div>
-      <div className="max-w-screen-xl mx-auto bg-white mt-5 rounded-xl px-4 md:px-0">
-        <div className="flex justify-between">
-          <div className="flex flex-col md:pl-8 py-6 gap-6 md:gap-11 w-full lg:w-[60%]">
-            <h1 className="font-bold text-2xl md:text-4xl">
-              Begin Your Search for Dream Career Here
-            </h1>
-            <p>
-              Search your path to success with ease—explore endless
-              opportunities, discover the perfect job for your skills and
-              passions, and take the first step toward building the career of
-              your dreams.
-            </p>
-            <div>
-              <SearchBarComponent onSearch={handleSearch} />
-            </div>
+    <div className="max-w-screen-xl mx-auto bg-white mt-5 rounded-xl px-4 md:px-0">
+      <div className="flex justify-between">
+        <div className="flex flex-col md:pl-8 py-6 gap-6 md:gap-11 w-full lg:w-[60%]">
+          <h1 className="font-bold text-2xl md:text-4xl">
+            Begin Your Search for Dream Career Here
+          </h1>
+          <p>
+            Search your path to success with ease—explore endless opportunities,
+            discover the perfect job for your skills and passions, and take the
+            first step toward building the career of your dreams.
+          </p>
+          <div>
+            <SearchBarComponent onSearch={handleSearch} />
           </div>
+        </div>
 
-          <div className="hidden lg:flex w-[40%]">
-            <Image
-              src="HeroImage.svg"
-              alt="Picture Hero"
-              width={408}
-              height={335}
-              className="w-full"
-            />
-          </div>
+        <div className="hidden lg:flex w-[40%]">
+          <Image
+            src="HeroImage.svg"
+            alt="Picture Hero"
+            width={408}
+            height={335}
+            className="w-full"
+          />
         </div>
       </div>
     </div>

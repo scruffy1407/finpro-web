@@ -42,8 +42,8 @@ function CompanyMappingComponent() {
   }, []);
 
   return (
-    <div className="">
-      <div className="max-w-screen-xl rounded-xl mx-auto overflow-x-auto flex gap-4 justify-start snap-x px-4 lg:hidden">
+    <>
+      <div className="max-w-screen-xl rounded-xl mx-auto overflow-x-auto flex gap-4 justify-start snap-x lg:hidden">
         {/* Map through dummyCompanies and render CompanyComponent for each company */}
         {companyList.map((company, index) => (
           <div
@@ -82,7 +82,7 @@ function CompanyMappingComponent() {
           ),
         )}
       </div>
-    </div>
+    </>
   );
 }
 

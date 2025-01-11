@@ -23,6 +23,7 @@ import Cookies from "js-cookie";
 import { JobApplication } from "@/models/applicant.model";
 import { Navbar } from "@/components/NavigationBar/Navbar";
 import Head from "next/head";
+import ForbiddenCompanyAction from "@/components/Modal/ForbiddenCompanyAction";
 
 function JobDetail() {
   const authHandler = new AuthHandler();
@@ -30,7 +31,7 @@ function JobDetail() {
   const router = useRouter();
   const { job_id } = router.query;
   const [applicantData, setApplicantData] = useState<null | JobApplication>(
-    null
+    null,
   );
   const [jobData, setJobData] = useState<any | null>(null);
   const [relatedPost, setRelatedPost] = useState<any[] | null>(null);
@@ -38,11 +39,14 @@ function JobDetail() {
   const [validateLoading, setValiateLoading] = useState<boolean>(false);
   const dispatch = useDispatch<AppDispatch>();
   const { currentModalId } = useSelector(
-    (state: RootState) => state.modalController
+    (state: RootState) => state.modalController,
   );
-  const { isLoggedIn } = useSelector((state: RootState) => state.auth);
-  const { validApply, pendingState, listProvince, listCity, cityId } =
-    useSelector((state: RootState) => state.generalInfo);
+  const { isLoggedIn, user_role } = useSelector(
+    (state: RootState) => state.auth,
+  );
+  const { validApply, pendingState, listProvince, cityId } = useSelector(
+    (state: RootState) => state.generalInfo,
+  );
   const callbackPath = "/auth/login/jobhunter?callback=ini-bosss";
 
   const handleCloseModal = () => {
@@ -52,7 +56,7 @@ function JobDetail() {
   const fetchJobDetail = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/company/jobDetails/${job_id}`
+        `http://localhost:8000/api/company/jobDetails/${job_id}`,
       );
 
       if (response.status === 200) {
@@ -76,9 +80,8 @@ function JobDetail() {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
-      console.log("VALIDATE USER JOIN", response);
       if (response.status === 200 && response.data.code === "JOIN") {
         setApplicantData({
           jobHunterId: response.data.data.jobHunterId,
@@ -102,15 +105,19 @@ function JobDetail() {
 
   const handleApplyJob = async () => {
     if (isLoggedIn) {
-      if (validApply) {
-        dispatch(openModalAction("applyJobModal"));
-      } else {
-        if (listProvince.length === 0) {
-          await dispatch(handleGetUseLocation(cityId as number));
-          await dispatch(handleGetcity(cityId as number));
-          await dispatch(handleGetProvince());
+      if (user_role === "jobhunter") {
+        if (validApply) {
+          dispatch(openModalAction("applyJobModal"));
+        } else {
+          if (listProvince.length === 0) {
+            await dispatch(handleGetUseLocation(cityId as number));
+            await dispatch(handleGetcity(cityId as number));
+            await dispatch(handleGetProvince());
+          }
+          dispatch(openModalAction("completeInformationModal"));
         }
-        dispatch(openModalAction("completeInformationModal"));
+      } else {
+        dispatch(openModalAction("companyForbiddenModal"));
       }
     } else {
       dispatch(openModalAction("needToLoginModal"));
@@ -123,25 +130,20 @@ function JobDetail() {
   }
 
   useEffect(() => {
-    if (isLoggedIn) {
-      setValiateLoading(true);
-      if (!pendingState.isRender) {
-        handleGetGeneralInfo();
-      }
-      validateUserJob();
-      setValiateLoading(false);
-    }
-  }, [job_id]);
-
-  useEffect(() => {
     if (job_id) {
       setDataLoading(true);
       fetchJobDetail();
-      if (isLoggedIn) {
+      if (isLoggedIn && user_role === "jobhunter") {
+        setValiateLoading(true);
         validateUserJob();
+        if (!pendingState.isRender) {
+          handleGetGeneralInfo();
+        }
+        setValiateLoading(false);
       }
+      setDataLoading(false);
     }
-  }, [job_id]);
+  }, [job_id, isLoggedIn]);
 
   return (
     <>
@@ -169,12 +171,20 @@ function JobDetail() {
         </>
       </ModalContainer>
 
+      <ModalContainer
+        isOpen={currentModalId === "companyForbiddenModal"}
+        onClose={handleCloseModal}
+      >
+        <ForbiddenCompanyAction />
+      </ModalContainer>
+
       {/* Dynamic Meta Tags HEADING!! */}
       <Head>
         <title>
           {jobData && jobData.job_title && jobData.company
             ? `${jobData.job_title} at ${jobData.company.company_name}`
             : "Job Details"}
+
         </title>
         <meta
           property="og:title"
@@ -275,7 +285,7 @@ function JobDetail() {
 
       <div className="overflow-hidden mt-5">
         <div className="mx-4 w-auto">
-          <Navbar />
+          <Navbar pageRole={"jobhunter"} />
         </div>
         <div className="mx-4 md:w-auto">
           {/* DUMMY CICK ONAPPLYJOB TO SHOW THE FE!! */}
@@ -299,7 +309,7 @@ function JobDetail() {
         </div>
 
         <div className="mx-4 mt-20 mb-5">
-          <FooterComponent />
+          <FooterComponent pageRole={"jobhunter"} />
         </div>
       </div>
     </>

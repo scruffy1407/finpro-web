@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { CompanyUtils } from "@/utils/company.utils";
 import Cookies from "js-cookie";
 import LoadingLoader from "@/components/LoadingLoader";
+import { useRouter } from "next/router";
 
 interface JobFormProps {
   jobId: number;
@@ -14,6 +15,7 @@ interface JobFormProps {
 }
 
 const FormJobApplication = ({ jobId }: JobFormProps) => {
+  const router = useRouter();
   const companyUtils = new CompanyUtils();
   const { innerId } = useSelector((state: RootState) => state.auth);
   const [applyJobForm, setApplyJobForm] = useState<ApplyJob>({
@@ -62,6 +64,9 @@ const FormJobApplication = ({ jobId }: JobFormProps) => {
         toast.success("Application send");
         setIsLoading(false);
         setIsDisable(false);
+        router.push(
+          `http://localhost:3000/jobdetail/apply-success?job=${jobId}&apply=true`,
+        );
       } else {
         toast.error(response.data.message);
         setIsLoading(false);

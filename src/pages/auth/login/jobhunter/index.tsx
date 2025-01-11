@@ -11,6 +11,7 @@ import {
   handleLogin,
   handleLoginEffect,
 } from "@/utils/login.utils";
+import { UserRole } from "@/models/auth.model";
 
 function JobHunterLogin() {
   const dispatch = useDispatch<AppDispatch>();
@@ -21,7 +22,7 @@ function JobHunterLogin() {
   const [loginForm, setLoginForm] = useState({
     email: "",
     password: "",
-    user_role: "jobhunter",
+    user_role: UserRole.JOBHUNTER,
     callback: router.query.callback || "",
   });
   console.log(loginForm.callback);
@@ -29,7 +30,13 @@ function JobHunterLogin() {
   const [btnDisable, setBtnDisable] = useState(false);
 
   useEffect(() => {
-    handleLoginEffect(isLoggedIn, error as null, router, dispatch);
+    handleLoginEffect(
+      UserRole.JOBHUNTER,
+      isLoggedIn,
+      error as null,
+      router,
+      dispatch,
+    );
   }, [isLoggedIn, error, router, dispatch]);
 
   return (

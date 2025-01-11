@@ -1,5 +1,11 @@
 import { EducationDegreeType } from "@/models/educationDegree";
 
+export enum UserRole {
+  JOBHUNTER = "jobhunter",
+  COMPANY = "company",
+  DEVELOPER = "developer",
+}
+
 export interface LoginAuth {
   email: string;
   password: string;

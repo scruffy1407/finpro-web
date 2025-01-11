@@ -1,4 +1,4 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -8,13 +8,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Activity, LogOut, Settings } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { useRouter } from "next/router";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import {
   dropDownItemConfig,
-  navItemConfig,
+  themeConfig,
   UserRole,
 } from "@/components/NavigationBar/navigation";
 import { Sparkles, Crown, TrendingUp } from "lucide-react";
@@ -31,6 +31,7 @@ export function ProfileMenu({ logout }: ProfileProps) {
   const userEmail = useSelector((state: RootState) => state.auth.email);
   const subsId = useSelector((state: RootState) => state.auth.subscriptionId);
 
+  const theme = themeConfig[(userRole as UserRole) || "jobhunter"];
   const dropDownItem =
     dropDownItemConfig[(userRole as UserRole) || "jobhunter"];
 
@@ -68,10 +69,12 @@ export function ProfileMenu({ logout }: ProfileProps) {
   return (
     <div className="flex items-center gap-4">
       <div className="hidden md:flex md:flex-col md:gap-1 md:items-end">
-        <p className="text-sm font-medium max-w-[160px] line-clamp-1">
+        <p
+          className={`text-sm font-medium max-w-[160px] line-clamp-1 ${theme.textColor}`}
+        >
           {userName}
         </p>
-        {subsPlan()}
+        {userRole === "jobhunter" ? subsPlan() : ""}
       </div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -96,22 +99,25 @@ export function ProfileMenu({ logout }: ProfileProps) {
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
-          {subsId === 1 ? (
-            <>
-              <div className="p-2">
-                <div className="flex items-center justify-between gap-2">
-                  <p className="text-sm font-medium">{subsPlan()}</p>
-                  <Button
-                    onClick={() => router.push("/subscription")}
-                    variant="outline"
-                    size="sm"
-                  >
-                    Upgrade
-                  </Button>
+
+          {userRole === "jobhunter" ? (
+            subsId === 1 ? (
+              <>
+                <div className="p-2">
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="text-sm font-medium">{subsPlan()}</p>
+                    <Button
+                      onClick={() => router.push("/subscription")}
+                      variant="outline"
+                      size="sm"
+                    >
+                      Upgrade
+                    </Button>
+                  </div>
                 </div>
-              </div>
-              <DropdownMenuSeparator />
-            </>
+                <DropdownMenuSeparator />
+              </>
+            ) : null
           ) : null}
 
           {dropDownItem.map((item, i: number) => {

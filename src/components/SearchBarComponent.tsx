@@ -48,8 +48,12 @@ function SearchBarComponent({ onSearch }: SearchBarProps) {
 
   // Local state for input values
   const [localJobTitle, setLocalJobTitle] = useState<string>(jobTitle || "");
-  const [localCategoryId, setLocalCategoryId] = useState<string>(categoryId || "");
-  const [localCompanyCity, setLocalCompanyCity] = useState<string>(companyCity || "");
+  const [localCategoryId, setLocalCategoryId] = useState<string>(
+    categoryId || "",
+  );
+  const [localCompanyCity, setLocalCompanyCity] = useState<string>(
+    companyCity || "",
+  );
 
   // Fetch categories and locations on mount
   useEffect(() => {
@@ -70,7 +74,7 @@ function SearchBarComponent({ onSearch }: SearchBarProps) {
           response.data.data.map((location: any) => ({
             label: location.name,
             value: location.city_id,
-          }))
+          })),
         );
       } catch (error) {
         console.error("Error fetching locations:", error);
@@ -95,7 +99,11 @@ function SearchBarComponent({ onSearch }: SearchBarProps) {
     onSearch(searchParams);
 
     // Update Redux store with the new search query
-    dispatchUpdate({ jobTitle: localJobTitle, categoryId: localCategoryId, companyCity: localCompanyCity });
+    dispatchUpdate({
+      jobTitle: localJobTitle,
+      categoryId: localCategoryId,
+      companyCity: localCompanyCity,
+    });
   };
 
   // Handle location changes
@@ -114,7 +122,7 @@ function SearchBarComponent({ onSearch }: SearchBarProps) {
     return new Promise<LocationOptionReal[]>((resolve) => {
       setTimeout(() => {
         const filteredCities = locations.filter((location) =>
-          location.label.toLowerCase().includes(inputValue.toLowerCase())
+          location.label.toLowerCase().includes(inputValue.toLowerCase()),
         );
         resolve(filteredCities);
       }, 500);
@@ -154,7 +162,7 @@ function SearchBarComponent({ onSearch }: SearchBarProps) {
             <SelectItem value="all">All categories</SelectItem>
             {category.length > 0 ? (
               category.map((categoryItem, index) => (
-                <SelectItem key={categoryItem.categoryId} value={`${index + 1}`}>
+                <SelectItem key={index} value={`${index + 1}`}>
                   {categoryItem.category_name}
                 </SelectItem>
               ))
@@ -177,7 +185,9 @@ function SearchBarComponent({ onSearch }: SearchBarProps) {
           loadOptions={loadOptions} // Load cities based on search term
           placeholder="Search Location"
           styles={customStyles} // Apply custom styles here
-          value={companyCity ? { label: companyCity, value: companyCity } : null} // Set to null if location is cleared
+          value={
+            companyCity ? { label: companyCity, value: companyCity } : null
+          } // Set to null if location is cleared
           onChange={handleLocationChange}
           isClearable={true}
         />

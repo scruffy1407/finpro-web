@@ -1,5 +1,4 @@
 import React from "react";
-import NavbarComponent from "@/components/NavbarComponent";
 import HeroComponent from "@/components/HeroComponent";
 import MarqueeComponent from "@/components/MarqueeComponent";
 import HeadingComponent from "@/components/HeadingComponent";
@@ -10,6 +9,7 @@ import FooterComponent from "@/components/FooterComponent";
 import { AuthHandler } from "@/utils/auth.utils";
 import useRouter from "next/router";
 import { Navbar } from "@/components/NavigationBar/Navbar";
+import { Button } from "@/components/ui/button";
 
 function Home() {
   const authHandler = new AuthHandler();
@@ -18,54 +18,40 @@ function Home() {
 
   return (
     <div className="overflow-hidden">
-      <div className="mx-4 w-auto">
-        <Navbar />
-      </div>
+      <Navbar pageRole={"jobhunter"} />
 
       <div className="mx-4 md:w-auto">
         <HeroComponent />
       </div>
-      <div className="mx-4">
-        <MarqueeComponent />
-      </div>
+      <MarqueeComponent />
 
-      <div className=" mx-4 mt-20 ">
+      <section className="mx-4 mt-20 px-4">
         <HeadingComponent
           heading="We found Jobs near you!"
           paragraph="Explore opportunities tailored to your location and discover the perfect match for your next career move"
           onClick={() => router.push("/jobs")}
         />
-      </div>
-
-      <div className="mx-4 mt-6">
         <JobMappingComponent />
-      </div>
+        {/* NOTE THAT THIS BUTTON PART IS CONDITIONAL ONLY AND ONLY SHOWS ON MOBILE VIEW! */}
+        <Button variant={"outline"} className={"mt-6 w-full md:hidden"}>
+          Explore More
+        </Button>
+      </section>
 
-      {/* NOTE THAT THIS BUTTON PART IS CONDITIONAL ONLY AND ONLY SHOWS ON MOBILE VIEW! */}
-      <div className="flex mt-5 items-center justify-center md:hidden px-8">
-        <ButtonComponent type="ButtonBorderCustom" container="Explore More" />
-      </div>
-
-      <div className=" mx-4 mt-20">
+      <section className=" mx-4 mt-20 px-4 ">
         <HeadingComponent
           heading="This could be your next company"
           paragraph="Explore our partner companies and discover the exciting job openings available right now."
-          onClick={() => router.push("/companies")}
+          onClick={() => router.push("/company")}
         />
-      </div>
-
-      <div className=" mx-4 mt-6">
         <CompanyMappingComponent />
-      </div>
+        {/* NOTE THAT THIS BUTTON PART IS CONDITIONAL ONLY AND ONLY SHOWS ON MOBILE VIEW! */}
+        <Button variant={"outline"} className={"mt-6 w-full md:hidden"}>
+          Explore More
+        </Button>
+      </section>
 
-      {/* NOTE THAT THIS BUTTON PART IS CONDITIONAL ONLY AND ONLY SHOWS ON MOBILE VIEW! */}
-      <div className="flex mt-5 items-center justify-center md:hidden px-8">
-        <ButtonComponent type="ButtonBorderCustom" container="Explore More" />
-      </div>
-
-      <div className="mx-4 mt-20 mb-5">
-        <FooterComponent />
-      </div>
+      <FooterComponent pageRole={"jobhunter"} />
     </div>
   );
 }

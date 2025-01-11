@@ -65,7 +65,7 @@ function Index() {
           </div>
         </div>
       </ModalContainer>
-      <Navbar />
+      <Navbar pageRole={"jobhunter"} />
 
       <div className="mx-auto max-w-screen-xl mt-5 mb-10">
         <div className={`bg-white w-full p-10 rounded-2xl`}>
