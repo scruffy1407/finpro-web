@@ -16,6 +16,7 @@ interface LoginState {
   photo?: string;
   email: string;
   name?: string;
+  phone_number?: string | null;
   password?: string;
   user_role: string | null;
   isLoading?: boolean;
@@ -53,6 +54,7 @@ const initialState: LoginState = {
   },
 };
 
+
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async (
@@ -71,7 +73,6 @@ export const loginUser = createAsyncThunk(
       );
       console.log("RESPONSE FAREL API", response.data.data);
       const { access_token, refresh_token, data } = response.data.data;
-
       Cookies.set("accessToken", access_token, { expires: 1 / 24 });
       Cookies.set("refreshToken", refresh_token, { expires: 3 });
       console.log("DATAAA INI FAREL", data);
@@ -103,14 +104,14 @@ export const validateUserToken = createAsyncThunk(
     } catch (e: unknown) {
       return e;
     }
-  },
+  }
 );
 
 export const refreshUserToken = createAsyncThunk(
   "auth/refreshAccessToken",
   async (refreshToken: string) => {
     await authHandler.refreshUserAcessToken(refreshToken);
-  },
+  }
 );
 
 const authSlice = createSlice({
@@ -126,6 +127,10 @@ const authSlice = createSlice({
     updateName: (state, action) => {
       state.name = action.payload;
     },
+
+    updatePhone: (state, action) => {
+      state.phone_number = action.payload;
+
     logoutUser: (state) => {
       // Clear cookies
       Cookies.remove("accessToken");
@@ -199,7 +204,18 @@ const authSlice = createSlice({
           state.innerId = action.payload?.data.developers[0].developer_id;
         }
         state.isLoading = false;
+        state.user_role = action.payload.user_role;
+        state.accessToken = action.payload.access_token;
+        state.refreshToken = action.payload.refresh_token;
+        state.name = action.payload.name;
+        state.photo = action.payload.photo as string;
+        state.phone_number = action.payload.phone_number
+          ? String(action.payload.phone_number)
+          : null;
+        state.isLoggedIn = true;
+
         state.pendingState.dataLoading = false;
+
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.isLoading = false;
@@ -234,6 +250,8 @@ const authSlice = createSlice({
           state.isVerified = action.payload?.verified;
           state.innerId = action.payload.company[0].company_id;
           state.photo = action.payload.company[0].logo;
+          state.phone_number = action.payload.phone_number || null;
+
         } else if (
           action.payload.developers &&
           action.payload.developers.length > 0
@@ -257,7 +275,7 @@ const authSlice = createSlice({
   },
 });
 
-export const { resetState, updateName, updatePhoto, logoutUser } =
+export const { resetState, updateName, updatePhoto, updatePhone, logoutUser } =
   authSlice.actions;
 
 export default authSlice.reducer;

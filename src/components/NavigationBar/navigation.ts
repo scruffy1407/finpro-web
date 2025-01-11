@@ -82,7 +82,7 @@ export const dropDownItemConfig: Record<UserRole, NavigationItem[]> = {
       href: "/profile/application-history",
       icon: FileUser,
     },
-    { name: "My Certificate", href: "/profile/certificate", icon: FileBadge },
+    { name: "My Certificate", href: "/profile/user/certificates", icon: FileBadge },
     { name: "Saved Jobs", href: "/jobs/bookmarks", icon: BookmarkCheck },
   ],
   company: [

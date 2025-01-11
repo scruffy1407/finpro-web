@@ -6,7 +6,6 @@ import {
   removeBookmark,
   addBookmark,
 } from "@/store/slices/bookmarkSlice";
-import NavbarComponent from "@/components/NavbarComponent";
 import FooterComponent from "@/components/FooterComponent";
 import BookmarkJobListMappingComponent from "@/components/BookmarkJobListMappingComponent";
 import axios from "axios";

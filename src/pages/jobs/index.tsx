@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import NavbarComponent from "@/components/NavbarComponent";
 import HeroJobListPageComponent from "@/components/HeroJobListPageComponent";
 import SelectionJobsComponents from "@/components/SelectionJobsComponent";
 import JobListMappingComponent from "@/components/JobListMappingComponent";
@@ -28,6 +27,7 @@ import JobPostComponentSkeleton from "@/components/JobPostSkeleton";
 import {
   addBookmark,
   removeBookmark,
+  setBookmarks,
   fetchBookmarks,
 } from "@/store/slices/bookmarkSlice";
 import Cookies from "js-cookie";
@@ -43,10 +43,10 @@ const JobPostPage: React.FC = () => {
     (state: RootState) => state.bookmarks.bookmarks,
   );
   const { currentPage, totalPages } = useSelector(
-    (state: RootState) => state.pagination,
+    (state: RootState) => state.pagination
   );
   const { jobTitle, categoryId, jobType, dateRange, sortOrder, companyCity } =
-    useSelector((state: RootState) => state.searchQuery); // Access searchQuery from the store
+    useSelector((state: RootState) => state.searchQuery);
 
   const dispatch: AppDispatch = useDispatch();
 
@@ -62,12 +62,8 @@ const JobPostPage: React.FC = () => {
           sortOrder,
           companyCity,
         });
-
-        // Check if response is valid and set job posts
         if (response?.data?.data) {
           setJobPosts(response.data.data);
-
-          // Update pagination state in Redux
           const { totalJobPosts, totalPages } = response.data;
           dispatch(setPaginationData({ totalJobPosts, totalPages }));
         } else {
@@ -80,7 +76,29 @@ const JobPostPage: React.FC = () => {
       }
     };
 
+    const fetchBookmarks = async () => {
+      try {
+        const token = Cookies.get("accessToken");
+        if (!token) {
+          console.error("Token is missing from cookies.");
+          return;
+        }
+        const response = await axios.get(
+          "http://localhost:8000/applyjob/bookmark",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        const jobWishlist = response.data.bookmarks?.jobWishlist || [];
+        dispatch(setBookmarks(jobWishlist));
+      } catch (error) {
+        console.error("Failed to fetch bookmarks:", error);
+      }
+    };
+
     fetchJobPosts();
+    fetchBookmarks();
   }, [
     currentPage,
     jobTitle,
@@ -99,8 +117,6 @@ const JobPostPage: React.FC = () => {
         console.error("Token is missing from cookies.");
         return;
       }
-
-      // Check if job is already bookmarked
       const existingBookmark = bookmarks.find(
         (bookmark) => bookmark.jobPostId === jobPostId,
       );

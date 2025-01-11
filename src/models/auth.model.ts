@@ -1,4 +1,4 @@
-import { EducationDegree, EducationDegreeType } from "@/models/educationDegree";
+import { EducationDegreeType } from "@/models/educationDegree";
 
 export enum UserRole {
   JOBHUNTER = "jobhunter",
@@ -50,6 +50,55 @@ export interface JobHunterGeneralInfoData {
   provinceId: undefined | number;
   expectedSalary: string | number | null;
   summary: string;
+}
+
+export interface JobHunterGeneralInfo {
+  jobHunterId: string | number;
+  name: string;
+  dob: string | null | Date; // date only when to hit an api
+  gender: "male" | "female" | "other" | undefined;
+  locationCity: string | null;
+  locationProvince: string | null;
+  cityId: undefined | number;
+  provinceId: undefined | number;
+  expectedSalary: string | number | null;
+  summary: string;
+}
+
+export interface CompanyGeneralInfo {
+  companyId: string | number;
+  company_name: string;
+  phone_number: string;
+  company_description: string;
+  address_details: string;
+  company_city: string | null;
+  company_province: string | null;
+  company_industry: CompanyIndustry | string;
+  company_size: CompanySize | string;
+  cityId: undefined | number;
+  provinceId: undefined | number;
+}
+
+export enum CompanyIndustry {
+  InformationTechnologyAndServices = "informationtechnologyandservices",
+  FinanceAndBanking = "financeandbanking",
+  BusinessAndHR = "businessandhr",
+  HospitalAndHealthcare = "hospitalandhealthcare",
+  ConstructionAndRealEstate = "constructionandrealestate",
+  RetailLogisticsAndConsumerGoods = "retaillogisticandconsumergoods",
+  EducationAndResearch = "educationandresearch",
+  ManufacturingAndEngineering = "manufacturingandengineering",
+  MediaAndEntertainment = "mediaandentertainment",
+  GovernmentAndNonProfit = "governmentandnonprofit",
+  Others = "others",
+}
+
+export enum CompanySize {
+  Small = "small",
+  SmallMedium = "smallmedium",
+  Medium = "medium",
+  Large = "large",
+  Enterprise = "enterprise",
 }
 
 export interface ProvinceItem {

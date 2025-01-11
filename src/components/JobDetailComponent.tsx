@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Image from "next/image";
 import ButtonComponent from "./ButtonComponent";
 import moment from "moment";
@@ -14,11 +14,48 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import LoadingLoader from "@/components/LoadingLoader";
 import SectionJoinApplicant from "@/components/SectionJoinApplicant";
-import { JobApplication } from "@/models/applicant.model";
 import { ShareButton } from "@/components/ShareButton";
+import { JobApplicationStatus } from "@/models/applicant.model";
+
+interface JobData {
+  company: {
+    company_name: string;
+    company_id: string;
+    logo?: string;
+    company_industry: string;
+    company_size: string;
+    review: Review[];
+  };
+  job_title: string;
+  job_description: string;
+  job_type: string;
+  job_experience_min: number;
+  job_experience_max?: number;
+  salary_min: number;
+  salary_max?: number;
+  salary_show: boolean;
+  expired_date: string;
+  job_space: string;
+  companyId: string;
+}
+
+interface Review {
+  career_path_rating: number;
+  cultural_rating: number;
+  facility_rating: number;
+  work_balance_rating: number;
+}
+
+interface JobApplication {
+  applicationId: string;
+  applicationStatus: JobApplicationStatus;
+  createdAt: Date;
+  jobHunterId: string;
+  resume: string;
+}
 
 interface JobDetailProps {
-  jobData: any;
+  jobData: JobData;
   validateUserLoading: boolean;
   alreadyJoined: null | JobApplication;
   onApplyJob: () => void;
@@ -30,8 +67,6 @@ export default function JobDetailComponent({
   alreadyJoined,
   validateUserLoading,
 }: JobDetailProps) {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
   const { pendingState } = useSelector((state: RootState) => state.generalInfo);
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
 
@@ -40,9 +75,10 @@ export default function JobDetailComponent({
   };
 
   const formatSalary = (salary: number) => {
-    return `${(salary / 1000000).toFixed(1)} jt`; // Format to 1 decimal place
+    return `${(salary / 1000000).toFixed(1)} jt`;
   };
-  const calculateAverageRating = (reviews: any[]) => {
+
+  const calculateAverageRating = (reviews: Review[]) => {
     const totalReviews = reviews.length;
 
     if (totalReviews === 0) return 0;
@@ -56,16 +92,15 @@ export default function JobDetailComponent({
         review.work_balance_rating
       );
     }, 0);
-
-    // Return the average rating
-    return (sum / (totalReviews * 4)).toFixed(2); // 4 ratings per review
+    return (sum / (totalReviews * 4)).toFixed(2);
   };
 
   const averageRating = calculateAverageRating(jobData?.company?.review || []);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>{error}</div>;
+  if (validateUserLoading) return <div>Loading...</div>;
+
   if (!jobData) return <div>No job details found.</div>;
+
   return (
     <>
       <div className="flex flex-col justify-between gap-10 max-w-screen-xl p-4 md:p-8 mx-auto bg-white mt-5 rounded-xl md:flex-row">
@@ -98,7 +133,7 @@ export default function JobDetailComponent({
           <div className="flex gap-2 mt-4 justify-between items-center">
             <div className="flex items-center gap-2">
               <Image
-                src={jobData?.company?.logo || "/company.logo"} // Use company logo if available
+                src={jobData?.company?.logo || "/company.logo"}
                 alt="company Logo"
                 width={30}
                 height={30}
@@ -321,21 +356,15 @@ export default function JobDetailComponent({
                 {mapCompanySize(jobData?.company?.company_size)}
               </span>
             </p>
+            <ShareButton
+              jobTitle="Senior Frontend Developer"
+              companyName="TechCorp Inc."
+              jobUrl={window.location.href}
+              onShare={handleShare}
+            />
           </div>
         </section>
-          <p className="text-sm text-neutral-600 flex gap-2">
-            <span>Company Size:</span>
-            <span className="text-neutral-900 text-right">
-              {mapCompanySize(jobData?.company?.company_size)}
-            </span>
-          </p>
-          <ShareButton
-          jobTitle="Senior Frontend Developer"
-          companyName="TechCorp Inc."
-          jobUrl={window.location.href}
-          onShare={handleShare}
-        />
-        </div>
+      </div>
     </>
   );
 }

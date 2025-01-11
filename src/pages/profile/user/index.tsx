@@ -7,7 +7,6 @@ import { AuthHandler } from "@/utils/auth.utils";
 import Image from "next/image";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AccountTab from "@/components/Tabs/ProfileUser/AccountTab";
-import NavbarComponent from "@/components/NavbarComponent";
 import SecurityTab from "@/components/Tabs/ProfileUser/SecurityTab";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store";

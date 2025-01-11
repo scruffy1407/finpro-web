@@ -28,7 +28,7 @@ function HeroJobListPageComponent() {
 			<div className="flex justify-between">
 				<div className="flex flex-col md:pl-8 py-6 md:gap-11 w-[100%] ">
 					<h1 className="font-bold text-2xl md:text-4xl ">
-						Find Your Dream jobs
+						Find Your Dream Jobs
 					</h1>
 					<div className="w-full">
 						<SearchBarComponent onSearch={onSearch} />
