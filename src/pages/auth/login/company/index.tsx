@@ -11,6 +11,7 @@ import {
   handleLogin,
   handleLoginEffect,
 } from "@/utils/login.utils";
+import { UserRole } from "@/models/auth.model";
 
 function CompanyLogin() {
   const dispatch = useDispatch<AppDispatch>();
@@ -21,13 +22,19 @@ function CompanyLogin() {
   const [loginForm, setLoginForm] = useState({
     email: "",
     password: "",
-    user_role: "company",
+    user_role: UserRole.COMPANY,
   });
 
   const [btnDisable, setBtnDisable] = useState(false);
 
   useEffect(() => {
-    handleLoginEffect(isLoggedIn, error, router, dispatch);
+    handleLoginEffect(
+      UserRole.COMPANY,
+      isLoggedIn,
+      error as null,
+      router,
+      dispatch,
+    );
   }, [isLoggedIn, error, router, dispatch]);
 
   return (
@@ -97,7 +104,10 @@ function CompanyLogin() {
                   </div>
 
                   <div>
-                    <Label htmlFor={`password`} className="block mb-2 text-white">
+                    <Label
+                      htmlFor={`password`}
+                      className="block mb-2 text-white"
+                    >
                       Password
                     </Label>
                     <Input
@@ -150,7 +160,10 @@ function CompanyLogin() {
 
                 <p className="text-center text-sm text-white">
                   Don&apos;t have an account? <></>
-                  <Link href="/auth/register/company" className="text-white underline hover:text-blue-500">
+                  <Link
+                    href="/auth/register/company"
+                    className="text-white underline hover:text-blue-500"
+                  >
                     Sign up now
                   </Link>
                 </p>

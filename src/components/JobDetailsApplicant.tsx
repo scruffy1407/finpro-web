@@ -47,7 +47,7 @@ export const JobDetails: React.FC<JobDetailsProps> = ({
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },
-          }
+          },
         );
 
         if (response.status === 200) {
@@ -80,13 +80,13 @@ export const JobDetails: React.FC<JobDetailsProps> = ({
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
-        }
+        },
       );
 
       if (response.status === 200) {
         setJobStatus(!jobStatus);
         toast.success(
-          `Job status updated to ${!jobStatus ? "Active" : "Inactive"}`
+          `Job status updated to ${!jobStatus ? "Active" : "Inactive"}`,
         );
       } else {
         toast.error("Failed to update job status.");
@@ -117,31 +117,31 @@ export const JobDetails: React.FC<JobDetailsProps> = ({
             className="rounded-full"
           />
         </div>
-        <h2 className="text-2xl font-bold text-gray-800">{title}</h2>
+        <h2 className="text-xl font-bold text-gray-800">{title}</h2>
       </div>
 
-      <div className="space-y-4 mb-6">
+      <div className="space-y-3 mb-6">
         <div className="flex items-center gap-2">
-          <span className="text-gray-600 min-w-28 text-sm">Job Type:</span>
-          <span className="font-medium text-sm">{jobType}</span>
+          <span className="text-gray-600 min-w-28 text-xs">Job Type:</span>
+          <span className="font-medium text-xs">{jobType}</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-gray-600 min-w-28 text-sm">Experience:</span>
-          <span className="font-medium text-sm">{experience}</span>
+          <span className="text-gray-600 min-w-28 text-xs">Experience:</span>
+          <span className="font-medium text-xs">{experience}</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-gray-600 min-w-28 text-sm">Salary:</span>
-          <span className="font-medium text-sm">{salary}</span>
+          <span className="text-gray-600 min-w-28 text-xs">Salary:</span>
+          <span className="font-medium text-xs">{salary}</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-gray-600 min-w-28 text-sm">Work Location:</span>
-          <span className="font-medium text-sm">{location}</span>
+          <span className="text-gray-600 min-w-28 text-xs">Work Location:</span>
+          <span className="font-medium text-xs">{location}</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-gray-600 min-w-28 text-sm">
+          <span className="text-gray-600 min-w-28 text-xs">
             Selection Test:
           </span>
-          <span className="font-medium text-sm">
+          <span className="font-medium text-xs">
             {trueorfalse ? "Selection Test Available" : "No Selection Test"}
           </span>
         </div>

@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { Button } from "@/components/ui/button";
 
 const AddQuestions = () => {
 	const router = useRouter();
@@ -31,8 +32,8 @@ const AddQuestions = () => {
 						headers: { Authorization: `Bearer ${accessToken}` },
 					}
 				);
-                console.log("THIS IS REPOSNSE WOPHUD LOOKING FDORN")
-                console.log(response)
+				console.log("THIS IS REPOSNSE WOPHUD LOOKING FDORN");
+				console.log(response);
 				setTestName(response.data.data.test_name); // Assume test_name is part of the response
 			} catch (error) {
 				console.error("Error fetching test details:", error);
@@ -89,7 +90,7 @@ const AddQuestions = () => {
 			);
 			if (response.data.message) {
 				alert(response.data.message);
-				router.push("/"); // Navigate back to the homepage or another page
+				router.push("/preSelectionDashboard"); // Navigate back to the homepage or another page
 			}
 		} catch (error) {
 			console.error("Error submitting questions:", error);
@@ -103,13 +104,16 @@ const AddQuestions = () => {
 		return suffixes[(value - 20) % 10] || suffixes[value] || suffixes[0];
 	};
 
+	const handleCancel = () => {
+		// Navigate to the assessment test dashboard
+		router.push("/preSelectionDashboard"); // Navigate back to the homepage or another page
+	};
+
 	return (
 		<div className="p-6 max-w-3xl mx-auto bg-white shadow rounded-md">
-			<h1 className="text-2xl font-bold mb-6">
-				Questions Form
-			</h1>
-            <h1 className="text-xl mb-6">
-				 Pre-selection Test Title: {testName || "Loading..."}
+			<h1 className="text-2xl font-bold mb-6">Questions Form</h1>
+			<h1 className="text-xl mb-6">
+				Pre-selection Test Title: {testName || "Loading..."}
 			</h1>
 			<form onSubmit={handleSubmit} className="space-y-6">
 				{questions.map((question, index) => (
@@ -162,12 +166,12 @@ const AddQuestions = () => {
 						</select>
 					</div>
 				))}
-				<div className="flex gap-4">
+				<div className="flex gap-4 justify-between ">
 					{questions.length < 25 && (
 						<button
 							type="button"
 							onClick={handleAddQuestion}
-							className="bg-blue-500 text-white px-4 py-2 rounded-md"
+							className="bg-blue-500 text-white px-4 py-2 rounded-xl"
 						>
 							Add {questions.length + 1}
 							{getOrdinalSuffix(questions.length + 1)} Question
@@ -175,10 +179,13 @@ const AddQuestions = () => {
 					)}
 					<button
 						type="submit"
-						className="bg-green-500 text-white px-4 py-2 rounded-md"
+						className="bg-green-500 text-white px-4 py-2 rounded-xl"
 					>
 						Submit Questions
 					</button>
+					<Button variant="outline" onClick={handleCancel}>
+						Cancel Creationg
+					</Button>
 				</div>
 			</form>
 		</div>

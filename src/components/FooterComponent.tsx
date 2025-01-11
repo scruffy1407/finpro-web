@@ -3,11 +3,17 @@ import Image from "next/image";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import Link from "next/link";
+import { UserRole } from "@/components/NavigationBar/navigation";
 
-function FooterComponent() {
+function FooterComponent({ pageRole }: { pageRole: UserRole }) {
   const userRole = useSelector((state: RootState) => state.auth.user_role);
 
-  const roleConfig = {
+  console.log(pageRole);
+
+  const roleConfig: Record<
+    UserRole,
+    { logo: string; navbarItems: { label: string; href: string }[] }
+  > = {
     jobhunter: {
       logo: "/logo/MainLogoWhite.svg",
       navbarItems: [
@@ -24,6 +30,13 @@ function FooterComponent() {
         { label: "Test Templates", href: "" },
       ],
     },
+    developer: {
+      logo: "/logo/CompanyLogo.svg",
+      navbarItems: [
+        { label: "Dashboard", href: "" },
+        { label: "Manage Assessment", href: "" },
+      ],
+    },
     default: {
       logo: "/logo/MainLogoWhite.svg",
       navbarItems: [
@@ -35,10 +48,10 @@ function FooterComponent() {
     },
   };
 
-  const { logo, navbarItems } = roleConfig[userRole || "default"];
+  const { logo, navbarItems } = roleConfig[pageRole] || roleConfig.default;
 
   return (
-    <div className="max-w-screen-xl mx-auto bg-sky-950 border rounded-xl mb-16">
+    <footer className="max-w-screen-xl mx-auto bg-sky-950 border rounded-xl mb-16 mt-10">
       <div className="">
         <div className="md:flex justify-between p-6">
           {/* Logo Section */}
@@ -140,7 +153,7 @@ function FooterComponent() {
           <p className="text-xs opacity-50">&copy; 2024 Pathway Limited</p>
         </div>
       </div>
-    </div>
+    </footer>
   );
 }
 

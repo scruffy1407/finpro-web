@@ -2,9 +2,10 @@ import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { Button } from "@/components/ui/button";
 
 interface Question {
-	question_id: number; // Include the question_id field
+	questionId: number; // Updated to match the API's field naming
 	question: string;
 	answer_1: string;
 	answer_2: string;
@@ -21,7 +22,6 @@ const EditQuestions = () => {
 	const [testName, setTestName] = useState<string>(""); // Store test name
 	const [questions, setQuestions] = useState<Question[]>([]); // Initialize with an empty array
 
-	// Fetch test details and questions
 	useEffect(() => {
 		const fetchTestDetails = async () => {
 			if (!test_id) return; // Wait until test_id is available
@@ -33,9 +33,29 @@ const EditQuestions = () => {
 						headers: { Authorization: `Bearer ${accessToken}` },
 					}
 				);
-				// Set the test name and questions
+
+				// Log the entire response data for debugging
+				console.log("Fetched test details:", response.data);
+
+				// Ensure question_id is correctly assigned
+				const questionsWithId = response.data.data.testQuestions.map(
+					(q: {
+						question_id: number;
+						question: string;
+						answer_1: string;
+						answer_2: string;
+						answer_3: string;
+						answer_4: string;
+						correct_answer: string;
+					}) => ({
+						...q,
+						questionId: q.question_id, // Explicitly assign questionId from question_id
+					})
+				);
+
+				// Set the test name and questions with correct questionId
 				setTestName(response.data.data.test_name);
-				setQuestions(response.data.data.testQuestions); // Set the existing questions
+				setQuestions(questionsWithId); // Set the questions with the correct IDs
 			} catch (error) {
 				console.error("Error fetching test details:", error);
 				alert("Failed to fetch test details.");
@@ -47,47 +67,67 @@ const EditQuestions = () => {
 	// Handle input change for each question
 	const handleInputChange = (
 		index: number,
-		field: keyof Question, // Use keyof Question here
+		field: keyof Question,
 		value: string
 	) => {
-		// Create a copy of the questions to avoid mutating the state directly
 		const updatedQuestions = [...questions];
-		// Update the specific question's field
 		updatedQuestions[index] = {
-			...updatedQuestions[index], // Copy the existing question
-			[field]: value, // Update only the field that was changed
+			...updatedQuestions[index],
+			[field]: value,
 		};
-		setQuestions(updatedQuestions); // Update the state
+		setQuestions(updatedQuestions);
 	};
 
-	// Handle form submission
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 
-		const updatedQuestions = questions.map((question) => ({
-			preSelectionTestId: test_id, // Use the preSelectionTestId as per API requirements
-			questionId: question.question_id, // Correct question ID from the response
-			question: question.question,
-			answer_1: question.answer_1,
-			answer_2: question.answer_2,
-			answer_3: question.answer_3,
-			answer_4: question.answer_4,
-			correct_answer: question.correct_answer,
-		}));
+		const updatedQuestions = {
+			questions: questions.map((question) => ({
+				questionId: question.questionId,
+				question: question.question,
+				answer_1: question.answer_1,
+				answer_2: question.answer_2,
+				answer_3: question.answer_3,
+				answer_4: question.answer_4,
+				correct_answer: question.correct_answer,
+			})),
+		};
 
-		// Log the updated questions to verify the structure
 		console.log("Updated request body:", updatedQuestions);
 
 		try {
-			// Send the request to update each question using the API
-			await axios.post("http://localhost:8000/api/company/updatetest", {
-				questions: updatedQuestions, // Send questions directly
-			});
-			alert("Test questions updated successfully!");
+			console.log(`http://localhost:8000/api/company/updatetest/${test_id}`);
+
+			// Send the request to update the test questions
+			const response = await axios.put(
+				`http://localhost:8000/api/company/updatetest/${test_id}`,
+				updatedQuestions,
+				{
+					headers: {
+						Authorization: `Bearer ${accessToken}`,
+						"Content-Type": "application/json", // Explicitly set Content-Type
+					},
+				}
+			);
+
+			// Check for a success response
+			console.log("API Response:", response.data); // Check the full response data
+
+			if (response.status === 200) {
+				alert("Test questions updated successfully!");
+				router.push("/preSelectionDashboard"); // Navigate back to the homepage or another page
+			} else {
+				alert(`Error: ${response.data.error || "Unknown error occurred"}`);
+			}
 		} catch (error) {
 			console.error("Error updating questions:", error);
 			alert("Failed to update questions.");
 		}
+	};
+
+	const handleCancel = () => {
+		// Navigate to the assessment test dashboard
+		router.push("/preSelectionDashboard"); // Navigate back to the homepage or another page
 	};
 
 	return (
@@ -127,8 +167,6 @@ const EditQuestions = () => {
 								required
 							/>
 						))}
-
-						{/* Dropdown for correct answer */}
 						<select
 							value={question.correct_answer}
 							onChange={(e) =>
@@ -148,10 +186,13 @@ const EditQuestions = () => {
 				<div className="flex gap-4">
 					<button
 						type="submit"
-						className="bg-green-500 text-white px-4 py-2 rounded-md"
+						className="bg-green-500 text-white px-4 py-2 rounded-xl"
 					>
 						Update Questions
 					</button>
+					<Button variant="outline" onClick={handleCancel}>
+						Cancel Edit
+					</Button>
 				</div>
 			</form>
 		</div>
