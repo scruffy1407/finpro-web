@@ -51,51 +51,45 @@ function JobPostedDash() {
   const handleCloseModal = () => {
     dispatch(closeModalAction());
   };
-
   const handleDelete = async (jobId: number) => {
     setLoadingState(true);
     try {
-      const response: DeleteJobPostResponse = await deleteJobPostDash(jobId);
+      // Debug: Log the jobId being passed
+      console.log("Attempting to delete job post with jobId:", jobId);
+
+      // Delete the job post using only jobId
+      const response = await deleteJobPostDash(jobId); // Ensure you're sending just the jobId
+
+      // Debug: Log the response from the deleteJobPostDash function
+      console.log("Response from deleteJobPostDash:", response);
+
       if (response?.message) {
         alert(response.message);
       } else {
         alert("Job post deleted successfully.");
       }
 
+      setJobPosts((prevPosts) =>
+        prevPosts.filter((post) => Number(post.job_id) !== jobId),
+      );
+    } catch (error) {
+      // Debug: Log the error caught
+      console.error("Error deleting job post:", error);
 
-	const handleDelete = async (jobId: number) => {
-		setLoadingState(true);
-		try {
-			// Debug: Log the jobId being passed
-			console.log("Attempting to delete job post with jobId:", jobId);
+      if (axios.isAxiosError(error) && error.response?.data) {
+        const backendError = error.response.data as BackendError;
+        if (backendError.error) {
+          alert(backendError.error);
+          return;
+        }
+      }
 
-			// Delete the job post using only jobId
-			const response = await deleteJobPostDash(jobId); // Ensure you're sending just the jobId
-
-			// Debug: Log the response from the deleteJobPostDash function
-			console.log("Response from deleteJobPostDash:", response);
-
-			if (response?.message) {
-				alert(response.message);
-			} else {
-				alert("Job post deleted successfully.");
-			}
-
-			setJobPosts((prevPosts) =>
-				prevPosts.filter((post) => Number(post.job_id) !== jobId)
-			);
-		} catch (error) {
-			// Debug: Log the error caught
-			console.error("Error deleting job post:", error);
-
-			if (axios.isAxiosError(error) && error.response?.data) {
-				const backendError = error.response.data as BackendError;
-				if (backendError.error) {
-					alert(backendError.error);
-					return;
-				}
-			}
-
+      alert("Failed to delete the job post. Please try again later.");
+    } finally {
+      setLoadingState(false);
+      setDialogOpen(false);
+    }
+  };
 
   async function fetchData(token: string) {
     try {
@@ -122,6 +116,7 @@ function JobPostedDash() {
     }
     try {
       const response = await getJobPostDash({
+        accessToken: token as string,
         limit: 10,
         page: offset + 1,
       });
@@ -149,6 +144,7 @@ function JobPostedDash() {
     try {
       const { jobTitle, sortOrder } = searchParams;
       const response = await getJobPostDash({
+        accessToken: token as string,
         limit: 10,
         page: 1,
         jobTitle,
@@ -374,5 +370,4 @@ function JobPostedDash() {
     </>
   );
 }
-
 export default JobPostedDash;

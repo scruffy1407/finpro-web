@@ -42,7 +42,7 @@ const initialState: LoginState = {
   user_role: null,
   isLoading: false,
   isLoggedIn: false,
-  isVerified:false
+  isVerified: false,
   error: null,
   subscriptionActive: false,
   subscriptionId: 1,
@@ -53,7 +53,6 @@ const initialState: LoginState = {
     dataLoading: false,
   },
 };
-
 
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
@@ -104,14 +103,14 @@ export const validateUserToken = createAsyncThunk(
     } catch (e: unknown) {
       return e;
     }
-  }
+  },
 );
 
 export const refreshUserToken = createAsyncThunk(
   "auth/refreshAccessToken",
   async (refreshToken: string) => {
     await authHandler.refreshUserAcessToken(refreshToken);
-  }
+  },
 );
 
 const authSlice = createSlice({
@@ -130,12 +129,11 @@ const authSlice = createSlice({
 
     updatePhone: (state, action) => {
       state.phone_number = action.payload;
-
+    },
     logoutUser: (state) => {
       // Clear cookies
       Cookies.remove("accessToken");
       Cookies.remove("refreshToken");
-
       // Reset state
       state.baseId = null;
       state.innerId = null;
@@ -204,23 +202,22 @@ const authSlice = createSlice({
           state.innerId = action.payload?.data.developers[0].developer_id;
         }
         state.isLoading = false;
-        state.user_role = action.payload.user_role;
-        state.accessToken = action.payload.access_token;
-        state.refreshToken = action.payload.refresh_token;
-        state.name = action.payload.name;
-        state.photo = action.payload.photo as string;
-        state.phone_number = action.payload.phone_number
-          ? String(action.payload.phone_number)
+        state.user_role = action.payload?.data.user_role;
+        state.accessToken = action.payload?.data.access_token;
+        state.refreshToken = action.payload?.data.refresh_token;
+        state.name = action.payload?.data.name;
+        state.photo = action.payload?.data.photo as string;
+        state.phone_number = action.payload?.data.phone_number
+          ? String(action.payload?.data.phone_number)
           : null;
         state.isLoggedIn = true;
 
         state.pendingState.dataLoading = false;
-
       })
-      .addCase(loginUser.rejected, (state, action) => {
+      .addCase(loginUser.rejected, (state) => {
         state.isLoading = false;
         state.pendingState.dataLoading = false;
-        state.error =  "Something wentwrtong,please try again";
+        state.error = "Something wentwrtong,please try again";
       })
       .addCase(validateUserToken.pending, (state) => {
         state.pendingState.dataLoading = true;
@@ -251,7 +248,6 @@ const authSlice = createSlice({
           state.innerId = action.payload.company[0].company_id;
           state.photo = action.payload.company[0].logo;
           state.phone_number = action.payload.phone_number || null;
-
         } else if (
           action.payload.developers &&
           action.payload.developers.length > 0
@@ -275,7 +271,7 @@ const authSlice = createSlice({
   },
 });
 
-export const { resetState, updateName, updatePhoto, updatePhone, logoutUser } =
+export const { updatePhone, updateName, updatePhoto, logoutUser, resetState } =
   authSlice.actions;
 
 export default authSlice.reducer;

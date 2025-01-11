@@ -8,10 +8,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store";
 import { closeModalAction, openModalAction } from "@/store/slices/ModalSlice";
 import {
-	getGeneralInfo,
-	handleGetcity,
-	handleGetProvince,
-	handleGetUseLocation,
+  getGeneralInfo,
+  handleGetcity,
+  handleGetProvince,
+  handleGetUseLocation,
 } from "@/store/slices/generalInfo";
 import axios from "axios";
 import GeneralInfoForm from "@/components/Form/generalInfoForm";
@@ -26,30 +26,31 @@ import Head from "next/head";
 import ForbiddenCompanyAction from "@/components/Modal/ForbiddenCompanyAction";
 
 function JobDetail() {
+  const authHandler = new AuthHandler();
+  authHandler.authorizeUser();
+  const router = useRouter();
+  const { job_id } = router.query;
+  const [applicantData, setApplicantData] = useState<null | JobApplication>(
+    null,
+  );
+  const [jobData, setJobData] = useState<any | null>(null);
+  const [relatedPost, setRelatedPost] = useState<any[] | null>(null);
+  const [dataLoading, setDataLoading] = useState<boolean>(true);
+  const [validateLoading, setValiateLoading] = useState<boolean>(false);
+  const dispatch = useDispatch<AppDispatch>();
+  const { currentModalId } = useSelector(
+    (state: RootState) => state.modalController,
+  );
+  const { isLoggedIn, user_role } = useSelector(
+    (state: RootState) => state.auth,
+  );
+  const { validApply, pendingState, listProvince, listCity, cityId } =
+    useSelector((state: RootState) => state.generalInfo);
+  const callbackPath = "/auth/login/jobhunter?callback=ini-bosss";
 
-	const authHandler = new AuthHandler();
-	authHandler.authorizeUser();
-	const router = useRouter();
-	const { job_id } = router.query;
-	const [applicantData, setApplicantData] = useState<null | JobApplication>(
-		null
-	);
-	const [jobData, setJobData] = useState<any | null>(null);
-	const [relatedPost, setRelatedPost] = useState<any[] | null>(null);
-	const [dataLoading, setDataLoading] = useState<boolean>(true);
-	const [validateLoading, setValiateLoading] = useState<boolean>(false);
-	const dispatch = useDispatch<AppDispatch>();
-	const { currentModalId } = useSelector(
-		(state: RootState) => state.modalController
-	);
-	const { isLoggedIn } = useSelector((state: RootState) => state.auth);
-	const { validApply, pendingState, listProvince, listCity, cityId } =
-		useSelector((state: RootState) => state.generalInfo);
-	const callbackPath = "/auth/login/jobhunter?callback=ini-bosss";
-
-	const handleCloseModal = () => {
-		dispatch(closeModalAction());
-	};
+  const handleCloseModal = () => {
+    dispatch(closeModalAction());
+  };
 
   const fetchJobDetail = async () => {
     try {
@@ -57,56 +58,56 @@ function JobDetail() {
         `http://localhost:8000/api/company/jobDetails/${job_id}`,
       );
 
-			if (response.status === 200) {
-				setJobData(response.data.jobPostDetail);
-				setRelatedPost(response.data.relatedJobPosts);
-				console.log("THIS IS RESPONSE DATA FETCHECHECEHCH");
-				console.log(response);
-			} else {
-				setJobData(null);
-				setRelatedPost(null);
-			}
-		} catch (err) {
-			console.error("Error fetching job details:", err);
-		}
-	};
-	console.log("BUHTHBFEJBHEHWJBF");
+      if (response.status === 200) {
+        setJobData(response.data.jobPostDetail);
+        setRelatedPost(response.data.relatedJobPosts);
+        console.log("THIS IS RESPONSE DATA FETCHECHECEHCH");
+        console.log(response);
+      } else {
+        setJobData(null);
+        setRelatedPost(null);
+      }
+    } catch (err) {
+      console.error("Error fetching job details:", err);
+    }
+  };
+  console.log("BUHTHBFEJBHEHWJBF");
 
-	const validateUserJob = async () => {
-		const token = Cookies.get("accessToken");
-		try {
-			const response = await axios.get(
-				`http://localhost:8000/api/user/job-hunter/validate/${job_id}`,
-				{
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
-				}
-			);
-			console.log("VALIDATE USER JOIN", response);
-			if (response.status === 200 && response.data.code === "JOIN") {
-				setApplicantData({
-					jobHunterId: response.data.data.jobHunterId,
-					resume: response.data.data.resume,
-					createdAt: response.data.data.created_at,
-					applicationStatus: response.data.data.application_status,
-					applicationId: response.data.data.application_id,
-					endDate: response.data.data.resultPreSelection[0]?.end_date,
-					completionStatus:
-						response.data.data.resultPreSelection[0]?.completion_status,
-				});
-			} else if (response.status === 200 && response.data.code === "NOT_JOIN") {
-				setApplicantData(null);
-			}
-		} catch (err) {
-			console.error("Error fetching job details:", err);
-		}
-	};
+  const validateUserJob = async () => {
+    const token = Cookies.get("accessToken");
+    try {
+      const response = await axios.get(
+        `http://localhost:8000/api/user/job-hunter/validate/${job_id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      console.log("VALIDATE USER JOIN", response);
+      if (response.status === 200 && response.data.code === "JOIN") {
+        setApplicantData({
+          jobHunterId: response.data.data.jobHunterId,
+          resume: response.data.data.resume,
+          createdAt: response.data.data.created_at,
+          applicationStatus: response.data.data.application_status,
+          applicationId: response.data.data.application_id,
+          endDate: response.data.data.resultPreSelection[0]?.end_date,
+          completionStatus:
+            response.data.data.resultPreSelection[0]?.completion_status,
+        });
+      } else if (response.status === 200 && response.data.code === "NOT_JOIN") {
+        setApplicantData(null);
+      }
+    } catch (err) {
+      console.error("Error fetching job details:", err);
+    }
+  };
 
   function handleRedirect() {
-		dispatch(closeModalAction());
-		router.push(callbackPath);
-	}
+    dispatch(closeModalAction());
+    router.push(callbackPath);
+  }
   const handleApplyJob = async () => {
     if (isLoggedIn) {
       if (user_role === "jobhunter") {
@@ -128,10 +129,10 @@ function JobDetail() {
     }
   };
 
-	async function handleGetGeneralInfo() {
-		const token = Cookies.get("accessToken");
-		await dispatch(getGeneralInfo(token as string));
-	}
+  async function handleGetGeneralInfo() {
+    const token = Cookies.get("accessToken");
+    await dispatch(getGeneralInfo(token as string));
+  }
 
   useEffect(() => {
     if (job_id) {
@@ -149,36 +150,36 @@ function JobDetail() {
     }
   }, [job_id, isLoggedIn]);
 
-	console.log("Current applicantData state:", applicantData);
+  console.log("Current applicantData state:", applicantData);
 
-	return (
-		<>
-			<ModalContainer
-				title={"Apply Job"}
-				isOpen={currentModalId === "applyJobModal"}
-				onClose={handleCloseModal}
-			>
-				<>
-					<p className="break-words text-neutral-600">
-						You will apply to{" "}
-						<span className="font-semibold text-neutral-950">
-							{jobData?.company?.company_name}
-						</span>{" "}
-						as
-						<span className="font-semibold text-neutral-950">
-							{" "}
-							{jobData?.job_title}
-						</span>
-					</p>
-					<FormJobApplication
-						waitingSubmissionStatus={
-							applicantData?.applicationStatus === "waitingSubmission"
-						}
-						jobId={Number(job_id)}
-						applicationId={Number(applicantData?.applicationId ?? 0)} // Provide a default value
-					/>
-				</>
-			</ModalContainer>
+  return (
+    <>
+      <ModalContainer
+        title={"Apply Job"}
+        isOpen={currentModalId === "applyJobModal"}
+        onClose={handleCloseModal}
+      >
+        <>
+          <p className="break-words text-neutral-600">
+            You will apply to{" "}
+            <span className="font-semibold text-neutral-950">
+              {jobData?.company?.company_name}
+            </span>{" "}
+            as
+            <span className="font-semibold text-neutral-950">
+              {" "}
+              {jobData?.job_title}
+            </span>
+          </p>
+          <FormJobApplication
+            waitingSubmissionStatus={
+              applicantData?.applicationStatus === "waitingSubmission"
+            }
+            jobId={Number(job_id)}
+            applicationId={Number(applicantData?.applicationId ?? 0)} // Provide a default value
+          />
+        </>
+      </ModalContainer>
       <ModalContainer
         isOpen={currentModalId === "companyForbiddenModal"}
         onClose={handleCloseModal}
@@ -192,7 +193,6 @@ function JobDetail() {
           {jobData && jobData.job_title && jobData.company
             ? `${jobData.job_title} at ${jobData.company.company_name}`
             : "Job Details"}
-
         </title>
         <meta
           property="og:title"
@@ -218,90 +218,89 @@ function JobDetail() {
         />
       </Head>
 
+      <ModalContainer
+        title={" Congratulations! You have successfully passed the test."}
+        isOpen={currentModalId === "applyJobModalWaitingSubmission"}
+        onClose={handleCloseModal}
+      >
+        <>
+          <p className="break-words text-neutral-600">
+            Before proceeding with your application, please complete the
+            following information.
+          </p>
+          <p className={"text-sm p-2 px-4 bg-neutral-100 rounded-2xl"}>
+            {" "}
+            You will apply to{" "}
+            <span className="font-semibold text-neutral-950">
+              {jobData?.company?.company_name}
+            </span>{" "}
+            as
+            <span className="font-semibold text-neutral-950">
+              {" "}
+              {jobData?.job_title}
+            </span>
+          </p>
+          <FormJobApplication
+            waitingSubmissionStatus={
+              applicantData?.applicationStatus === "waitingSubmission"
+            }
+            jobId={Number(job_id)}
+            applicationId={Number(applicantData?.applicationId ?? 0)} // Provide a default value
+          />
+        </>
+      </ModalContainer>
 
-			<ModalContainer
-				title={" Congratulations! You have successfully passed the test."}
-				isOpen={currentModalId === "applyJobModalWaitingSubmission"}
-				onClose={handleCloseModal}
-			>
-				<>
-					<p className="break-words text-neutral-600">
-						Before proceeding with your application, please complete the
-						following information.
-					</p>
-					<p className={"text-sm p-2 px-4 bg-neutral-100 rounded-2xl"}>
-						{" "}
-						You will apply to{" "}
-						<span className="font-semibold text-neutral-950">
-							{jobData?.company?.company_name}
-						</span>{" "}
-						as
-						<span className="font-semibold text-neutral-950">
-							{" "}
-							{jobData?.job_title}
-						</span>
-					</p>
-					<FormJobApplication
-						waitingSubmissionStatus={
-							applicantData?.applicationStatus === "waitingSubmission"
-						}
-						jobId={Number(job_id)}
-						applicationId={Number(applicantData?.applicationId ?? 0)} // Provide a default value
-					/>
-				</>
-			</ModalContainer>
-
-			<ModalContainer
-				title={"Before You Continue, Let's Complete Your Profile"}
-				description={
-					"Having a complete profile makes it easier for recruiters to find the perfect candidate for the job!"
-				}
-				isOpen={currentModalId === "completeInformationModal"}
-				onClose={handleCloseModal}
-			>
-				<GeneralInfoForm
-					selection_test_active={
-						jobData && jobData.selection_text_active !== null
-							? jobData.selection_text_active
-							: false
-					}
-					job_id={jobData && jobData.job_id !== null ? jobData.job_id : 0} // Use 0 or any fallback value for job_id
-					test_id={jobData?.preSelectionTestId || null} // Pass the test_id here
-				/>
-			</ModalContainer>
-			<ModalContainer
-				isOpen={currentModalId === "needToLoginModal"}
-				onClose={handleCloseModal}
-			>
-				<div className={"flex flex-col gap-6"}>
-					<div className={"flex flex-col gap-2 text-center"}>
-						<h2 className="text-2xl font-bold text-neutral-950">
-							Login to apply to this job
-						</h2>
-						<p className={`text-neutral-600 text-sm`}>
-							{` Don't miss out on your next big opportunity. Login now to explore
+      <ModalContainer
+        title={"Before You Continue, Let's Complete Your Profile"}
+        description={
+          "Having a complete profile makes it easier for recruiters to find the perfect candidate for the job!"
+        }
+        isOpen={currentModalId === "completeInformationModal"}
+        onClose={handleCloseModal}
+      >
+        <GeneralInfoForm
+          selection_test_active={
+            jobData && jobData.selection_text_active !== null
+              ? jobData.selection_text_active
+              : false
+          }
+          job_id={jobData && jobData.job_id !== null ? jobData.job_id : 0} // Use 0 or any fallback value for job_id
+          test_id={jobData?.preSelectionTestId || null} // Pass the test_id here
+        />
+      </ModalContainer>
+      <ModalContainer
+        isOpen={currentModalId === "needToLoginModal"}
+        onClose={handleCloseModal}
+      >
+        <div className={"flex flex-col gap-6"}>
+          <div className={"flex flex-col gap-2 text-center"}>
+            <h2 className="text-2xl font-bold text-neutral-950">
+              Login to apply to this job
+            </h2>
+            <p className={`text-neutral-600 text-sm`}>
+              {` Don't miss out on your next big opportunity. Login now to explore
               10K+ jobs from 200+ top companies. Your dream career is just a
               click away.`}
-						</p>
-					</div>
-					<div className={"flex gap-4"}>
-						<Button
-							className={`w-full`}
-							variant={"outline"}
-							onClick={() => router.push("/auth/register/jobhunter")}
-						>
-							Register
-						</Button>
-						<Button
-							className={`w-full`}
-							variant={"primary"}
-							onClick={handleRedirect}
-						>
-							Login
-						</Button>
-					</div>
-				</div>
-			</ModalContainer>
+            </p>
+          </div>
+          <div className={"flex gap-4"}>
+            <Button
+              className={`w-full`}
+              variant={"outline"}
+              onClick={() => router.push("/auth/register/jobhunter")}
+            >
+              Register
+            </Button>
+            <Button
+              className={`w-full`}
+              variant={"primary"}
+              onClick={handleRedirect}
+            >
+              Login
+            </Button>
+          </div>
+        </div>
+      </ModalContainer>
 
       <div className="overflow-hidden mt-5">
         <div className="mx-4 w-auto">
@@ -317,16 +316,16 @@ function JobDetail() {
           />
         </div>
 
-				<div className=" mx-4 mt-20">
-					<HeadingRelatedComponent
-						heading="Related Jobs"
-						paragraph="Take a look at the jobs we found that are similar to the job you currently have open"
-					/>
-				</div>
+        <div className=" mx-4 mt-20">
+          <HeadingRelatedComponent
+            heading="Related Jobs"
+            paragraph="Take a look at the jobs we found that are similar to the job you currently have open"
+          />
+        </div>
 
-				<div className=" mx-4 mt-6">
-					<JobDetailSuggest listRelatedJob={relatedPost as any[]} />
-				</div>
+        <div className=" mx-4 mt-6">
+          <JobDetailSuggest listRelatedJob={relatedPost as any[]} />
+        </div>
 
         <div className="mx-4 mt-20 mb-5">
           <FooterComponent pageRole={"jobhunter"} />
