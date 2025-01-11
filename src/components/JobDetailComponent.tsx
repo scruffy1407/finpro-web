@@ -139,57 +139,59 @@ export default function JobDetailComponent({
 					<h2 className="font-bold text-2xl">{jobData?.job_title}</h2>
 				</div>
 				{/* Right Section */}
-				{alreadyJoined &&
-				alreadyJoined.completionStatus === "failed" &&
-				alreadyJoined.applicationStatus === "rejected" ? (
-					remainingTime ? (
-						<div className="flex items-center justify-end">
-							<p className="text-red-500">
-								You've Failed the Previous Test. Please wait until{" "}
-								<strong>{remainingTime}</strong> to rejoin.
-							</p>
-						</div>
-					) : (
-						<div className="flex flex-col justify-center gap-2 items-start md:items-end">
-							<div className="flex gap-6">
-								<div className="items-center justify-center hidden md:flex">
-									<ButtonComponent
-										type="ButtonBookmark"
-										container="Bookmarks"
-									/>
-								</div>
-								{validateUserLoading ? (
-									<div
-										className={
-											"h-10 w-48 bg-gray-200 animate-pulse rounded-2xl"
-										}
-									></div>
-								) : (
-									<Button
-										disabled={pendingState.actionDisableLocation}
-										className={"w-full md:w-fit"}
-										onClick={onApplyJob}
-										variant={"primary"}
-										size={"default"}
-									>
-										{pendingState.actionLoadingLocation
-											? LoadingLoader()
-											: "Apply Now"}
-									</Button>
-								)}
+				{alreadyJoined ? (
+					alreadyJoined.completionStatus === "failed" &&
+					alreadyJoined.applicationStatus === "rejected" ? (
+						remainingTime ? (
+							<div className="flex items-center justify-end">
+								<p className="text-red-500">
+									You've Failed the Previous Test. Please wait until{" "}
+									<strong>{remainingTime}</strong> to rejoin.
+								</p>
 							</div>
-							<p className="w-full text-xs text-center">
-								Job expires on:{" "}
-								<span className=" text-red-500">
-									{jobData?.expired_date &&
-										moment(jobData?.expired_date).format("MMMM Do YYYY")}
-								</span>{" "}
-							</p>
-						</div>
+						) : (
+							<div className="flex flex-col justify-center gap-2 items-start md:items-end">
+								<div className="flex gap-6">
+									<div className="items-center justify-center hidden md:flex">
+										<ButtonComponent
+											type="ButtonBookmark"
+											container="Bookmarks"
+										/>
+									</div>
+									{validateUserLoading ? (
+										<div
+											className={
+												"h-10 w-48 bg-gray-200 animate-pulse rounded-2xl"
+											}
+										></div>
+									) : (
+										<Button
+											disabled={pendingState.actionDisableLocation}
+											className={"w-full md:w-fit"}
+											onClick={onApplyJob}
+											variant={"primary"}
+											size={"default"}
+										>
+											{pendingState.actionLoadingLocation
+												? LoadingLoader()
+												: "Apply Now"}
+										</Button>
+									)}
+								</div>
+								<p className="w-full text-xs text-center">
+									Job expires on:{" "}
+									<span className=" text-red-500">
+										{jobData?.expired_date &&
+											moment(jobData?.expired_date).format("MMMM Do YYYY")}
+									</span>
+								</p>
+							</div>
+						)
+					) : (
+						""
 					)
 				) : (
 					<div className="flex flex-col justify-center gap-2 items-start md:items-end">
-						{/* Normal action section */}
 						<div className="flex gap-6">
 							<div className="items-center justify-center hidden md:flex">
 								<ButtonComponent type="ButtonBookmark" container="Bookmarks" />
@@ -217,7 +219,7 @@ export default function JobDetailComponent({
 							<span className=" text-red-500">
 								{jobData?.expired_date &&
 									moment(jobData?.expired_date).format("MMMM Do YYYY")}
-							</span>{" "}
+							</span>
 						</p>
 					</div>
 				)}
