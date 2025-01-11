@@ -21,6 +21,7 @@ interface LoginState {
   isLoading?: boolean;
   isLoggedIn: boolean;
   subscriptionId: number;
+  isVerified: boolean;
   subscriptionActive: boolean;
   error?: string | null;
   accessToken?: string | null;
@@ -40,6 +41,7 @@ const initialState: LoginState = {
   user_role: null,
   isLoading: false,
   isLoggedIn: false,
+  isVerified:false
   error: null,
   subscriptionActive: false,
   subscriptionId: 1,
@@ -139,6 +141,7 @@ const authSlice = createSlice({
       state.user_role = null;
       state.isLoading = false;
       state.isLoggedIn = false;
+      state.isVerified = false;
       state.error = null;
       state.subscriptionActive = false;
       state.subscriptionId = 1;
@@ -167,6 +170,7 @@ const authSlice = createSlice({
           state.name = action.payload?.data.jobHunter[0].name;
           state.email = action.payload?.data.email;
           state.user_role = "jobhunter";
+          state.isVerified = action.payload?.data.verified;
           state.innerId = action.payload?.data.jobHunter[0].job_hunter_id;
           state.photo = action.payload?.data.jobHunter[0].photo;
           state.subscriptionId =
@@ -181,6 +185,7 @@ const authSlice = createSlice({
           state.name = action.payload?.data.company[0].company_name;
           state.email = action.payload?.data.email;
           state.user_role = "company";
+          state.isVerified = action.payload?.data.verified;
           state.innerId = action.payload?.data.company[0].company_id;
           state.photo = action.payload?.data.company[0].logo;
         } else if (
@@ -199,7 +204,7 @@ const authSlice = createSlice({
       .addCase(loginUser.rejected, (state, action) => {
         state.isLoading = false;
         state.pendingState.dataLoading = false;
-        state.error = action.payload || "Something wentwrtong,please try again";
+        state.error =  "Something wentwrtong,please try again";
       })
       .addCase(validateUserToken.pending, (state) => {
         state.pendingState.dataLoading = true;
@@ -211,6 +216,7 @@ const authSlice = createSlice({
           state.name = action.payload.jobHunter[0].name;
           state.email = action.payload.email;
           state.user_role = "jobhunter";
+          state.isVerified = action.payload?.verified;
           state.innerId = action.payload.jobHunter[0].job_hunter_id;
           state.photo = action.payload.jobHunter[0].photo;
           state.subscriptionId =
@@ -225,6 +231,7 @@ const authSlice = createSlice({
           state.name = action.payload.company[0].company_name;
           state.email = action.payload.email;
           state.user_role = "company";
+          state.isVerified = action.payload?.verified;
           state.innerId = action.payload.company[0].company_id;
           state.photo = action.payload.company[0].logo;
         } else if (

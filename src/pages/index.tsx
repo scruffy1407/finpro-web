@@ -42,7 +42,7 @@ function Home() {
         <HeadingComponent
           heading="This could be your next company"
           paragraph="Explore our partner companies and discover the exciting job openings available right now."
-          onClick={() => router.push("/companies")}
+          onClick={() => router.push("/company")}
         />
         <CompanyMappingComponent />
         {/* NOTE THAT THIS BUTTON PART IS CONDITIONAL ONLY AND ONLY SHOWS ON MOBILE VIEW! */}
