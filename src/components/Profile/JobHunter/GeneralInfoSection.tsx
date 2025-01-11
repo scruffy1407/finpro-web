@@ -52,7 +52,7 @@ function GeneralInfoSection() {
   async function handleGetGeneralInfo() {
     try {
       const response = await profileHandler.getProfileJobhunter(
-        accessToken as string,
+        accessToken as string
       );
 
       if (!response.data.cityId) {
@@ -80,6 +80,7 @@ function GeneralInfoSection() {
         });
       }
     } catch (e) {
+      console.error(e, "Something went wrong,please refresh your browser");
       toast.error("Something went wrong,please refresh your browser");
     }
   }
@@ -91,12 +92,16 @@ function GeneralInfoSection() {
         (province: ProvinceItem) => ({
           value: province.province_id,
           label: province.name,
-        }),
+        })
       );
       setListProvince(mappedProvinces); // Update state with correctly mapped data
     } catch (e) {
+      console.error(
+        e,
+        "We're sorry, we failed to get location data. Please refresh your browser"
+      );
       toast.error(
-        "We're sorry, we failed to get location data. Please refresh your browser",
+        "We're sorry, we failed to get location data. Please refresh your browser"
       );
     }
   }
@@ -107,11 +112,12 @@ function GeneralInfoSection() {
       console.log(response.data);
       return response.data;
     } catch (e) {
+      console.error(e, "Something went wrong,please refresh your browser");
       toast.error(
         <>
           <h5>Failed to get location information</h5>
           <p>Please refresh your browser</p>
-        </>,
+        </>
       );
     }
   }
@@ -123,16 +129,18 @@ function GeneralInfoSection() {
         (city: CityItem) => ({
           value: city.city_id,
           label: city.name,
-        }),
+        })
       );
       setListCity(mappedCity);
-    } catch (e) {}
+    } catch (e) {
+      console.error(e, "Something went wrong,please refresh your browser");
+    }
   }
 
   // HANDLE INPUT CHANGE
 
   function handleProvinceChange(
-    selectedOption: SingleValue<locationList> | null,
+    selectedOption: SingleValue<locationList> | null
   ) {
     setFormGeneralInfo({
       ...formGeneralInfo,
@@ -152,7 +160,9 @@ function GeneralInfoSection() {
     }); // Update provinceId in formGeneralInfo on change
     setDisable(false);
   }
-  function hanleInputChange(e: any) {
+  function hanleInputChange(
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) {
     // It handle name,description and expected salary
     const { name, value } = e.target;
     if (name === "dob") {
@@ -176,7 +186,7 @@ function GeneralInfoSection() {
     setDisable(false);
   }
 
-  async function handleSubmitChange(e: any) {
+  async function handleSubmitChange(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
     setDisable(true);
@@ -200,7 +210,7 @@ function GeneralInfoSection() {
     try {
       const response = await profileHandler.updateInfoJobhunter(
         accessToken as string,
-        formGeneralInfo,
+        formGeneralInfo
       );
 
       if (response.status === 200) {
@@ -216,6 +226,7 @@ function GeneralInfoSection() {
     } catch (e) {
       setDisable(true);
       setLoading(false);
+      console.error(e, "Something went wrong,please refresh your browser");
       toast.error("Something went wrong, please refresh your browser");
     }
   }
@@ -391,7 +402,7 @@ function GeneralInfoSection() {
                       formGeneralInfo.provinceId
                         ? listProvince.find(
                             (option) =>
-                              option.value === formGeneralInfo.provinceId,
+                              option.value === formGeneralInfo.provinceId
                           )
                         : null
                     } // Set default selected province from formGeneralInfo
@@ -416,14 +427,14 @@ function GeneralInfoSection() {
                         ? listCity.find(
                             (option) =>
                               option.value ===
-                              (formGeneralInfo.cityId as number),
+                              (formGeneralInfo.cityId as number)
                           )
                         : null
                     }
                     value={
                       formGeneralInfo.cityId
                         ? listCity.find(
-                            (option) => option.value === formGeneralInfo.cityId,
+                            (option) => option.value === formGeneralInfo.cityId
                           )
                         : null
                     } // Set default selected city from formGeneralInfo

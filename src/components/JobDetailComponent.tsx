@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Image from "next/image";
 import ButtonComponent from "./ButtonComponent";
 import moment from "moment";
@@ -14,15 +14,52 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import LoadingLoader from "@/components/LoadingLoader";
 import SectionJoinApplicant from "@/components/SectionJoinApplicant";
-import { JobApplication } from "@/models/applicant.model";
 import { ShareButton } from "@/components/ShareButton";
 import { useEffect } from "react";
+import { JobApplicationStatus } from "@/models/applicant.model";
+
+interface JobData {
+  company: {
+    company_name: string;
+    company_id: string;
+    logo?: string;
+    company_industry: string;
+    company_size: string;
+    review: Review[];
+  };
+  job_title: string;
+  job_description: string;
+  job_type: string;
+  job_experience_min: number;
+  job_experience_max?: number;
+  salary_min: number;
+  salary_max?: number;
+  salary_show: boolean;
+  expired_date: string;
+  job_space: string;
+  companyId: string;
+}
+
+interface Review {
+  career_path_rating: number;
+  cultural_rating: number;
+  facility_rating: number;
+  work_balance_rating: number;
+}
+
+interface JobApplication {
+  applicationId: string;
+  applicationStatus: JobApplicationStatus;
+  createdAt: Date;
+  jobHunterId: string;
+  resume: string;
+}
 
 interface JobDetailProps {
-	jobData: any;
-	validateUserLoading: boolean;
-	alreadyJoined: null | JobApplication;
-	onApplyJob: () => void;
+  jobData: JobData;
+  validateUserLoading: boolean;
+  alreadyJoined: null | JobApplication;
+  onApplyJob: () => void;
 }
 
 export default function JobDetailComponent({
@@ -31,48 +68,48 @@ export default function JobDetailComponent({
 	alreadyJoined,
 	validateUserLoading,
 }: JobDetailProps) {
+  
 	const [loading, setLoading] = useState<boolean>(false);
 	const [error, setError] = useState<string>("");
 	const { pendingState } = useSelector((state: RootState) => state.generalInfo);
 	const { isLoggedIn } = useSelector((state: RootState) => state.auth);
 	const [remainingTime, setRemainingTime] = useState<string | null>(null);
 
+
 	const handleShare = (platform: string) => {
 		console.log(`Shared on ${platform}`);
 	};
 
-	const formatSalary = (salary: number) => {
-		return `${(salary / 1000000).toFixed(1)} jt`; // Format to 1 decimal place
-	};
-	const calculateAverageRating = (reviews: any[]) => {
-		const totalReviews = reviews.length;
+
+  const formatSalary = (salary: number) => {
+    return `${(salary / 1000000).toFixed(1)} jt`;
+  };
+
+  const calculateAverageRating = (reviews: Review[]) => {
+    const totalReviews = reviews.length;
 
 		if (totalReviews === 0) return 0;
-
-		const sum = reviews.reduce((acc, review) => {
-			return (
-				acc +
-				review.career_path_rating +
-				review.cultural_rating +
-				review.facility_rating +
-				review.work_balance_rating
-			);
-		}, 0);
-
-		// Return the average rating
-		return (sum / (totalReviews * 4)).toFixed(2); // 4 ratings per review
-	};
+    const sum = reviews.reduce((acc, review) => {
+      return (
+        acc +
+        review.career_path_rating +
+        review.cultural_rating +
+        review.facility_rating +
+        review.work_balance_rating
+      );
+    }, 0);
+    return (sum / (totalReviews * 4)).toFixed(2);
+  };
 
 	const averageRating = calculateAverageRating(jobData?.company?.review || []);
+
 
 	useEffect(() => {
 		if (alreadyJoined && alreadyJoined.completionStatus === "failed") {
 			const endDate = moment(alreadyJoined.endDate);
 			const rejoinDate = endDate.add(7, "days");
 			const now = moment();
-
 			const duration = moment.duration(rejoinDate.diff(now));
-
 			if (duration.asSeconds() > 0) {
 				const days = Math.floor(duration.asDays());
 				const hours = Math.floor(duration.asHours() % 24);
@@ -399,18 +436,18 @@ export default function JobDetailComponent({
 						</p>
 					</div>
 				</section>
-				<p className="text-sm text-neutral-600 flex gap-2">
-					<span>Company Size:</span>
-					<span className="text-neutral-900 text-right">
-						{mapCompanySize(jobData?.company?.company_size)}
-					</span>
-				</p>
-				<ShareButton
-					jobTitle="Senior Frontend Developer"
-					companyName="TechCorp Inc."
-					jobUrl={window.location.href}
-					onShare={handleShare}
-				/>
+				            <p className="text-sm text-neutral-600 flex gap-2">
+              <span>Company Size:</span>
+              <span className="text-neutral-900 text-right">
+                {mapCompanySize(jobData?.company?.company_size)}
+              </span>
+            </p>
+            <ShareButton
+              jobTitle="Senior Frontend Developer"
+              companyName="TechCorp Inc."
+              jobUrl={window.location.href}
+              onShare={handleShare}
+            />
 			</div>
 		</>
 	);

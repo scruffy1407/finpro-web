@@ -1,5 +1,4 @@
 import api from "@/pages/api/api";
-
 export interface LocationResponse {
   status: number;
   data?: any;

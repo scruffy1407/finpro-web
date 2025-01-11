@@ -9,10 +9,11 @@ import searchQueryReducer from "@/store/slices/searchQuerySlice";
 import modalControllerReducer from "@/store/slices/ModalSlice";
 import workExperienceReducer from "@/store/slices/WorkingExpSlice";
 import educationReducer from "@/store/slices/EducationSlice";
-import searchQueryJobDashReducer from "@/store/slices/searchQueryJobDashSlice"
+import searchQueryJobDashReducer from "@/store/slices/searchQueryJobDashSlice";
 import bookmarksReducer from "@/store/slices/bookmarkSlice";
 import generalInfoReducer from "@/store/slices/generalInfo";
 import companySearchReducer from "@/store/slices/companySearchSlice";
+import applicantReducer from "@/store/slices/applicantSlice";
 
 const store = configureStore({
   reducer: {
@@ -27,9 +28,10 @@ const store = configureStore({
     workExperience: workExperienceReducer,
     education: educationReducer,
     bookmarks: bookmarksReducer,
-    searchQueryJobdash : searchQueryJobDashReducer,
+    searchQueryJobdash: searchQueryJobDashReducer,
     generalInfo: generalInfoReducer,
     companySearch: companySearchReducer,
+    applicantList: applicantReducer,
   },
 });
 

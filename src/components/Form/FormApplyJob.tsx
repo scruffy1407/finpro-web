@@ -8,6 +8,7 @@ import { CompanyUtils } from "@/utils/company.utils";
 import Cookies from "js-cookie";
 import LoadingLoader from "@/components/LoadingLoader";
 import axios from "axios";
+import { useRouter } from "next/router";
 
 interface JobFormProps {
 	jobId: number;
@@ -92,14 +93,20 @@ const FormJobApplication = ({
 
 			console.log("API Response terakhir:", response);
 
-			if (response.status === 200 && response.data?.success) {
+			if ((response.status === 200 || response.status === 201) && response.data?.success) {
 				toast.success("Application sent successfully");
+        setIsLoading(false);
+        setIsDisable(false);
 				// Refresh the current page
 				setTimeout(() => {
-					window.location.href = window.location.href;
+					router.push(
+          `http://localhost:3000/jobdetail/apply-success?job=${jobId}&apply=true`,
+        );
 				}, 2000); // Delay for the user to see the success toast
 			} else {
 				toast.error(response.data?.message || "Submission failed");
+        setIsLoading(false);
+        setIsDisable(false);
 			}
 		} catch (error) {
 			toast.error(
@@ -174,6 +181,7 @@ const FormJobApplication = ({
 			</div>
 		</form>
 	);
+
 };
 
 export default FormJobApplication;

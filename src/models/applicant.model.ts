@@ -1,4 +1,4 @@
-export type JobStatus = "onreview" | "accepted" | "rejected";
+export type JobStatus = "onreview" | "accepted" | "rejected" | "interview";
 
 export enum JobApplicationStatus {
 	Failed = "failed",
@@ -11,12 +11,19 @@ export enum JobApplicationStatus {
 }
 
 export interface Applicant {
-	id: string;
-	name: string;
-	expectedSalary: number;
-	resumeLink: string;
-	applyDate: string;
-	status: JobStatus;
+  id: string;
+  name: string;
+  expectedSalary: number;
+  resumeLink: string;
+  applyDate: string;
+  status: JobStatus;
+  interviewStatus?: string;
+  interviewDate?: string;
+  interviewDescription?: string;
+  interviewUrl?: string;
+  interviewTimeStart?: string;
+  interviewTimeEnd?: string;
+  interviewId: number;
 }
 export interface JobApplication {
 	applicationId: string;

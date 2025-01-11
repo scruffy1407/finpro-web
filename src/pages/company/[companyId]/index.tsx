@@ -79,7 +79,7 @@ function CompanyPage() {
 
   return (
     <div className="max-w-screen-xl mx-auto">
-      <Navbar />
+      <Navbar pageRole={"jobhunter"} />
 
       {isLoading ? (
         <SectionSkeleton />

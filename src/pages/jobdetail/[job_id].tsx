@@ -23,8 +23,10 @@ import Cookies from "js-cookie";
 import { JobApplication } from "@/models/applicant.model";
 import { Navbar } from "@/components/NavigationBar/Navbar";
 import Head from "next/head";
+import ForbiddenCompanyAction from "@/components/Modal/ForbiddenCompanyAction";
 
 function JobDetail() {
+
 	const authHandler = new AuthHandler();
 	authHandler.authorizeUser();
 	const router = useRouter();
@@ -49,11 +51,11 @@ function JobDetail() {
 		dispatch(closeModalAction());
 	};
 
-	const fetchJobDetail = async () => {
-		try {
-			const response = await axios.get(
-				`http://localhost:8000/api/company/jobDetails/${job_id}`
-			);
+  const fetchJobDetail = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8000/api/company/jobDetails/${job_id}`,
+      );
 
 			if (response.status === 200) {
 				setJobData(response.data.jobPostDetail);
@@ -101,53 +103,51 @@ function JobDetail() {
 		}
 	};
 
-	function handleRedirect() {
+  function handleRedirect() {
 		dispatch(closeModalAction());
 		router.push(callbackPath);
 	}
-
-	const handleApplyJob = async () => {
-		if (isLoggedIn) {
-			if (validApply) {
-				dispatch(openModalAction("applyJobModal"));
-			} else {
-				if (listProvince.length === 0) {
-					await dispatch(handleGetUseLocation(cityId as number));
-					await dispatch(handleGetcity(cityId as number));
-					await dispatch(handleGetProvince());
-				}
-				dispatch(openModalAction("completeInformationModal"));
-			}
-		} else {
-			dispatch(openModalAction("needToLoginModal"));
-		}
-	};
+  const handleApplyJob = async () => {
+    if (isLoggedIn) {
+      if (user_role === "jobhunter") {
+        if (validApply) {
+          dispatch(openModalAction("applyJobModal"));
+        } else {
+          if (listProvince.length === 0) {
+            await dispatch(handleGetUseLocation(cityId as number));
+            await dispatch(handleGetcity(cityId as number));
+            await dispatch(handleGetProvince());
+          }
+          dispatch(openModalAction("completeInformationModal"));
+        }
+      } else {
+        dispatch(openModalAction("companyForbiddenModal"));
+      }
+    } else {
+      dispatch(openModalAction("needToLoginModal"));
+    }
+  };
 
 	async function handleGetGeneralInfo() {
 		const token = Cookies.get("accessToken");
 		await dispatch(getGeneralInfo(token as string));
 	}
 
-	useEffect(() => {
-		if (isLoggedIn) {
-			setValiateLoading(true);
-			if (!pendingState.isRender) {
-				handleGetGeneralInfo();
-			}
-			validateUserJob();
-			setValiateLoading(false);
-		}
-	}, [job_id]);
-
-	useEffect(() => {
-		if (job_id) {
-			setDataLoading(true);
-			fetchJobDetail();
-			if (isLoggedIn) {
-				validateUserJob();
-			}
-		}
-	}, [job_id]);
+  useEffect(() => {
+    if (job_id) {
+      setDataLoading(true);
+      fetchJobDetail();
+      if (isLoggedIn && user_role === "jobhunter") {
+        setValiateLoading(true);
+        validateUserJob();
+        if (!pendingState.isRender) {
+          handleGetGeneralInfo();
+        }
+        setValiateLoading(false);
+      }
+      setDataLoading(false);
+    }
+  }, [job_id, isLoggedIn]);
 
 	console.log("Current applicantData state:", applicantData);
 
@@ -179,35 +179,45 @@ function JobDetail() {
 					/>
 				</>
 			</ModalContainer>
+      <ModalContainer
+        isOpen={currentModalId === "companyForbiddenModal"}
+        onClose={handleCloseModal}
+      >
+        <ForbiddenCompanyAction />
+      </ModalContainer>
 
-			{/* Dynamic Meta Tags HEADING!! */}
-			<Head>
-				<title>
-					{jobData ? `${jobData.title} at ${jobData.company}` : "Job Details"}
-				</title>
-				<meta
-					property="og:title"
-					content={
-						jobData ? `${jobData.title} at ${jobData.company}` : "Job Details"
-					}
-				/>
-				<meta
-					property="og:description"
-					content={
-						jobData
-							? `Exciting job opportunity at ${jobData.company}. Click to learn more.`
-							: "Job opportunity details."
-					}
-				/>
-				<meta
-					property="og:image"
-					content={jobData?.image || "/default-job-image.jpg"} // Fallback to default image
-				/>
-				<meta
-					property="og:url"
-					content={`https://localhost:3000/jobdetail/${job_id}`}
-				/>
-			</Head>
+      {/* Dynamic Meta Tags HEADING!! */}
+      <Head>
+        <title>
+          {jobData && jobData.job_title && jobData.company
+            ? `${jobData.job_title} at ${jobData.company.company_name}`
+            : "Job Details"}
+
+        </title>
+        <meta
+          property="og:title"
+          content={
+            jobData ? `${jobData.title} at ${jobData.company}` : "Job Details"
+          }
+        />
+        <meta
+          property="og:description"
+          content={
+            jobData
+              ? `Exciting job opportunity at ${jobData.company}. Click to learn more.`
+              : "Job opportunity details."
+          }
+        />
+        <meta
+          property="og:image"
+          content={jobData?.image || "/default-job-image.jpg"} // Fallback to default image
+        />
+        <meta
+          property="og:url"
+          content={`https://localhost:3000/jobdetail/${job_id}`}
+        />
+      </Head>
+
 
 			<ModalContainer
 				title={" Congratulations! You have successfully passed the test."}
@@ -293,19 +303,19 @@ function JobDetail() {
 				</div>
 			</ModalContainer>
 
-			<div className="overflow-hidden mt-5">
-				<div className="mx-4 w-auto">
-					<Navbar />
-				</div>
-				<div className="mx-4 md:w-auto">
-					{/* DUMMY CICK ONAPPLYJOB TO SHOW THE FE!! */}
-					<JobDetailComponent
-						onApplyJob={handleApplyJob}
-						jobData={jobData}
-						alreadyJoined={applicantData}
-						validateUserLoading={validateLoading}
-					/>
-				</div>
+      <div className="overflow-hidden mt-5">
+        <div className="mx-4 w-auto">
+          <Navbar pageRole={"jobhunter"} />
+        </div>
+        <div className="mx-4 md:w-auto">
+          {/* DUMMY CICK ONAPPLYJOB TO SHOW THE FE!! */}
+          <JobDetailComponent
+            onApplyJob={handleApplyJob}
+            jobData={jobData}
+            alreadyJoined={applicantData}
+            validateUserLoading={validateLoading}
+          />
+        </div>
 
 				<div className=" mx-4 mt-20">
 					<HeadingRelatedComponent
@@ -318,12 +328,12 @@ function JobDetail() {
 					<JobDetailSuggest listRelatedJob={relatedPost as any[]} />
 				</div>
 
-				<div className="mx-4 mt-20 mb-5">
-					<FooterComponent />
-				</div>
-			</div>
-		</>
-	);
+        <div className="mx-4 mt-20 mb-5">
+          <FooterComponent pageRole={"jobhunter"} />
+        </div>
+      </div>
+    </>
+  );
 }
 
 export default JobDetail;

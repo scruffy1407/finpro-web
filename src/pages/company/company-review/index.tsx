@@ -170,7 +170,7 @@ function Index() {
       >
         <FormWorkingExperience />
       </ModalContainer>
-      <Navbar />
+      <Navbar pageRole={"jobhunter"} />
 
       {pendingState.isRender ? (
         <section className={"w-full p-4"}>

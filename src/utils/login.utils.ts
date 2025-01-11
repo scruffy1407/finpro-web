@@ -1,4 +1,4 @@
-import { LoginAuth } from "@/models/auth.model";
+import { LoginAuth, UserRole } from "@/models/auth.model";
 import { toast } from "sonner";
 import { AppDispatch } from "@/store";
 import { loginUser, resetState } from "@/store/slices/authSlice";
@@ -20,11 +20,16 @@ export const handleLogin = async (
 ) => {
   e.preventDefault();
   setBtnDisable(true);
-  await dispatch(loginUser(loginForm));
+  await dispatch(
+    loginUser({
+      loginData: loginForm,
+    }),
+  );
   setBtnDisable(false);
 };
 
 export const handleLoginEffect = (
+  userRole: UserRole,
   isLoggedIn: boolean,
   error: string | null,
   router: NextRouter,
@@ -32,8 +37,23 @@ export const handleLoginEffect = (
 ) => {
   if (isLoggedIn) {
     toast.success("Login successful!");
-    router.push("/");
-    dispatch(resetState());
+    if (userRole === UserRole.JOBHUNTER) {
+      router.push("/");
+      dispatch(resetState());
+      return;
+    } else if (userRole === UserRole.COMPANY) {
+      router.push("/dashboard/company");
+      dispatch(resetState());
+      return;
+    } else if (userRole === UserRole.DEVELOPER) {
+      router.push("/dashboard/admin");
+      dispatch(resetState());
+      return;
+    } else {
+      router.push("/");
+      dispatch(resetState());
+      return;
+    }
   }
   if (error) {
     toast.error(error);

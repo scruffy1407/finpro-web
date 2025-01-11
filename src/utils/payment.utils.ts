@@ -62,4 +62,22 @@ export class PaymentHandler {
       return e;
     }
   }
+
+  async getTransaction(token: string) {
+    try {
+      const response = await api.get("api/user/job-hunter/payment", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log("RESPONSE", response);
+      if (response.status === 200) {
+        return response.data;
+      } else {
+        return [];
+      }
+    } catch (e) {
+      return [];
+    }
+  }
 }

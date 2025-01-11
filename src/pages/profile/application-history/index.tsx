@@ -13,11 +13,10 @@ function Index() {
   const [activeTab, setActiveTab] = useState<string>(
     JobApplicationStatus.OnReview,
   );
-  const prevActiveTab = useRef<string>(JobApplicationStatus.OnReview);
 
   return (
     <main>
-      <Navbar />
+      <Navbar pageRole={"jobhunter"} />
       <section className={"max-w-screen-md mx-auto mt-10 px-4"}>
         <div className={"flex flex-col gap-3"}>
           <h1 className={"text-3xl text-neutral-950 font-bold"}>

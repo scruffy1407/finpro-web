@@ -1,5 +1,5 @@
 import api from "@/pages/api/api";
-import { JobHunterGeneralInfo } from "@/models/auth.model";
+import { JobHunterGeneralInfo, CompanyGeneralInfo } from "@/models/auth.model";
 import { WorkingExperience } from "@/models/profile.mode";
 import { AxiosError } from "axios";
 import { Education } from "@/store/slices/EducationSlice";
@@ -14,18 +14,47 @@ export interface ProfileResponse {
 export class ProfileHandler {
   async getProfileJobhunter(token: string) {
     try {
-      const response: ProfileResponse = await api.get("/api/user/job-hunter", {
+      const response = await api.get("/api/user/job-hunter", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
+
+      // const data: ProfileResponse = response as ProfileResponse;
+
       if (response.status === 200) {
         return response.data;
       } else {
-        return response.message;
+        return null;
       }
-    } catch (err: any) {
-      return err;
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        return null;
+      } else {
+        return null;
+      }
+    }
+  }
+
+  async getProfileCompany(token: string) {
+    try {
+      const response = await api.get("/api/user/company", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 200) {
+        return response.data;
+      } else {
+        return null;
+      }
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        return null;
+      } else {
+        return null;
+      }
     }
   }
 
@@ -52,7 +81,7 @@ export class ProfileHandler {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        },
+        }
       );
       if (responseUpdateData.status === 200) {
         return responseUpdateData.data;
@@ -65,10 +94,55 @@ export class ProfileHandler {
     }
   }
 
-  async updateProfileImage(token: string, data: FormData) {
-    console.log("DATA UPLOAD", data);
+  async updateInfoCompany(token: string, data: CompanyGeneralInfo) {
+    console.log(data);
+    const updateData: CompanyGeneralInfo = {
+      companyId: Number(data.companyId),
+      company_name: data.company_name,
+      phone_number: data.phone_number,
+      address_details: data.address_details,
+      company_description: data.company_description,
+      company_city: data.company_city,
+      company_province: data.company_province,
+      company_industry: data.company_industry,
+      company_size: data.company_size,
+      cityId: data.cityId ? Number(data.cityId) : undefined,
+      provinceId: data.provinceId ? Number(data.provinceId) : undefined,
+    };
+
     try {
-      const response = await api.put("api/user/job-hunter/edit-image", data, {
+      const responseUpdateData = await api.put(
+        `/api/user/company/edit-profile`,
+        updateData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (responseUpdateData.status === 200) {
+        return responseUpdateData.data;
+      } else {
+        return responseUpdateData;
+      }
+    } catch (err: unknown) {
+      const error = err as AxiosError;
+      return error.message;
+    }
+  }
+
+  async updateProfileImage(token: string, data: FormData, role: string) {
+    let endpoint = "";
+    if (role === "jobhunter") {
+      endpoint = "api/user/job-hunter/edit-image";
+    } else if (role === "company") {
+      endpoint = "api/user/company/edit-image";
+    } else {
+      throw new Error("Invalid user role");
+    }
+
+    try {
+      const response = await api.put(endpoint, data, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -88,7 +162,7 @@ export class ProfileHandler {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        },
+        }
       );
       if (response.status === 200) {
         return response.data;
@@ -109,7 +183,7 @@ export class ProfileHandler {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        },
+        }
       );
       if (response.status === 201) {
         console.log(response);
@@ -132,7 +206,7 @@ export class ProfileHandler {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        },
+        }
       );
       console.log(response);
       if (response.status === 204) {
@@ -154,7 +228,7 @@ export class ProfileHandler {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        },
+        }
       );
       if (response.status === 200) {
         return response.status;
@@ -170,7 +244,7 @@ export class ProfileHandler {
   async searchCompany(keyword: string) {
     try {
       const response = await api.get(
-        `api/user/company/search-company?q=${keyword}`,
+        `api/user/company/search-company?q=${keyword}`
       );
       if (response.status === 200) {
         console.log(response);
@@ -226,7 +300,7 @@ export class ProfileHandler {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        },
+        }
       );
       if (response.status === 201) {
         return response.data;
@@ -247,7 +321,7 @@ export class ProfileHandler {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        },
+        }
       );
       if (response.status === 200) {
         return response.data;
@@ -270,7 +344,7 @@ export class ProfileHandler {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        },
+        }
       );
       console.log(response);
       if (response.status === 200) {

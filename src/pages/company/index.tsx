@@ -86,7 +86,7 @@ const CompanyPage: React.FC = () => {
     <div className="mt-5 mx-4">
       <div className="flex flex-col w-full">
         <div>
-          <Navbar />
+          <Navbar pageRole={"jobhunter"} />
         </div>
         <HeroCompanyListComponent handleSearch={handleSearch} />
 
@@ -143,7 +143,7 @@ const CompanyPage: React.FC = () => {
           </Pagination>
         )}
         <div className="mx-4 mt-20 mb-5">
-          <FooterComponent />
+          <FooterComponent pageRole={"jobhunter"} />
         </div>
       </div>
     </div>
