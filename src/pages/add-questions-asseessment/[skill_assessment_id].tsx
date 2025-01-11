@@ -6,9 +6,9 @@ import { Button } from "@/components/ui/button";
 
 const AddQuestions = () => {
 	const router = useRouter();
-	const accessToken = Cookies.get("accessToken");
-
-	const { test_id } = router.query; // Get test_id from the URL
+	const accessToken =
+		"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo2MSwicm9sZV90eXBlIjoiZGV2ZWxvcGVyIiwidmVyaWZpZWQiOmZhbHNlLCJpYXQiOjE3MzYyNTczNzQsImV4cCI6MTczNjI2MDk3NH0.8xD8y_hoO6RycJmWjpgMKkdVnubcaduITQyLJB259kc";
+	const { skill_assessment_id } = router.query; // Get test_id from the URL
 	const [testName, setTestName] = useState<string>(""); // Store test name
 	const [questions, setQuestions] = useState([
 		{
@@ -22,26 +22,25 @@ const AddQuestions = () => {
 	]);
 
 	// Fetch test details
-	useEffect(() => {
-		const fetchTestDetails = async () => {
-			if (!test_id) return; // Wait until test_id is available
-			try {
-				const response = await axios.get(
-					`http://localhost:8000/api/company/viewpretestbyId/${test_id}`, // Use the new API to get test name
-					{
-						headers: { Authorization: `Bearer ${accessToken}` },
-					}
-				);
-				console.log("THIS IS REPOSNSE WOPHUD LOOKING FDORN");
-				console.log(response);
-				setTestName(response.data.data.test_name); // Assume test_name is part of the response
-			} catch (error) {
-				console.error("Error fetching test details:", error);
-				alert("Failed to fetch test details.");
-			}
-		};
-		fetchTestDetails();
-	}, [test_id, accessToken]);
+	// useEffect(() => {
+	// 	const fetchTestDetails = async () => {
+	// 		if (!test_id) return; // Wait until test_id is available
+	// 		try {
+	// 			const response = await axios.get(
+	// 				`http://localhost:8000/api/company/viewpretestbyId/${test_id}`, // Use the new API to get test name
+	// 				{
+	// 					headers: { Authorization: `Bearer ${accessToken}` },
+	// 				}
+	// 			);
+	// 			console.log("Fetched test details:", response);
+	// 			setTestName(response.data.data.test_name); // Assume test_name is part of the response
+	// 		} catch (error) {
+	// 			console.error("Error fetching test details:", error);
+	// 			alert("Failed to fetch test details.");
+	// 		}
+	// 	};
+	// 	fetchTestDetails();
+	// }, [test_id, accessToken]);
 
 	const handleInputChange = (
 		index: number,
@@ -80,7 +79,7 @@ const AddQuestions = () => {
 
 		try {
 			const response = await axios.post(
-				`http://localhost:8000/api/company/createtest/${test_id}`,
+				`http://localhost:8000/api/dev/createquest/${skill_assessment_id}`,
 				{ questions },
 				{
 					headers: {
@@ -90,11 +89,16 @@ const AddQuestions = () => {
 			);
 			if (response.data.message) {
 				alert(response.data.message);
-				router.push("/preSelectionDashboard"); // Navigate back to the homepage or another page
+				router.push("/assessmentTestDashboard");
 			}
-		} catch (error) {
-			console.error("Error submitting questions:", error);
-			alert("Failed to submit questions.");
+		} catch (error: any) {
+			console.error(
+				"Error submitting questions:",
+				error.response?.data || error.message
+			);
+			alert(
+				`Failed to submit questions: ${error.response?.data?.message || error.message}`
+			);
 		}
 	};
 
@@ -106,15 +110,13 @@ const AddQuestions = () => {
 
 	const handleCancel = () => {
 		// Navigate to the assessment test dashboard
-		router.push("/preSelectionDashboard"); // Navigate back to the homepage or another page
+		router.push("/assessmentTestDashboard");
 	};
 
 	return (
 		<div className="p-6 max-w-3xl mx-auto bg-white shadow rounded-md">
 			<h1 className="text-2xl font-bold mb-6">Questions Form</h1>
-			<h1 className="text-xl mb-6">
-				Pre-selection Test Title: {testName || "Loading..."}
-			</h1>
+			<h1 className="text-xl mb-6">Assessment - Test Questions list</h1>
 			<form onSubmit={handleSubmit} className="space-y-6">
 				{questions.map((question, index) => (
 					<div key={index} className="space-y-4">
