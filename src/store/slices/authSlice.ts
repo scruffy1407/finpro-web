@@ -74,7 +74,9 @@ export const loginUser = createAsyncThunk(
       Cookies.set("accessToken", access_token, { expires: 1 / 24 });
       Cookies.set("refreshToken", refresh_token, { expires: 3 });
 
-      return { access_token, refresh_token, data };
+      const callBackUrl = loginForm.loginData.callback || "";
+
+      return { access_token, refresh_token, data, callBackUrl };
     } catch (err: unknown) {
       if (err instanceof z.ZodError) {
         return rejectWithValue(err.errors[0]?.message || "Validation failed");
@@ -124,7 +126,9 @@ const authSlice = createSlice({
     updateName: (state, action) => {
       state.name = action.payload;
     },
-
+    setCallback: (state, action) => {
+      state.callback = action.payload;
+    },
     updatePhone: (state, action) => {
       state.phone_number = action.payload;
     },
@@ -198,17 +202,11 @@ const authSlice = createSlice({
           state.user_role = "developer";
           state.innerId = action.payload?.data.developers[0].developer_id;
         }
-        state.isLoading = false;
-        state.user_role = action.payload?.data.user_role;
-        state.accessToken = action.payload?.data.access_token;
-        state.refreshToken = action.payload?.data.refresh_token;
-        state.name = action.payload?.data.name;
-        state.photo = action.payload?.data.photo as string;
         state.phone_number = action.payload?.data.phone_number
           ? String(action.payload?.data.phone_number)
           : null;
-        state.isLoggedIn = true;
 
+        state.callback = action.payload?.callBackUrl;
         state.pendingState.dataLoading = false;
       })
       .addCase(loginUser.rejected, (state) => {
@@ -267,7 +265,13 @@ const authSlice = createSlice({
   },
 });
 
-export const { updatePhone, updateName, updatePhoto, logoutUser, resetState } =
-  authSlice.actions;
+export const {
+  updatePhone,
+  updateName,
+  updatePhoto,
+  logoutUser,
+  resetState,
+  setCallback,
+} = authSlice.actions;
 
 export default authSlice.reducer;

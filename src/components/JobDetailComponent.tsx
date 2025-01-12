@@ -115,30 +115,30 @@ export default function JobDetailComponent({
   if (error) return <div>{error}</div>;
   if (!jobData) return <div>No job details found.</div>;
   return (
-    <>
-      <div className="flex flex-col justify-between gap-10 max-w-screen-xl p-4 md:p-8 mx-auto bg-white mt-5 rounded-xl md:flex-row">
+    <section>
+      <div className="flex flex-col justify-between gap-10 p-4 md:p-8 bg-white rounded-xl md:flex-row">
         <div className="flex flex-col gap-6 md:gap-2 w-[100%] md:w-[60%]">
           {/* Breadcrumb */}
           <div className="text-sm text-neutral-600 gap-2 items-center hidden md:flex">
-            <Link href={"/"} className="text-sm cursor-pointer hover:underline">
+            <Link href={"/"} className="text-xs cursor-pointer hover:underline">
               Home
             </Link>
             <span>/</span>
             <Link
               href={"/jobs"}
-              className="text-sm cursor-pointer hover:underline"
+              className="text-xs cursor-pointer hover:underline"
             >
               Find Jobs
             </Link>
             <span>/</span>
             <Link
               href={`/company/${jobData?.companyId}`}
-              className="text-sm cursor-pointer hover:underline"
+              className="text-xs cursor-pointer hover:underline"
             >
               {jobData?.company?.company_name}
             </Link>
             <span>/</span>
-            <span className="text-sm text-neutral-600 font-semibold">
+            <span className="text-xs text-neutral-600 font-semibold">
               {jobData?.job_title}
             </span>
           </div>
@@ -250,7 +250,7 @@ export default function JobDetailComponent({
       </div>
 
       {/* Main Content Section */}
-      <div className="max-w-screen-xl mx-auto grid md:grid-cols-10 gap-4 mt-5">
+      <div className="grid md:grid-cols-10 gap-4 mt-5">
         {/* Left Section: Job Overview & Description */}
         <div className="sm:col-span-7">
           {/* Job Overview */}
@@ -436,6 +436,6 @@ export default function JobDetailComponent({
           onShare={handleShare}
         />
       </div>
-    </>
+    </section>
   );
 }

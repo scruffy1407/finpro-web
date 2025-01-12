@@ -24,6 +24,7 @@ import { JobApplication } from "@/models/applicant.model";
 import { Navbar } from "@/components/NavigationBar/Navbar";
 import Head from "next/head";
 import ForbiddenCompanyAction from "@/components/Modal/ForbiddenCompanyAction";
+import VerifyBanner from "@/components/VerifyBanner";
 
 function JobDetail() {
   const authHandler = new AuthHandler();
@@ -38,15 +39,15 @@ function JobDetail() {
   const [dataLoading, setDataLoading] = useState<boolean>(true);
   const [validateLoading, setValiateLoading] = useState<boolean>(false);
   const dispatch = useDispatch<AppDispatch>();
+  const [callBackPath, setcallBackPath] = useState<string>("");
   const { currentModalId } = useSelector(
     (state: RootState) => state.modalController,
   );
-  const { isLoggedIn, user_role } = useSelector(
+  const { isLoggedIn, user_role, isVerified } = useSelector(
     (state: RootState) => state.auth,
   );
   const { validApply, pendingState, listProvince, listCity, cityId } =
     useSelector((state: RootState) => state.generalInfo);
-  const callbackPath = "/auth/login/jobhunter?callback=ini-bosss";
 
   const handleCloseModal = () => {
     dispatch(closeModalAction());
@@ -102,7 +103,7 @@ function JobDetail() {
 
   function handleRedirect() {
     dispatch(closeModalAction());
-    router.push(callbackPath);
+    router.push(`/auth/login/jobhunter?callback=${callBackPath}`);
   }
   const handleApplyJob = async () => {
     if (isLoggedIn) {
@@ -131,6 +132,13 @@ function JobDetail() {
   }
 
   useEffect(() => {
+    if (router.isReady) {
+      // Use asPath for full path (including query), or pathname for the route
+      setcallBackPath(router.asPath);
+    }
+  }, [router.isReady, router.asPath]);
+
+  useEffect(() => {
     if (job_id) {
       setDataLoading(true);
       fetchJobDetail();
@@ -145,7 +153,7 @@ function JobDetail() {
       setDataLoading(false);
     }
   }, [job_id, isLoggedIn]);
-  
+
   return (
     <>
       <ModalContainer
@@ -296,30 +304,27 @@ function JobDetail() {
         </div>
       </ModalContainer>
 
-      <div className="overflow-hidden mt-5">
-        <div className="mx-4 w-auto">
-          <Navbar pageRole={"jobhunter"} />
-        </div>
-        <div className="mx-4 md:w-auto">
-          {/* DUMMY CICK ONAPPLYJOB TO SHOW THE FE!! */}
+      {/*BODY*/}
+      <div className="overflow-hidden ">
+        <Navbar pageRole={"jobhunter"} />
+        {isLoggedIn && !isVerified && <VerifyBanner />}
+        <main
+          className={`flex flex-col gap-10 px-4 max-w-screen-xl mx-auto ${!isVerified && isLoggedIn ? "mt-0" : "mt-5"}`}
+        >
           <JobDetailComponent
             onApplyJob={handleApplyJob}
             jobData={jobData}
             alreadyJoined={applicantData}
             validateUserLoading={validateLoading}
           />
-        </div>
-
-        <div className=" mx-4 mt-20">
-          <HeadingRelatedComponent
-            heading="Related Jobs"
-            paragraph="Take a look at the jobs we found that are similar to the job you currently have open"
-          />
-        </div>
-
-        <div className=" mx-4 mt-6">
-          <JobDetailSuggest listRelatedJob={relatedPost as any[]} />
-        </div>
+          <div className="flex flex-col gap-5">
+            <HeadingRelatedComponent
+              heading="Related Jobs"
+              paragraph="Take a look at the jobs we found that are similar to the job you currently have open"
+            />
+            <JobDetailSuggest listRelatedJob={relatedPost as any[]} />
+          </div>
+        </main>
 
         <div className="mx-4 mt-20 mb-5">
           <FooterComponent pageRole={"jobhunter"} />

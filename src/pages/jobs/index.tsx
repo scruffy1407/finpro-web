@@ -32,6 +32,7 @@ import {
 } from "@/store/slices/bookmarkSlice";
 import Cookies from "js-cookie";
 import axios from "axios";
+import VerifyBanner from "@/components/VerifyBanner";
 
 const JobPostPage: React.FC = () => {
   const authHandler = new AuthHandler();
@@ -43,10 +44,13 @@ const JobPostPage: React.FC = () => {
     (state: RootState) => state.bookmarks.bookmarks,
   );
   const { currentPage, totalPages } = useSelector(
-    (state: RootState) => state.pagination
+    (state: RootState) => state.pagination,
   );
   const { jobTitle, categoryId, jobType, dateRange, sortOrder, companyCity } =
     useSelector((state: RootState) => state.searchQuery);
+  const { isVerified, isLoggedIn } = useSelector(
+    (state: RootState) => state.auth,
+  );
 
   const dispatch: AppDispatch = useDispatch();
 
@@ -87,7 +91,7 @@ const JobPostPage: React.FC = () => {
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/applyjob/bookmark`,
           {
             headers: { Authorization: `Bearer ${token}` },
-          }
+          },
         );
 
         const jobWishlist = response.data.bookmarks?.jobWishlist || [];
@@ -148,26 +152,23 @@ const JobPostPage: React.FC = () => {
   };
 
   return (
-    <div className="mt-5 mx-4">
-      <div className="flex flex-col w-full">
-        <div>
-          <Navbar pageRole={"jobhunter"} />
-        </div>
+    <main>
+      <Navbar pageRole={"jobhunter"} />
 
-        <div>
+      {isLoggedIn && !isVerified && <VerifyBanner />}
+      <section
+        className={`flex flex-col gap-10 px-4 max-w-screen-xl mx-auto ${!isVerified && isLoggedIn ? "mt-0" : "mt-5"}`}
+      >
+        <div className={"flex flex-col gap-4"}>
           <HeroJobListPageComponent />
-        </div>
-
-        <div className="w-full mt-4">
           <SelectionJobsComponents />
         </div>
-
-        <div className="w-full mt-5 mb-10">
+        <div className={"flex flex-col gap-8"}>
           {loading ? (
             <ListSkeleton
               ListItemComponent={JobPostComponentSkeleton}
               numberItem={16}
-              className={"max-w-screen-xl mx-auto gap-6 grid grid-cols-3"}
+              className={"gap-6 grid grid-cols-3"}
             />
           ) : (
             <JobListMappingComponent
@@ -180,48 +181,47 @@ const JobPostPage: React.FC = () => {
               onRemoveBookmark={handleToggleBookmark}
             />
           )}
+
+          <Pagination>
+            <PaginationContent>
+              <PaginationPrevious
+                onClick={() => handlePageChange(currentPage - 1)}
+                className={
+                  currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
+                }
+              >
+                Previous
+              </PaginationPrevious>
+
+              {/* Page numbers */}
+              {[...Array(totalPages)].map((_, index) => (
+                <PaginationItem key={index}>
+                  <PaginationLink
+                    onClick={() => handlePageChange(index + 1)}
+                    isActive={currentPage === index + 1}
+                  >
+                    {index + 1}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+
+              <PaginationNext
+                onClick={() => handlePageChange(currentPage + 1)}
+                className={
+                  currentPage === totalPages
+                    ? "opacity-50 cursor-not-allowed"
+                    : ""
+                }
+              >
+                Next
+              </PaginationNext>
+            </PaginationContent>
+          </Pagination>
         </div>
 
-        <Pagination>
-          <PaginationContent>
-            <PaginationPrevious
-              onClick={() => handlePageChange(currentPage - 1)}
-              className={
-                currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
-              }
-            >
-              Previous
-            </PaginationPrevious>
-
-            {/* Page numbers */}
-            {[...Array(totalPages)].map((_, index) => (
-              <PaginationItem key={index}>
-                <PaginationLink
-                  onClick={() => handlePageChange(index + 1)}
-                  isActive={currentPage === index + 1}
-                >
-                  {index + 1}
-                </PaginationLink>
-              </PaginationItem>
-            ))}
-
-            <PaginationNext
-              onClick={() => handlePageChange(currentPage + 1)}
-              className={
-                currentPage === totalPages
-                  ? "opacity-50 cursor-not-allowed"
-                  : ""
-              }
-            >
-              Next
-            </PaginationNext>
-          </PaginationContent>
-        </Pagination>
-        <div className="mx-4 mt-20 mb-5">
-          <FooterComponent />
-        </div>
-      </div>
-    </div>
+        <FooterComponent pageRole={"jobhunter"} />
+      </section>
+    </main>
   );
 };
 

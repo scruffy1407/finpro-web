@@ -13,7 +13,7 @@ const JobDetailSuggest: React.FC<JobDetailSuggestProps> = ({
   listRelatedJob,
 }) => {
   return (
-    <div className="max-w-screen-xl mx-auto overflow-x-auto flex gap-6 justify-start sm:justify-start snap-x sm:snap-none px-4 sm:px-0">
+    <div className="overflow-x-auto flex gap-6 justify-start sm:justify-start snap-x sm:snap-none px-4 sm:px-0">
       {listRelatedJob
         ? listRelatedJob.map((jobPost: JobListingSuggest, index: number) => (
             <div

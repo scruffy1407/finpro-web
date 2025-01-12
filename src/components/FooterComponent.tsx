@@ -49,7 +49,7 @@ function FooterComponent({ pageRole }: { pageRole: UserRole }) {
   const { logo, navbarItems } = roleConfig[pageRole] || roleConfig.default;
 
   return (
-    <footer className="max-w-screen-xl mx-auto bg-sky-950 border rounded-xl mb-16 mt-10">
+    <footer className="max-w-screen-xl mx-auto bg-sky-950 border rounded-xl mb-16 ">
       <div className="">
         <div className="md:flex justify-between p-6">
           {/* Logo Section */}

@@ -23,7 +23,6 @@ export default function ConfirmationCard({ plan }: { plan: SubscriptionPlan }) {
   const [isDisable, setIsDisable] = useState<boolean>(false);
 
   const handlePayment = async () => {
-    // TODO: Implement Midtrans payment integration
     const token = Cookies.get("accessToken");
     let subscriptionId: number = 1;
     if (plan.subsParam === "standard-plan") {

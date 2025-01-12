@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Navbar } from "@/components/NavigationBar/Navbar";
 import { Button } from "@/components/ui/button";
 import Asessmentcard, {
@@ -13,6 +13,7 @@ import { useRouter } from "next/router";
 import { SkillAssessmentUtils } from "@/utils/skillAssessment.utils";
 import LoadingLoader from "@/components/LoadingLoader";
 import Image from "next/image";
+import VerifyBanner from "@/components/VerifyBanner";
 
 // DUMMY
 const assessmentData: AssessmentCardProps[] = [
@@ -49,7 +50,8 @@ function Index() {
   const dispatch = useDispatch<AppDispatch>();
   const skillAsessmentUtils = new SkillAssessmentUtils();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { isLoggedIn, subscriptionId } = useSelector(
+  const [callBackPath, setcallBackPath] = useState<string>("");
+  const { isLoggedIn, subscriptionId, isVerified } = useSelector(
     (state: RootState) => state.auth,
   );
   const { currentModalId } = useSelector(
@@ -78,6 +80,18 @@ function Index() {
     } catch (e) {}
   }
 
+  function handleRedirect() {
+    dispatch(closeModalAction());
+    router.push(`/auth/login/jobhunter?callback=${callBackPath}`);
+  }
+
+  useEffect(() => {
+    if (router.isReady) {
+      // Use asPath for full path (including query), or pathname for the route
+      setcallBackPath(router.asPath);
+    }
+  }, [router.isReady, router.asPath]);
+
   return (
     <>
       <ModalContainer
@@ -104,7 +118,7 @@ function Index() {
             <Button
               className={`w-full`}
               variant={"primary"}
-              // onClick={handleRedirect}
+              onClick={handleRedirect}
             >
               Login
             </Button>
@@ -150,6 +164,8 @@ function Index() {
       {/*MAIN*/}
       <main className={"px-4 "}>
         <Navbar pageRole={"jobhunter"} />
+        {isLoggedIn && !isVerified && <VerifyBanner />}
+
         <section className={"w-full mt-10"}>
           <div
             className={
