@@ -6,6 +6,9 @@ import CertificatePDF from "@/components/GenerateCertificate/CertificatePDF";
 import CertificateCard from "@/components/GenerateCertificate/CertificateCard";
 import { AuthHandler } from "@/utils/auth.utils";
 import Cookies from "js-cookie";
+import VerifyBanner from "@/components/VerifyBanner";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 
 interface Certificate {
   certificate_id: string;
@@ -37,6 +40,9 @@ const CertificatePage = () => {
   const pagePermission = "jobhunter";
   authHandler.authorizeUser(pagePermission);
   const [certificates, setCertificates] = useState<Certificate[]>([]);
+  const { isVerified, isLoggedIn } = useSelector(
+    (state: RootState) => state.auth,
+  );
   const [selectedCertificate, setSelectedCertificate] =
     useState<Certificate | null>(null);
   const [loading, setLoading] = useState(false);
@@ -53,7 +59,7 @@ const CertificatePage = () => {
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/certificate/certificate`,
           {
             headers: { Authorization: `Bearer ${token}` },
-          }
+          },
         );
         const certificatedata = response.data?.certificatedata;
         const jobHunterData = certificatedata?.jobHunter?.[0];
@@ -73,7 +79,7 @@ const CertificatePage = () => {
                 date: cert.certificate_date,
                 uniqueId: cert.certificate_unique_id,
                 profileName: profileName,
-              }))
+              })),
           );
           setCertificates(fetchedCertificates);
           setError(null);
@@ -100,7 +106,9 @@ const CertificatePage = () => {
   return (
     <>
       <main className="px-4">
-        <Navbar />
+        <Navbar pageRole={"jobhunter"} />
+        {isLoggedIn && !isVerified && <VerifyBanner />}
+
         <section className="w-full mt-10">
           <div className="w-full mx-auto text-center rounded-2xl bg-cover object-center">
             <div className="flex flex-col gap-4 items-center max-w-[560px] mx-auto">

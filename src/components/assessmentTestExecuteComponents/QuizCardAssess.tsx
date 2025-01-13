@@ -3,8 +3,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
-export interface Question {
-	question_id: string; // Or 'number' if IDs are numbers
+export interface QuestionAssess {
+	skill_assessment_question_id: string;
 	question: string;
 	answer_1: string;
 	answer_2: string;
@@ -13,12 +13,12 @@ export interface Question {
 }
 
 interface QuizCardProps {
-	question: Question;
+	question: QuestionAssess;
 	selectedAnswer?: string;
 	onAnswerSelect: (answer: string) => void;
 }
 
-export function QuizCard({
+export function QuizCardAssess({
 	question,
 	selectedAnswer,
 	onAnswerSelect,
@@ -29,7 +29,6 @@ export function QuizCard({
 		{ value: question.answer_3, label: question.answer_3 },
 		{ value: question.answer_4, label: question.answer_4 },
 	];
-
 	return (
 		<Card className="w-full max-w-2xl p-6 animate-in fade-in slide-in-from-bottom-4">
 			<h2 className="text-2xl font-bold mb-6">{question.question}</h2>

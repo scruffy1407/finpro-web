@@ -10,6 +10,7 @@ export interface LoginAuth {
   email: string;
   password: string;
   user_role: string;
+  callback?: string;
 }
 
 export interface RegisterAuth {

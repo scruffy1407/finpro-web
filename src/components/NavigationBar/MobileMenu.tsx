@@ -81,7 +81,7 @@ export function MobileMenu({
           <Menu className="h-6 w-6" />
         </Button>
       </SheetTrigger>
-      <SheetContent side="right">
+      <SheetContent side="right" className={"z-index-[99]"}>
         <SheetHeader></SheetHeader>
         <ScrollArea className="h-[calc(100vh-5rem)]">
           <div className="mt-6 space-y-4">

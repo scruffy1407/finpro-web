@@ -16,9 +16,7 @@ interface Question {
 
 const EditQuestions = () => {
 	const router = useRouter();
-	const accessToken =
-		"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo2MSwicm9sZV90eXBlIjoiZGV2ZWxvcGVyIiwidmVyaWZpZWQiOmZhbHNlLCJpYXQiOjE3MzYyNjEyOTgsImV4cCI6MTczNjI2NDg5OH0.9JFhpXrDl7r_0Pf2wien9gwNccDjgcRUJenY3Tgzgi4";
-
+	const accessToken = Cookies.get("accessToken");
 	const { skill_assessment_id } = router.query; // Get skill_assessment_id from the URL
 	const [testName, setTestName] = useState<string>(""); // Store test name
 	const [questions, setQuestions] = useState<Question[]>([]); // Initialize with an empty array

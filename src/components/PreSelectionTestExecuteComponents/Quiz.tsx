@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useEffect } from "react";
 import { QuizCard } from "@/components/PreSelectionTestExecuteComponents/QuizCard";
 import { QuizProgress } from "@/components/PreSelectionTestExecuteComponents/QuizProgress";
