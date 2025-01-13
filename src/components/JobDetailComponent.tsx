@@ -167,7 +167,7 @@ export default function JobDetailComponent({
           alreadyJoined.completionStatus === "failed" &&
           alreadyJoined.applicationStatus === "rejected" ? (
             remainingTime ? (
-              <div className="flex items-center justify-end">
+              <div className="flex items-center justify-end rounded-xl p-4 ">
                 <p className="text-red-500">
                   You've Failed the Previous Test. Please wait until{" "}
                   <strong>{remainingTime}</strong> to rejoin.

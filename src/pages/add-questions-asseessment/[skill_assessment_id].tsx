@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button";
 
 const AddQuestions = () => {
 	const router = useRouter();
-	const accessToken =
-		"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo2MSwicm9sZV90eXBlIjoiZGV2ZWxvcGVyIiwidmVyaWZpZWQiOmZhbHNlLCJpYXQiOjE3MzYyNTczNzQsImV4cCI6MTczNjI2MDk3NH0.8xD8y_hoO6RycJmWjpgMKkdVnubcaduITQyLJB259kc";
+
+	const accessToken = Cookies.get("accessToken");
 	const { skill_assessment_id } = router.query; // Get test_id from the URL
 	const [testName, setTestName] = useState<string>(""); // Store test name
 	const [questions, setQuestions] = useState([

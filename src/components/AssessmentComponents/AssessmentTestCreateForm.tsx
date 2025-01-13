@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import Cookies from "js-cookie";
 import axios from "axios";
 import { useRouter } from "next/router";
+import Router from "next/router";
 
 // Define form data type
 interface FormData {
@@ -59,8 +60,7 @@ const CreateAssessmentTestForm: React.FC<CreateAssessmentTestFormProps> = ({
 		form.append("duration", formData.duration.toString());
 
 		try {
-			const accessToken =
-				"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo2MSwicm9sZV90eXBlIjoiZGV2ZWxvcGVyIiwidmVyaWZpZWQiOmZhbHNlLCJpYXQiOjE3MzYyNDM4NjcsImV4cCI6MTczNjI0NzQ2N30.OGME8BGw8AvW22Et3_iWg5mUffXqKzlaZx7voD-yKIU";
+			const accessToken = Cookies.get("accessToken");
 			const response = await axios.post(
 				`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/dev/createassessment`,
 				form,

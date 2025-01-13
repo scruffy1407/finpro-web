@@ -20,7 +20,7 @@ const CreateJobForm: React.FC<CreateJobFormProps> = ({
 }) => {
 	const [formData, setFormData] = useState({
 		job_title: "",
-		preSelectionTestId: 0,
+		preSelectionTestId: null,
 		categoryId: 0,
 		selection_test_active: false,
 		salary_show: true,
@@ -71,8 +71,7 @@ const CreateJobForm: React.FC<CreateJobFormProps> = ({
 		fetchCategories();
 	}, []);
 	//debugging purposed
-	useEffect(() => {
-	}, [category]);
+	useEffect(() => {}, [category]);
 
 	const handleInputChange = (
 		e: React.ChangeEvent<
@@ -125,7 +124,9 @@ const CreateJobForm: React.FC<CreateJobFormProps> = ({
 
 		const transformedData = {
 			...formData,
-			preSelectionTestId: Number(formData.preSelectionTestId),
+			preSelectionTestId: formData.preSelectionTestId
+				? Number(formData.preSelectionTestId)
+				: null,
 			categoryId: Number(formData.categoryId),
 			salary_min: Number(formData.salary_min),
 			salary_max: formData.salary_max ? Number(formData.salary_max) : null,
@@ -134,18 +135,23 @@ const CreateJobForm: React.FC<CreateJobFormProps> = ({
 		};
 
 		try {
-			const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/company/job`, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-					Authorization: `Bearer ${accessToken}`,
-				},
-				body: JSON.stringify(transformedData),
-			});
+			console.log("Transformed Data:", transformedData);
+			const response = await fetch(
+				`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/company/job`,
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${accessToken}`,
+					},
+					body: JSON.stringify(transformedData),
+				}
+			);
 
 			if (response.ok) {
 				alert("Job created successfully!");
 				setShowForm(false);
+				window.location.reload();
 			} else {
 				const errorData = await response.json();
 				console.error("Error:", errorData);
@@ -215,7 +221,7 @@ const CreateJobForm: React.FC<CreateJobFormProps> = ({
 									<p> Select Pre Selection Test </p>
 									<select
 										name="preSelectionTestId"
-										value={formData.preSelectionTestId}
+										value={formData.preSelectionTestId ?? ""}
 										onChange={handleInputChange}
 										required
 										className="p-2 border rounded"
