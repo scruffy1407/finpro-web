@@ -123,7 +123,7 @@ function ProfileDetail({ applicantId }: ProfileDetailProps) {
     </div>
   ) : (
     <section className={"flex flex-col gap-5"}>
-      <div className={"flex gap-4 items-center p-4 bg-neutral-50 rounded-xl"}>
+      <div className={"flex gap-4 items-center p-4 bg-neutral-100 rounded-xl"}>
         <Image
           src={detailUser.photo}
           alt={`photo-${detailUser.name}`}
@@ -141,21 +141,21 @@ function ProfileDetail({ applicantId }: ProfileDetailProps) {
       <div className={"flex gap-2 flex-wrap"}>
         <div
           className={
-            "px-2 py-1 text-sm text-neutral-600 bg-neutral-50 rounded-full"
+            "px-2 py-1 text-sm text-neutral-600 bg-neutral-100 rounded-full"
           }
         >
           {detailUser.gender}
         </div>
         <div
           className={
-            "px-4 py-1 text-sm text-neutral-600 bg-neutral-50 rounded-full"
+            "px-4 py-1 text-sm text-neutral-600 bg-neutral-100 rounded-full"
           }
         >
           {calculateAge(detailUser.dob)} y.o
         </div>
         <div
           className={
-            "px-4 py-1 text-sm text-neutral-600 bg-neutral-50 rounded-full"
+            "px-4 py-1 text-sm text-neutral-600 bg-neutral-100 rounded-full"
           }
         >
           {detailUser.locationCity}, {detailUser.locationProvince}
@@ -192,12 +192,12 @@ function ProfileDetail({ applicantId }: ProfileDetailProps) {
         )}
       </div>
       <div className={"h-[1px] w-full bg-gray-200"}></div>
-      <div className={"flex flex-col gap-2 w-full"}>
+      <div className={"flex flex-col gap-2"}>
         <h4 className={"font-bold text-neutral-950"}>Last 3 Education</h4>
-        <div className={"w-full"}>
-          <ScrollArea className="w-96 whitespace-nowrap overflow-x-auto">
+        <div className={""}>
+          <ScrollArea className="whitespace-nowrap overflow-x-auto">
             {/* Added overflow-x-auto */}
-            <div className="flex w-max gap-3">
+            <div className="flex w-fit gap-3">
               {/* Changed to flex-row and flex-wrap */}
               {detailUser?.education.map((item, key: number) => {
                 return (
@@ -221,7 +221,6 @@ function ProfileDetail({ applicantId }: ProfileDetailProps) {
       <div className={"h-[1px] w-full bg-gray-200"}></div>
       <div className={"flex flex-col gap-2"}>
         <h4 className={"font-bold text-neutral-950"}>Working History</h4>
-
         {detailUser?.workingHistoryList.map((item, key: number) => {
           return (
             <WorkingHistoryProfileItem

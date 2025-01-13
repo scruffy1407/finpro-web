@@ -1,4 +1,5 @@
 import React from "react";
+import "../../styles/globals.css"; // Import your custom styles
 
 export interface ModalProps {
   title: string; // Added title prop
@@ -76,7 +77,7 @@ function ModalContainer({
                   </button>
                 </div>
                 {/* */}
-                <ScrollArea className="h-fit max-h-[calc(100vh-200px)] overflow-y-auto">
+                <ScrollArea className="h-fit max-h-[calc(100vh-200px)] overflow-y-scroll custom-scroll">
                   {children}
                 </ScrollArea>
                 {/* Replaced FormWorkingExperience with children prop */}

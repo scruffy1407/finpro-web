@@ -48,3 +48,9 @@ button {
   .my-custom-blockquote p {
 	margin: 0; /* Remove default paragraph margin inside the blockquote */
   }
+
+/* Override the inline style `display: table` */
+.custom-scroll > div > div {
+	display: block !important; /* Change 'table' to 'flex' or 'block' */
+	min-width: auto; /* Adjust as needed */
+}
