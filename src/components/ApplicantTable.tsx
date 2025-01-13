@@ -11,6 +11,7 @@ import FormEditInterview from "@/components/Form/FormEditInterview";
 import { format } from "date-fns";
 import { handleStatusChange } from "@/store/slices/applicantSlice";
 import Cookies from "js-cookie";
+import ProfileDetail from "@/components/Modal/ProfileDetail";
 
 interface ApplicantTableProps {
   applicants: Applicant[];
@@ -105,6 +106,16 @@ export const ApplicantTable: React.FC<ApplicantTableProps> = ({
             <tbody className="bg-white divide-y divide-gray-200">
               {applicants.map((applicant) => (
                 <>
+                  <ModalContainer
+                    isOpen={
+                      currentModalId === "profileDetailModal" &&
+                      editId === Number(applicant.id || -1)
+                    }
+                    onClose={handleCloseModal}
+                    title={`Detail Candidates`}
+                  >
+                    <ProfileDetail applicantId={Number(applicant.id)} />
+                  </ModalContainer>
                   <ModalContainer
                     isOpen={
                       currentModalId === "setNewScheduleModal" &&
@@ -212,7 +223,21 @@ export const ApplicantTable: React.FC<ApplicantTableProps> = ({
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                       <div className="flex flex-col gap-1">
-                        {applicant.name}
+                        <Button
+                          className={"w-fit p-0 underline hover:neutral-600"}
+                          variant={"link"}
+                          size={"sm"}
+                          onClick={() => {
+                            dispatch(
+                              openModalAction(
+                                "profileDetailModal",
+                                Number(applicant.id),
+                              ),
+                            );
+                          }}
+                        >
+                          {applicant.name}
+                        </Button>
                         <a
                           href={applicant.resumeLink?.replace("&dl=0", "&dl=1")}
                           target="_blank"

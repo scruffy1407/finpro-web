@@ -13,6 +13,7 @@ interface ModalContainerProps {
 }
 
 import Overlay from "@/components/overlay";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 function ModalContainer({
   title,
@@ -75,7 +76,9 @@ function ModalContainer({
                   </button>
                 </div>
                 {/* */}
-                {children}
+                <ScrollArea className="h-fit max-h-[calc(100vh-200px)] overflow-y-auto">
+                  {children}
+                </ScrollArea>
                 {/* Replaced FormWorkingExperience with children prop */}
                 {/* */}
               </div>
