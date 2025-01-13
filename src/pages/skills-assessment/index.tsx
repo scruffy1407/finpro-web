@@ -193,56 +193,57 @@ function Index() {
         <Navbar pageRole={"jobhunter"} />
         {isLoggedIn && !isVerified && <VerifyBanner />}
         <section className={"w-full mt-10"}>
-          <div
-            className={
-              " w-full mx-auto  text-center rounded-2xl bg-cover object-center"
-            }
-          >
-            <div
-              className={
-                " flex flex-col gap-4 items-center max-w-[560px] mx-auto"
-              }
-            >
-              <h1 className={"text-xl md:text-3xl font-bold text-neutral-950"}>
-                Take Skill Assessments, Earn Badges, and Land the Dream Jobs.
-              </h1>
-              <p className={"text-sm text-neutral-600"}>
-                Elevate your career with our engaging skill assessments and earn
-                badges that impress recruiters
-              </p>
-            </div>
-          </div>
-        </section>
-        <section
-          className={
-            " max-w-screen-md mx-auto mt-10 flex flex-col gap-4 items-center"
-          }
-        >
-          <div
-            className={"flex flex-col gap-5 w-full justify-center items-center"}
-          >
-            {isLoading
-              ? LoadingLoader()
-              : assessmentData.map((data: AssessmentCardProps, i: number) => {
-                  return (
-                    <Asessmentcard
-                      key={i}
-                      assessmentName={data.assessmentName}
-                      passingGrade={data.passingGrade}
-                      duration={data.duration}
-                      badge={data.badge}
-                      skillAssessmentId={data.skillAssessmentId} // Pass ID
-                    />
-                  );
-                })}
-          </div>
-          <Button variant="outline" onClick={handleLoadMore}>
-            {isLoading ? "Loading..." : "Load More"}
-          </Button>
-        </section>
-      </main>
-    </>
-  );
+					<div
+						className={
+							" w-full mx-auto  text-center rounded-2xl bg-cover object-center"
+						}
+					>
+						<div
+							className={
+								" flex flex-col gap-4 items-center max-w-[560px] mx-auto"
+							}
+						>
+							<h1 className={"text-xl md:text-3xl font-bold text-neutral-950"}>
+								Take Skill Assessments, Earn Badges, and Land the Dream Jobs.
+							</h1>
+							<p className={"text-sm text-neutral-600"}>
+								Elevate your career with our engaging skill assessments and earn
+								badges that impress recruiters
+							</p>
+						</div>
+					</div>
+				</section>
+				<section
+					className={
+						" max-w-screen-md mx-auto mt-10 flex flex-col gap-4 items-center"
+					}
+				>
+					<div
+						className={"flex flex-col gap-5 w-full justify-center items-center"}
+					>
+						{isLoading
+							? LoadingLoader()
+							: assessmentData.map((data: AssessmentCardProps, i: number) => {
+									return (
+										<Asessmentcard
+											key={i}
+											assessmentName={data.assessmentName}
+											passingGrade={data.passingGrade}
+											duration={data.duration}
+											badge={data.badge}
+											skillAssessmentId={data.skillAssessmentId} 
+											takeTest={handleClick} 
+										/>
+									);
+								})}
+					</div>
+					<Button variant="outline" onClick={handleLoadMore}>
+						{isLoading ? "Loading..." : "Load More"}
+					</Button>
+				</section>
+			</main>
+		</>
+	);
 }
 
 export default Index;

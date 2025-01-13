@@ -23,6 +23,14 @@ import axios from "axios";
 import { toast } from "sonner";
 import Cookies from "js-cookie";
 
+export interface JobPostDashRequest {
+  accessToken: string; // For passing the token
+  limit?: number;      // For pagination
+  page?: number;       // For pagination
+  jobTitle?: string;   // For filtering job posts by title
+  sortOrder?: string;  // For sorting job posts
+}
+
 interface BackendError {
   error: string;
 }

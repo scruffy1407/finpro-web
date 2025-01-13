@@ -5,13 +5,13 @@ import { Card } from "@/components/ui/card";
 import { Clock } from "lucide-react";
 
 interface QuizTimerProps {
-	skill_assessment_id: number;
+	skillAssessmentId: number;
 	onTimeUp: () => void;
 	onTimerReady: (ready: boolean) => void; // Callback for timer readiness
 }
 
 export function QuizTimerAssess({
-	skill_assessment_id,
+	skillAssessmentId,
 	onTimeUp,
 	onTimerReady,
 }: QuizTimerProps) {
@@ -23,7 +23,7 @@ export function QuizTimerAssess({
 
 			try {
 				const response = await axios.get(
-					`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/jobhunter/getassesstesttime/${skill_assessment_id}`,
+					`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/jobhunter/getassesstesttime/${skillAssessmentId}`,
 					{
 						headers: { Authorization: `Bearer ${token}` },
 					}
@@ -55,7 +55,7 @@ export function QuizTimerAssess({
 		};
 
 		fetchTestTime();
-	}, [skill_assessment_id, onTimeUp, onTimerReady]);
+	}, [skillAssessmentId, onTimeUp, onTimerReady]);
 
 	useEffect(() => {
 		if (timeLeft === null) return;

@@ -113,7 +113,7 @@ export default function ExecutionAssessmentTest() {
 
 			if (response.status === 200 || response.status === 201) {
 				// Redirect to the quiz page after successful API call
-				router.push(`/executionAssessmentTestQuiz/${skillAssessmentId}/index`);
+				router.push(`/executionAssessmentTestQuiz/${skillAssessmentId}`);
 			} else {
 				setError(`Unexpected response status: ${response.status}`);
 			}
