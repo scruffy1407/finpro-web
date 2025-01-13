@@ -6,5 +6,6 @@ export interface WorkingExperience {
   jobDescription: string;
   companyName?: string;
   startDate: string;
-  endDate: string;
+  endDate?: string;
+  currentlyWorking: boolean;
 }

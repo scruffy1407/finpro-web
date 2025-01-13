@@ -169,7 +169,7 @@ export default function JobDetailComponent({
             remainingTime ? (
               <div className="flex items-center justify-end rounded-xl p-4 ">
                 <p className="text-red-500">
-                  You've Failed the Previous Test. Please wait until{" "}
+                  You&apos;ve Failed the Previous Test. Please wait until{" "}
                   <strong>{remainingTime}</strong> to rejoin.
                 </p>
               </div>
@@ -421,20 +421,14 @@ export default function JobDetailComponent({
                 {mapCompanySize(jobData?.company?.company_size)}
               </span>
             </p>
+            <ShareButton
+              jobTitle={jobData?.job_title || "Job Title"}
+              companyName={jobData?.company?.company_name || "Company Name"}
+              jobUrl={window.location.href}
+              onShare={handleShare}
+            />
           </div>
         </section>
-        <p className="text-sm text-neutral-600 flex gap-2">
-          <span>Company Size:</span>
-          <span className="text-neutral-900 text-right">
-            {mapCompanySize(jobData?.company?.company_size)}
-          </span>
-        </p>
-        <ShareButton
-          jobTitle="Senior Frontend Developer"
-          companyName="TechCorp Inc."
-          jobUrl={window.location.href}
-          onShare={handleShare}
-        />
       </div>
     </section>
   );

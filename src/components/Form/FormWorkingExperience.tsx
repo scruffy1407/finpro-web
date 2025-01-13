@@ -33,6 +33,7 @@ function FormWorkingExperience() {
     companyName: "",
     startDate: "",
     endDate: "",
+    currentlyWorking: false,
   });
 
   const options = (inputValue: string, callback: (options: []) => void) => {
@@ -84,6 +85,17 @@ function FormWorkingExperience() {
     });
   }
 
+  function handleCurrentlyWorkingChange(
+    e: React.ChangeEvent<HTMLInputElement>
+  ) {
+    const { checked } = e.target;
+    setFormData((prevForm) => ({
+      ...prevForm,
+      currentlyWorking: checked,
+      endDate: checked ? "" : prevForm.endDate,
+    }));
+  }
+
   useEffect(() => {
     const startDate = new Date(formData.startDate);
     const endDate = new Date(formData.endDate);
@@ -94,6 +106,7 @@ function FormWorkingExperience() {
         formData.jobDescription === "" ||
           formData.jobTitle === "" ||
           formData.companyId === null ||
+          formData.startDate === "" ||
           isInvalidDateRange
       )
     );
@@ -133,7 +146,7 @@ function FormWorkingExperience() {
       </div>
 
       <div>
-        {/*FULL NAME*/}
+        {/*POSITION TITLE*/}
         <Label htmlFor={`jobTitle`} className="block mb-2 text-neutral-950">
           Position Title
         </Label>
@@ -143,11 +156,11 @@ function FormWorkingExperience() {
           value={formData.jobTitle}
           onChange={handleChange}
           type="text"
-          placeholder="Ex : Senior Product Manager"
+          placeholder="Ex: Senior Product Manager"
         />
       </div>
 
-      {/* START DATE & END DATE */}
+      {/*START DATE & END DATE*/}
       <div className="mb-4">
         <label className="block text-sm font-medium">Start Date</label>
         <input
@@ -166,10 +179,24 @@ function FormWorkingExperience() {
           value={formData.endDate}
           onChange={handleChange}
           name="endDate"
+          disabled={formData.currentlyWorking} // Disable end date if currently working
         />
       </div>
 
-      {/*DESCRIPTION*/}
+      {/*CURRENTLY WORKING*/}
+      <div className="mb-4 flex items-center gap-2">
+        <input
+          type="checkbox"
+          id="currentlyWorking"
+          checked={formData.currentlyWorking}
+          onChange={handleCurrentlyWorkingChange}
+        />
+        <Label htmlFor="currentlyWorking" className="text-sm font-medium">
+          Currently Working Here
+        </Label>
+      </div>
+
+      {/*JOB DESCRIPTION*/}
       <div>
         <Label
           htmlFor={`jobDescription`}
@@ -183,7 +210,7 @@ function FormWorkingExperience() {
           name={`jobDescription`}
         />
       </div>
-      
+
       <Button
         disabled={pendingState.actionDisable}
         variant="primary"
@@ -191,7 +218,6 @@ function FormWorkingExperience() {
       >
         {pendingState.actionLoading ? LoadingLoader() : "Add New Experience"}
       </Button>
-      
     </form>
   );
 }
