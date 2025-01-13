@@ -109,8 +109,7 @@ export default function Quiz() {
 		fetchQuestions();
 	}, [jobId]);
 
-	useEffect(() => {
-	}, [quizState.testId]);
+	useEffect(() => {}, [quizState.testId]);
 
 	const currentQuestion = questions[quizState.currentQuestionIndex];
 
@@ -280,12 +279,9 @@ export default function Quiz() {
 	};
 
 	useEffect(() => {
-		const intervalId = setInterval(
-			() => {
-				sendPeriodicUpdate();
-			},
-			1 * 60 * 1000
-		); 
+		const intervalId = setInterval(() => {
+			sendPeriodicUpdate();
+		}, 15 * 1000);
 
 		// Cleanup interval when the component unmounts or quiz is finished
 		return () => {
@@ -329,7 +325,7 @@ export default function Quiz() {
 					onTimeUp={() => {
 						toast({
 							title: "Time's Up!",
-							description: "Your quiz has been automatically submitted.",
+							description: "Your quiz has been automaticalsjuly submitted.",
 							variant: "destructive",
 						});
 						handleTimeUp();

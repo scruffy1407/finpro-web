@@ -13,7 +13,6 @@ import { useRouter } from "next/router";
 import { SkillAssessmentUtils } from "@/utils/skillAssessment.utils";
 import LoadingLoader from "@/components/LoadingLoader";
 import Image from "next/image";
-import { useEffect } from "react";
 import axios from "axios";
 import VerifyBanner from "@/components/VerifyBanner";
 
@@ -233,7 +232,8 @@ function handleRedirect() {
 											passingGrade={data.passingGrade}
 											duration={data.duration}
 											badge={data.badge}
-											skillAssessmentId={data.skillAssessmentId} // Pass ID
+											skillAssessmentId={data.skillAssessmentId} 
+											takeTest={handleClick} 
 										/>
 									);
 								})}

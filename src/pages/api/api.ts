@@ -105,11 +105,13 @@ export async function getJobPostDash({
 	page = 1,
 	jobTitle = "",
 	sortOrder = "",
+	accessToken
 }: {
 	limit?: number;
 	page?: number;
 	jobTitle?: string;
 	sortOrder?: string;
+	accessToken : string
 }) {
 	// Build the query string
 	let queryString = `companydashjob?page=${page}&limit=${limit}`;

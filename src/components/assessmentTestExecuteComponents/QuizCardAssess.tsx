@@ -4,7 +4,7 @@ import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
 export interface QuestionAssess {
-	skill_assessment_question_id: string;
+	question_id: string;
 	question: string;
 	answer_1: string;
 	answer_2: string;
