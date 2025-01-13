@@ -19,35 +19,30 @@ function CompanyListMappingComponent({ companies }: CompanyListProps) {
   const indexOfFirstJob = indexOfLastJob - companiesPerPage;
 
   // Slice the jobListPostDummy array based on the current page and jobsPerPage
-  // const currentJobs = 0
   const currentCompanies = CompanyListPostDummy.slice(
     indexOfFirstJob,
     indexOfLastJob,
   );
 
   return (
-    <section className="px-4">
-      <div className="max-w-screen-xl mx-auto ">
-        <div
-          className={
-            "grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3  lg:grid-cols-4"
-          }
-        >
-          {/* Map through dummyCompanies and render CompanyComponent for each company */}
-          {companies.map((company, index) => (
-            <CompanyComponent
-              companyId={company.companyId}
-              key={index}
-              logo={company.logo}
-              companyName={company.companyName}
-              jobsOpen={company.jobsOpen}
-              companyProvince={company.companyProvince}
-              companyCity={company.companyCity}
-            />
-          ))}
-        </div>
-      </div>
-    </section>
+    <div
+      className={
+        "grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3  lg:grid-cols-4"
+      }
+    >
+      {/* Map through dummyCompanies and render CompanyComponent for each company */}
+      {companies.map((company, index) => (
+        <CompanyComponent
+          companyId={company.companyId}
+          key={index}
+          logo={company.logo}
+          companyName={company.companyName}
+          jobsOpen={company.jobsOpen}
+          companyProvince={company.companyProvince}
+          companyCity={company.companyCity}
+        />
+      ))}
+    </div>
   );
 }
 

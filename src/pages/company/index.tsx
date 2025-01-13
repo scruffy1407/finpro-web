@@ -23,11 +23,15 @@ import { CompanyShortProps } from "@/components/CompanyComponent";
 import { Navbar } from "@/components/NavigationBar/Navbar";
 import ListSkeleton from "@/components/listSkeleton";
 import CompanyCardSkeleton from "@/components/Skeleton/CompanyCard.skeleton";
+import VerifyBanner from "@/components/VerifyBanner";
 
 const CompanyPage: React.FC = () => {
   const companyUtls = new CompanyUtils();
   const { companyName, companyCity } = useSelector(
     (state: RootState) => state.companySearch,
+  );
+  const { isVerified, isLoggedIn } = useSelector(
+    (state: RootState) => state.auth,
   );
   const { pagination } = useSelector((state: RootState) => state.companySearch);
   const [companyList, setCompanyList] = useState<CompanyShortProps[]>([]);
@@ -80,26 +84,25 @@ const CompanyPage: React.FC = () => {
   }, [pagination.currentPage]);
 
   return (
-    <div className="mt-5 mx-4">
-      <div className="flex flex-col w-full">
-        <div>
-          <Navbar pageRole={"jobhunter"} />
-        </div>
-        <HeroCompanyListComponent handleSearch={handleSearch} />
+    <main>
+      <Navbar pageRole={"jobhunter"} />
+      {isLoggedIn && !isVerified && <VerifyBanner />}
 
-        <div className="w-full mt-5 mb-10">
-          {isLoading ? (
-            <ListSkeleton
-              ListItemComponent={CompanyCardSkeleton}
-              className={
-                "max-w-screen-xl mx-auto grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3  lg:grid-cols-4"
-              }
-              numberItem={12}
-            />
-          ) : (
-            <CompanyListMappingComponent companies={companyList} />
-          )}
-        </div>
+      <section
+        className={`flex flex-col gap-10 px-4 max-w-screen-xl mx-auto ${!isVerified && isLoggedIn ? "mt-0" : "mt-5"}`}
+      >
+        <HeroCompanyListComponent handleSearch={handleSearch} />
+        {isLoading ? (
+          <ListSkeleton
+            ListItemComponent={CompanyCardSkeleton}
+            className={
+              "grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3  lg:grid-cols-4"
+            }
+            numberItem={12}
+          />
+        ) : (
+          <CompanyListMappingComponent companies={companyList} />
+        )}
         {isLoading ? null : (
           <Pagination>
             <PaginationContent>
@@ -139,11 +142,9 @@ const CompanyPage: React.FC = () => {
             </PaginationContent>
           </Pagination>
         )}
-        <div className="mx-4 mt-20 mb-5">
-          <FooterComponent pageRole={"jobhunter"} />
-        </div>
-      </div>
-    </div>
+        <FooterComponent pageRole={"jobhunter"} />
+      </section>
+    </main>
   );
 };
 

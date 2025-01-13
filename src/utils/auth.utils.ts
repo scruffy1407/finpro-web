@@ -1,8 +1,9 @@
 import { LoginAuth, RegisterAuth } from "@/models/auth.model";
 import api from "@/pages/api/api";
 import AuthorizeUser from "@/utils/authorizePage";
-import { AxiosResponse } from "axios";
+import axios, { AxiosResponse } from "axios";
 import Cookies from "js-cookie";
+import { toast } from "sonner";
 
 export class AuthHandler {
   // Fungsi untuk validasi form login
@@ -35,43 +36,6 @@ export class AuthHandler {
       return false; // Mengembalikan false jika semua validasi terpenuhi
     }
   }
-
-  // Fungsi untuk mengirim data login ke server
-  // async handleSubmitData(formData: LoginAuth, scope: "user" | "admin") {
-  //   try {
-  //     const response = await axios.post(
-  //       scope == "user" ? "/api/auth/login-user" : "/api/auth-admin/login",
-  //       {
-  //         email: formData.email, // Mengirim email dari form
-  //         password: formData.password, // Mengirim password dari form
-  //       },
-  //     );
-  //     const data = response.data; // Menyimpan respons data
-  //
-  //     // Jika respons status adalah 200, set cookies untuk access_token dan refresh_token
-  //     if (response.status === 200) {
-  //       const in60Minutes = 60 / (24 * 60); // Mengatur masa kedaluwarsa access_token (60 menit)
-  //       const uniqueCode =
-  //         scope === "user" ? UniqueCode.USER : UniqueCode.ADMIN;
-  //
-  //       Cookies.set(`access${uniqueCode}_token`, data.data.access_token, {
-  //         expires: in60Minutes, // Cookie access_token kedaluwarsa dalam 1 jam
-  //       });
-  //       Cookies.set(
-  //         `refresh${uniqueCode}_token`,
-  //         data.data.user.refresh_token,
-  //         {
-  //           expires: 7,
-  //         },
-  //       );
-  //       return data;
-  //     } else {
-  //       return data;
-  //     }
-  //   } catch (error) {
-  //     return error;
-  //   }
-  // }
 
   async handleUserLogout(token: string) {
     try {
@@ -225,7 +189,43 @@ export class AuthHandler {
     }
   }
 
-  authorizeUser(pagePermission?: "jobhunter" | "company" | "developer", compare?: string) {
+  async resendEmailVerification(email: string) {
+    try {
+      const response = await api.post(
+        `/auth/resend-verification`,
+        { email: email },
+        {
+          validateStatus: (status) => status < 500, // Treat only 500+ as errors
+        },
+      );
+
+      if (response.status === 200) {
+        toast.success(
+          "Success! We've sent the verification email to your inbox.",
+        );
+        return { success: true };
+      } else if (response.status === 400) {
+        toast.error(response.data.message || "Invalid request.");
+        return { success: false };
+      } else {
+        toast.error(
+          "Oops! We couldn't resend the verification email. Please try again later.",
+        );
+        return { success: false };
+      }
+    } catch (error: any) {
+      console.error("Error resending verification email:", error);
+      toast.error(
+        "Failed to resend verification email. Please try again later.",
+      );
+      return { success: false, message: error.message };
+    }
+  }
+
+  authorizeUser(
+    pagePermission?: "jobhunter" | "company" | "developer",
+    compare?: string,
+  ) {
     AuthorizeUser(pagePermission, compare);
   }
 }

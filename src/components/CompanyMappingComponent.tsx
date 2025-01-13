@@ -43,7 +43,7 @@ function CompanyMappingComponent() {
 
   return (
     <>
-      <div className="max-w-screen-xl rounded-xl mx-auto overflow-x-auto flex gap-4 justify-start snap-x lg:hidden">
+      <div className=" rounded-xl overflow-x-auto grid grid-cols-1 gap-4 justify-start snap-x lg:hidden">
         {/* Map through dummyCompanies and render CompanyComponent for each company */}
         {companyList.map((company, index) => (
           <div
@@ -62,7 +62,7 @@ function CompanyMappingComponent() {
           </div>
         ))}
       </div>
-      <div className="hidden max-w-screen-xl mx-auto lg:grid grid-cols-4 gap-4 justify-center rounded-xl">
+      <div className="hidden lg:grid grid-cols-4 gap-4 rounded-xl">
         {/* Map through dummyCompanies and render CompanyComponent for each company */}
         {companyList.slice(0, 8).map(
           (

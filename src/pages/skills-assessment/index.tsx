@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Navbar } from "@/components/NavigationBar/Navbar";
 import { Button } from "@/components/ui/button";
 import Asessmentcard, {
@@ -15,6 +15,7 @@ import LoadingLoader from "@/components/LoadingLoader";
 import Image from "next/image";
 import { useEffect } from "react";
 import axios from "axios";
+import VerifyBanner from "@/components/VerifyBanner";
 
 // DUMMY
 
@@ -30,11 +31,12 @@ function Index() {
 	);
 	const [hasMore, setHasMore] = useState<boolean>(true); // For pagination
 	const [error, setError] = useState<string | null>(null);
+  const [callBackPath, setcallBackPath] = useState<string>("");
+  const { isLoggedIn, subscriptionId, isVerified } = useSelector(
+    (state: RootState) => state.auth,
+  );
 	const [offset, setOffset] = useState(0);
 	const limit = 6; // Set your pagination limit here
-	const { isLoggedIn, subscriptionId } = useSelector(
-		(state: RootState) => state.auth
-	);
 	const { currentModalId } = useSelector(
 		(state: RootState) => state.modalController
 	);
@@ -56,7 +58,6 @@ function Index() {
 	const fetchAssessmentData = async (reset = false) => {
 		try {
 			setIsLoading(true);
-
 			const response = await axios.get(
 				`http://localhost:8000/api/dev/getassessmenttest`,
 				{
@@ -109,6 +110,18 @@ function Index() {
 		fetchAssessmentData();
 	};
 
+function handleRedirect() {
+    dispatch(closeModalAction());
+    router.push(`/auth/login/jobhunter?callback=${callBackPath}`);
+  }
+
+  useEffect(() => {
+    if (router.isReady) {
+      // Use asPath for full path (including query), or pathname for the route
+      setcallBackPath(router.asPath);
+    }
+  }, [router.isReady, router.asPath]);
+
 	return (
 		<>
 			<ModalContainer
@@ -135,7 +148,7 @@ function Index() {
 						<Button
 							className={`w-full`}
 							variant={"primary"}
-							// onClick={handleRedirect}
+							onClick={handleRedirect}
 						>
 							Login
 						</Button>
@@ -159,8 +172,7 @@ function Index() {
 							Ready to Test Your Skills?
 						</h2>
 						<p className={`text-neutral-600 text-sm`}>
-							{`To access our exciting skill assessments and earn valuable certifications, 
-      you'll need to subscribe to one of our plans.Get started today and unlock your full potential!`}
+							{`To access our exciting skill assessments and earn valuable certifications, you'll need to subscribe to one of our plans.Get started today and unlock your full potential!`}
 						</p>
 					</div>
 					<div className={"flex gap-4"}>
@@ -180,8 +192,9 @@ function Index() {
 
 			{/*MAIN*/}
 			<main className={"px-4 "}>
-				<Navbar pageRole={"jobhunter"} />
-				<section className={"w-full mt-10"}>
+ <Navbar pageRole={"jobhunter"} />
+        {isLoggedIn && !isVerified && <VerifyBanner />}				
+        <section className={"w-full mt-10"}>
 					<div
 						className={
 							" w-full mx-auto  text-center rounded-2xl bg-cover object-center"

@@ -1,7 +1,7 @@
 import { LoginAuth, UserRole } from "@/models/auth.model";
 import { toast } from "sonner";
 import { AppDispatch } from "@/store";
-import { loginUser, resetState } from "@/store/slices/authSlice";
+import { loginUser, resetState, setCallback } from "@/store/slices/authSlice";
 import { NextRouter } from "next/router";
 
 export const handleFormChange = (
@@ -34,15 +34,19 @@ export const handleLoginEffect = (
   error: string | null,
   router: NextRouter,
   dispatch: AppDispatch,
+  callback: string,
 ) => {
   if (isLoggedIn) {
     toast.success("Login successful!");
     if (userRole === UserRole.JOBHUNTER) {
-      router.push("/");
+      // Redirect based on callback value
+      const redirectTo = callback || "/";
+      console.log("REDIRECTTOK", redirectTo);
+      router.push(redirectTo);
       dispatch(resetState());
       return;
     } else if (userRole === UserRole.COMPANY) {
-      router.push("/dashboard/company");
+      router.push(callback || "/dashboard/company");
       dispatch(resetState());
       return;
     } else if (userRole === UserRole.DEVELOPER) {

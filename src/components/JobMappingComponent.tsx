@@ -12,12 +12,13 @@ import { RootState } from "@/store";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { toast } from "sonner";
 
 const JobPostSection: React.FC = () => {
   const [jobLpData, SetjobLpData] = useState<JobPostProps[]>([]);
 
   const bookmarks = useSelector(
-    (state: RootState) => state.bookmarks.bookmarks
+    (state: RootState) => state.bookmarks.bookmarks,
   );
 
   const dispatch: AppDispatch = useDispatch();
@@ -64,21 +65,21 @@ const JobPostSection: React.FC = () => {
       }
 
       const existingBookmark = bookmarks.find(
-        (bookmark) => bookmark.jobPostId === jobPostId
+        (bookmark) => bookmark.jobPostId === jobPostId,
       );
 
       if (existingBookmark) {
         await axios.post(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/applyjob/bookmark/remove`,
           { wishlist_id: existingBookmark.wishlist_id },
-          { headers: { Authorization: `Bearer ${token}` } }
+          { headers: { Authorization: `Bearer ${token}` } },
         );
         dispatch(removeBookmark(existingBookmark.wishlist_id));
       } else {
         const response = await axios.post(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/applyjob/bookmark`,
           { jobPostId },
-          { headers: { Authorization: `Bearer ${token}` } }
+          { headers: { Authorization: `Bearer ${token}` } },
         );
         dispatch(addBookmark(response.data.bookmark));
       }
@@ -88,11 +89,11 @@ const JobPostSection: React.FC = () => {
   };
 
   return (
-    <div className="max-w-screen-xl mx-auto overflow-x-auto flex gap-6 justify-start sm:justify-start snap-x sm:snap-none px-4 sm:px-0">
+    <div className="overflow-x-auto flex gap-6 justify-start sm:justify-start snap-x sm:snap-none px-4 sm:px-0">
       {jobLpData && jobLpData.length > 0 ? (
         jobLpData.map((jobPost: JobPostProps, index: number) => {
           const isBookmarked = bookmarks.some(
-            (bookmark) => bookmark.jobPostId === Number(jobPost.job_id)
+            (bookmark) => bookmark.jobPostId === Number(jobPost.job_id),
           );
           return (
             <div

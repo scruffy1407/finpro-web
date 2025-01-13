@@ -17,25 +17,40 @@ function JobHunterLogin() {
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
 
-  const { isLoggedIn, error } = useSelector((state: RootState) => state.auth);
+  const { isLoggedIn, error, callback } = useSelector(
+    (state: RootState) => state.auth,
+  );
 
   const [loginForm, setLoginForm] = useState({
     email: "",
     password: "",
     user_role: UserRole.JOBHUNTER,
-    callback: router.query.callback || "",
+    callback: "",
   });
   const [btnDisable, setBtnDisable] = useState(false);
 
+  // Update `callback` when the query is ready
   useEffect(() => {
-    handleLoginEffect(
-      UserRole.JOBHUNTER,
-      isLoggedIn,
-      error as null,
-      router,
-      dispatch,
-    );
-  }, [isLoggedIn, error, router, dispatch]);
+    if (router.isReady && router.query.callback) {
+      setLoginForm((prev) => ({
+        ...prev,
+        callback: router.query.callback as string,
+      }));
+    }
+  }, [router.isReady, router.query.callback]);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      handleLoginEffect(
+        UserRole.JOBHUNTER,
+        isLoggedIn,
+        error as null,
+        router,
+        dispatch,
+        callback as string,
+      );
+    }
+  }, [isLoggedIn, error, router, callback, dispatch]);
 
   return (
     <>

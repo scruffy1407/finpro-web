@@ -2,22 +2,14 @@ import React from "react";
 import { HeadingProps } from "@/utils/interface";
 
 function HeadingRelatedComponent({ heading, paragraph }: HeadingProps) {
-	return (
-		<div className="max-w-screen-xl mx-auto px-4 md:px-0 ">
-			<div className="flex justify-between">
-				<div className="flex flex-col gap-5">
-					<div>
-						<h2 className="text-2xl font-semibold text-neutral-900">
-							{heading}
-						</h2>
-					</div>
-					<div>
-						<p>{paragraph}</p>
-					</div>
-				</div>
-			</div>
-		</div>
-	);
+  return (
+    <div className="flex justify-between">
+      <div className="flex flex-col gap-3">
+        <h2 className="text-2xl font-semibold text-neutral-900">{heading}</h2>
+        <p className={"text-sm text-neutral-600"}>{paragraph}</p>
+      </div>
+    </div>
+  );
 }
 
 export default HeadingRelatedComponent;

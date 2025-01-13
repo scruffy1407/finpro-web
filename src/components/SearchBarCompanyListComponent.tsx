@@ -78,7 +78,7 @@ function SearchBarCompanyListComponent({ handleSearch }: SearchProps) {
   }, []);
 
   return (
-    <div className=" max-w-screen-xl mx-auto flex flex-col md:flex md:flex-row gap-5 items-center md:items-end mt-2">
+    <div className=" flex flex-col md:flex md:flex-row gap-5 items-center md:items-end ">
       <div className="w-full md:w-[45%]">
         <Label className="font-semibold text-neutral-950" htmlFor="position">
           Company Name :{" "}

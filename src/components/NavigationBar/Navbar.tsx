@@ -43,9 +43,9 @@ export function Navbar({ pageRole }: { pageRole: UserRole }) {
     switch (pageRole) {
       case "jobhunter":
         return (
-          <nav className={"px-4"}>
+          <nav className={"max-w-screen-xl mx-auto px-4"}>
             <div
-              className={`max-w-screen-xl mx-auto mt-4 rounded-xl py-5 px-4 pr-5 ${themeUpdate.bgColor}`}
+              className={`mt-4 rounded-xl py-5 px-4 pr-5 ${themeUpdate.bgColor}`}
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
