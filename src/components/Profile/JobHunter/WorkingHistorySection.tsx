@@ -77,7 +77,7 @@ function WorkingHistorySection() {
           </Button>
         </div>
         {workingExpList.length > 0 ? (
-          <div className={`grid grid-cols-1 gap-4`}>
+          <div className={`grid grid-cols-1 gap-4 lg:grid-cols-2`}>
             {workingExpList.map((workExp, key: number) => {
               return (
                 <WorkingHistoryItem
@@ -89,6 +89,7 @@ function WorkingHistorySection() {
                   description={workExp.jobDescription}
                   startDate={workExp.startDate}
                   endDate={workExp.endDate}
+                  currentlyWorking={workExp.currentlyWorking}
                   onEdit={() => {
                     dispatch(
                       setSelectedItem(workExp.workingExperienceId as number)

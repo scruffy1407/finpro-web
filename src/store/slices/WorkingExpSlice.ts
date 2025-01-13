@@ -17,6 +17,7 @@ export interface WorkingExperience {
   jobReview?: reviewResponse[];
   startDate: string;
   endDate: string;
+  currentlyWorking: boolean;
 }
 interface PendingState {
   actionLoading: boolean;
@@ -50,6 +51,7 @@ const initialState: WorkingExpList = {
     jobReview: [],
     startDate: "",
     endDate: "",
+    currentlyWorking: false,
   },
   pendingState: {
     actionLoading: false,
@@ -97,6 +99,7 @@ export const addNewWorkingExperience = createAsyncThunk(
           ...data.formData,
           jobHunterId: data.formData.jobHunterId as number,
           companyId: data.formData.companyId ?? null,
+          currentlyWorking: data.formData.currentlyWorking,
         }
       );
       if (response.status === 201) {
@@ -159,7 +162,7 @@ const workExpSlice = createSlice({
       if (experienceIndex !== -1) {
         state.workingExpList[experienceIndex] = {
           ...state.workingExpList[experienceIndex],
-          ...updatedExperience, // Update existing experience properties
+          ...updatedExperience,
         };
       }
     },
@@ -179,7 +182,8 @@ const workExpSlice = createSlice({
                 jobHunterId: workExp.jobHunterId,
                 jobReview: workExp.JobReview,
                 startDate: formatDate(workExp.start_date),
-                endDate: formatDate(workExp.end_date),
+                endDate: workExp.end_date === null ? "" : formatDate(workExp.end_date),
+                currentlyWorking: workExp.currently_working ?? true,
               };
             }
           );
@@ -225,8 +229,9 @@ const workExpSlice = createSlice({
           jobReview: [],
           startDate: formatDate(action.payload.start_date),
           endDate: formatDate(action.payload.end_date),
+          currentlyWorking: action.payload.currently_working ?? true,
         });
-        toast.success("Success add new working experience");
+        toast.success("Successfuly Add New Working Experience");
       });
   },
 });

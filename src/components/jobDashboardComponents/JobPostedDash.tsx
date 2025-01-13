@@ -62,7 +62,7 @@ function JobPostedDash() {
   const handleDelete = async (jobId: number) => {
     setLoadingState(true);
     try {
-      const response = await deleteJobPostDash(jobId);
+      const response = await deleteJobPostDash(jobId, token as string);
       if (response?.message) {
         alert(response.message);
       } else {

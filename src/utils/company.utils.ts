@@ -3,7 +3,6 @@ import { reviewResponse } from "@/models/company.model";
 import { toast } from "sonner";
 import axios from "axios";
 
-
 import { InterviewData } from "@/components/Form/FormSetNewInterview";
 
 export class CompanyUtils {
@@ -22,89 +21,86 @@ export class CompanyUtils {
     }
   }
 
-	async createCompanyReview(token: string, data: reviewResponse) {
-		try {
-			const response = await api.post("/api/user/job-hunter/review", data, {
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			});
-			if (response.status === 201) {
-				return response.data;
-			} else {
-				return response.data;
-			}
-		} catch (e) {
-			return e;
-		}
-	}
+  async createCompanyReview(token: string, data: reviewResponse) {
+    try {
+      const response = await api.post("/api/user/job-hunter/review", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.status === 201) {
+        return response.data;
+      } else {
+        return response.data;
+      }
+    } catch (e) {
+      return e;
+    }
+  }
 
-	validateReviewData(data: reviewResponse) {
-		if (
-			data.reviewTitle === "" ||
-			data.reviewDescription === "" ||
-			data.careerPathRating === 0 ||
-			data.facilityRating === 0 ||
-			data.culturalRating === 0 ||
-			data.workLifeBalanceRating === 0 ||
-			data.workExperienceId === 0
-		) {
-			toast.error("All fields are required.");
-			return false;
-		}
-		return true;
-	}
+  validateReviewData(data: reviewResponse) {
+    if (
+      data.reviewTitle === "" ||
+      data.reviewDescription === "" ||
+      data.careerPathRating === 0 ||
+      data.facilityRating === 0 ||
+      data.culturalRating === 0 ||
+      data.workLifeBalanceRating === 0 ||
+      data.workExperienceId === 0
+    ) {
+      toast.error("All fields are required.");
+      return false;
+    }
+    return true;
+  }
 
-	async applyJob(token: string, data: FormData) {
-		try {
-			const response = await api.post("/applyjob/apply", data, {
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			});
-			if (response.status === 201) {
-				return response.status;
-			} else {
-				return response.data.message;
-			}
-		} catch (e) {
-			return e.response;
-		}
-	}
+  async applyJob(token: string, data: FormData) {
+    try {
+      const response = await api.post("/applyjob/apply", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.status === 201) {
+        return response.status;
+      } else {
+        return response.data.message;
+      }
+    } catch (e) {
+      return e.response;
+    }
+  }
 
-	async applyJobSub(token: string, data: FormData) {
-		try {
-			const response = await axios.put(
-				`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/applyjobtest/applyjobtest`,
-				data,
-				{
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
-				}
-			);
-			if (response.status === 200) {
-				// Check for 200 instead of 201
-				return response;
-			} else {
-				return response.data.message;
-			}
-		} catch (error) {
-			const err = error as Error;
-			return err.message;
-		}
-	}
+  async applyJobSub(token: string, data: FormData) {
+    try {
+      const response = await axios.put(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/applyjobtest/applyjobtest`,
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      if (response.status === 200) {
+        // Check for 200 instead of 201
+        return response;
+      } else {
+        return response.data.message;
+      }
+    } catch (error) {
+      const err = error as Error;
+      return err.message;
+    }
+  }
 
-
-
-
-	async getCompanyList(
-		companyName: string,
-		companyLocation: string,
-		currentPage?: number,
-		limit?: number
-	) {
-		let queryString = `?page=${currentPage}&limit=${limit || 12}`;
+  async getCompanyList(
+    companyName: string,
+    companyLocation: string,
+    currentPage?: number,
+    limit?: number,
+  ) {
+    let queryString = `?page=${currentPage}&limit=${limit || 12}`;
 
     try {
       const response = await api.get(`/api/company/company${queryString}`);
@@ -171,6 +167,36 @@ export class CompanyUtils {
       }
     } catch (e) {
       return e;
+    }
+  }
+  async getApplicantDetail(applicantId: number, token: string) {
+    try {
+      const response = await api.get(
+        `/applyjob/applicant-detail?applicantId=${applicantId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          validateStatus: (status) => status < 500,
+        },
+      );
+      if (response.status == 200) {
+        return {
+          success: true,
+          data: response.data,
+        };
+      } else {
+        toast.error(response?.data?.message);
+        return {
+          success: false,
+        };
+      }
+    } catch (error: any) {
+      toast.error("Something Went Wrong, refresh your browser");
+      return {
+        success: false,
+        message: error.message,
+      };
     }
   }
 }

@@ -24,7 +24,8 @@ function FormEditWorkingExperience({
   jobHunterId,
   startDate,
   endDate,
-}: WorkingExperience) {
+  currentlyWorking = false,
+}: WorkingExperience & { currentlyWorking?: boolean }) {
   const dispatch = useDispatch<AppDispatch>();
   const profileHandler = new ProfileHandler();
   const [isDisable, setIsDisable] = useState<boolean>(true);
@@ -38,6 +39,7 @@ function FormEditWorkingExperience({
     jobTitle: jobTitle,
     startDate: startDate,
     endDate: endDate,
+    currentlyWorking: currentlyWorking ?? true,
   });
   const options = (inputValue: string, callback: (options: []) => void) => {
     fetchCompanyData(inputValue)
@@ -103,15 +105,46 @@ function FormEditWorkingExperience({
     }
   }
 
-  useEffect(() => {
-    const startDate = new Date(editForm.startDate);
-    const endDate = new Date(editForm.endDate);
-    const isInvalidDateRange = startDate > endDate;
+  function updateIsDisable(updatedForm: WorkingExperience) {
+    const startDate = updatedForm.startDate
+      ? new Date(updatedForm.startDate)
+      : null;
+    const endDate = updatedForm.endDate ? new Date(updatedForm.endDate) : null;
+
+    const isInvalidDateRange = !!startDate && !!endDate && startDate > endDate;
 
     setIsDisable(
-      editForm.jobDescription === "" ||
-        editForm.jobTitle === "" ||
+      !updatedForm.jobDescription ||
+        !updatedForm.jobTitle ||
+        updatedForm.companyId === null ||
+        (!updatedForm.currentlyWorking && !updatedForm.endDate) ||
+        isInvalidDateRange
+    );
+  }
+
+  function handleCurrentlyWorkingChange(
+    e: React.ChangeEvent<HTMLInputElement>
+  ) {
+    const { checked } = e.target;
+    const updatedForm = {
+      ...editForm,
+      currentlyWorking: checked,
+      endDate: checked ? "" : editForm.endDate,
+    };
+    setEditForm(updatedForm);
+    updateIsDisable(updatedForm);
+  }
+
+  useEffect(() => {
+    const startDate = editForm.startDate ? new Date(editForm.startDate) : null;
+    const endDate = editForm.endDate ? new Date(editForm.endDate) : null;
+    const isInvalidDateRange = !!startDate && !!endDate && startDate > endDate;
+
+    setIsDisable(
+      !editForm.jobDescription ||
+        !editForm.jobTitle ||
         editForm.companyId === null ||
+        (!editForm.currentlyWorking && !editForm.endDate) ||
         isInvalidDateRange
     );
   }, [
@@ -120,7 +153,9 @@ function FormEditWorkingExperience({
     editForm.companyId,
     editForm.startDate,
     editForm.endDate,
+    editForm.currentlyWorking,
   ]);
+
   return (
     <form onSubmit={handleEditWork} className="flex flex-col gap-5">
       <div>
@@ -136,7 +171,7 @@ function FormEditWorkingExperience({
           defaultValue={{
             value: editForm.companyId,
             label: editForm.companyName,
-          }} // Set default value
+          }}
           onChange={handleCompanyChange}
           theme={(theme) => {
             return {
@@ -178,15 +213,32 @@ function FormEditWorkingExperience({
           name="startDate"
         />
       </div>
-      <div className="mb-4">
-        <label className="block text-sm font-medium">End Date</label>
+
+      {/* End Date */}
+      {!editForm.currentlyWorking && (
+        <div className="mb-4">
+          <label className="block text-sm font-medium">End Date</label>
+          <input
+            type="date"
+            className="input"
+            value={editForm.endDate}
+            onChange={handleChange}
+            name="endDate"
+            required
+          />
+        </div>
+      )}
+
+      <div className="mb-4 flex items-center gap-2">
         <input
-          type="date"
-          className="input"
-          value={editForm.endDate}
-          onChange={handleChange}
-          name="endDate"
+          type="checkbox"
+          id="currentlyWorking"
+          checked={editForm.currentlyWorking ?? true}
+          onChange={handleCurrentlyWorkingChange}
         />
+        <Label htmlFor="currentlyWorking" className="text-sm font-medium">
+          Currently Working Here
+        </Label>
       </div>
 
       {/*EXPERIENCE*/}
