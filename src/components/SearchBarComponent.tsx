@@ -20,13 +20,13 @@ const customStyles = {
   control: (provided: any) => ({
     ...provided,
     borderRadius: "12px",
-    zIndex: 999,
+    zIndex: 20,
     padding: "1px",
     borderColor: "rgb(228 228 261)",
   }),
   menu: (provided: any) => ({
     ...provided,
-    zIndex: 9999,
+    zIndex: 20,
   }),
 };
 

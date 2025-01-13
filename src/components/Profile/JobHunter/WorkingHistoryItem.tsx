@@ -22,9 +22,9 @@ interface WorkingHistoryProps {
   position: string;
   description: string;
   startDate: string;
-  endDate: string;
-  onDelete?: () => void;
-  onEdit?: () => void;
+  endDate?: string;
+  currentlyWorking: boolean;
+  onEdit: () => void;
 }
 
 function WorkingHistoryItem({
@@ -35,6 +35,7 @@ function WorkingHistoryItem({
   companyId,
   startDate,
   endDate,
+  currentlyWorking,
 }: WorkingHistoryProps) {
   const accessToken = Cookies.get("accessToken");
   const dispatch = useDispatch<AppDispatch>();
@@ -47,6 +48,7 @@ function WorkingHistoryItem({
   const { currentModalId, editId } = useSelector(
     (state: RootState) => state.modalController
   );
+
   const handleCloseModal = () => {
     dispatch(closeModalAction());
   };
@@ -69,6 +71,7 @@ function WorkingHistoryItem({
           jobHunterId={innerId as number}
           startDate={startDate}
           endDate={endDate}
+          currentlyWorking={currentlyWorking}
         />
       </ModalContainer>
 
@@ -95,10 +98,13 @@ function WorkingHistoryItem({
       <div
         className={`border border-neutral-200 rounded-xl p-4 flex flex-col gap-4`}
       >
-        <div className={`flex gap-2 item-center justify-between`}>
+        <div className={`flex gap-2 items-center justify-between`}>
           <div className={`flex flex-col gap-1`}>
             <p className={`text-xs text-neutral-600`}>{companyName}</p>
             <h3 className={`text-sm font-bold text-neutral-950`}>{position}</h3>
+            <p className={`text-xs text-neutral-600`}>
+              {startDate} - {currentlyWorking ? "Present" : endDate}
+            </p>
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger>

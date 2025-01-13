@@ -49,14 +49,14 @@ function ProfilePage() {
   const pagePermission = "jobhunter";
   authHandler.authorizeUser(pagePermission);
   const { name, email, photo, isLoggedIn } = useSelector(
-    (state: RootState) => state.auth,
+    (state: RootState) => state.auth
   );
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const dispatch = useDispatch<AppDispatch>();
   const hiddenFileInput = useRef<HTMLInputElement>(null);
 
   const { currentModalId } = useSelector(
-    (state: RootState) => state.modalController,
+    (state: RootState) => state.modalController
   );
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -86,11 +86,14 @@ function ProfilePage() {
     setLoading(true);
     try {
       const token = Cookies.get("accessToken");
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/cv/cv`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/cv/cv`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       const cvData = response.data.cvdata.jobHunter[0];
       const jobHunterSubscriptionId =
         cvData?.jobHunterSubscription?.subscriptionId || null;
@@ -120,7 +123,7 @@ function ProfilePage() {
               ? new Date(exp.end_date).toLocaleDateString()
               : "Present",
             description: exp.job_description,
-          }),
+          })
         ),
         education: cvData.education.map(
           (edu: {
@@ -133,7 +136,7 @@ function ProfilePage() {
             degree: edu.education_degree,
             graduationDate: new Date(edu.graduation_date).toLocaleDateString(),
             description: edu.education_description,
-          }),
+          })
         ),
       };
       setProfileData(transformedData);
@@ -150,25 +153,6 @@ function ProfilePage() {
     fetchData();
   }, [isLoggedIn]);
 
-  // Get Remaining CV Quota
-  const [remainingGenerations, setRemainingGenerations] = useState<
-    number | null
-  >(null);
-  const fetchGenerationQuota = async () => {
-    try {
-      const token = Cookies.get("accessToken");
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/cv/cvquota`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setRemainingGenerations(response.data.remaining);
-    } catch (error) {
-      console.error("Failed to fetch quota", error);
-    }
-  };
-  useEffect(() => {
-    fetchGenerationQuota();
-  }, []);
-
   // Tracking CV Counter
   const handleGenerateCV = async () => {
     try {
@@ -180,12 +164,11 @@ function ProfilePage() {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        },
+        }
       );
-
       if (response.data.success) {
         setShowPDF(true);
-        await fetchGenerationQuota();
+        // await fetchGenerationQuota();
       } else {
         toast.error(response.data.message);
       }
@@ -198,7 +181,6 @@ function ProfilePage() {
   // Confirmation Modal Popup
   const handleClosePDF = () => {
     setShowPDF(false);
-    fetchGenerationQuota();
   };
   const openConfirmationModal = () => {
     setShowConfirmationModal(true);
@@ -286,20 +268,14 @@ function ProfilePage() {
                   loading ||
                   jobHunterSubscriptionId === null ||
                   jobHunterSubscriptionId === 1 ||
-                  subscriptionActive === false ||
-                  remainingGenerations === 0
+                  subscriptionActive === false
                 }
               >
                 {loading
                   ? LoadingLoader()
-                  : jobHunterSubscriptionId === 1 ||
-                      subscriptionActive === false
+                  : jobHunterSubscriptionId === 1
                     ? "Generate CV 🔒 (Premium)"
-                    : `Generate CV (PDF) ${
-                        remainingGenerations !== null
-                          ? `(${remainingGenerations} left)`
-                          : ""
-                      }`}
+                    : "Generate CV (PDF)"}
               </Button>
 
               {showConfirmationModal && (
@@ -308,11 +284,7 @@ function ProfilePage() {
                   onClose={closeConfirmationModal}
                   title="Confirm CV Generation"
                 >
-                  <p>
-                    Are you sure you want to generate a CV? This will
-                    consume&nbsp;
-                    <b>1 Quota</b>
-                  </p>
+                  <p>Are you sure you want to generate a CV?</p>
                   <p>
                     <b className="text-red-500">
                       Make Sure You Fill All Profile Information Before
