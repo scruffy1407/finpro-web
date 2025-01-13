@@ -89,7 +89,9 @@ const FormJobApplication = ({
         response = await companyUtils.applyJob(token as string, applyJobData);
       }
       if (
-        (response.status === 200 || response.status === 201) &&
+        (response.status === 200 ||
+          response.status === 201 ||
+          response.status === 204) &&
         response.data?.success
       ) {
         toast.success("Application sent successfully");

@@ -89,6 +89,7 @@ const JobApplicantDetail: React.FC = () => {
       minimumFractionDigits: 0,
     }).format(value);
   };
+  console.log("DATAAA", applicantList);
 
   const handleSelectChange = (value) => {
     setSelectedView(value); // Update the state with the selected value
