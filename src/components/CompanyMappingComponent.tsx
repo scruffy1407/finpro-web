@@ -21,7 +21,7 @@ function CompanyMappingComponent() {
       8,
     );
     const companyList: CompanyShortProps[] = [];
-    response.data.listCompany.map((company: any) => {
+    response?.data?.listCompany.map((company: any) => {
       companyList.push({
         companyId: company.company_id,
         companyName: company.company_name,

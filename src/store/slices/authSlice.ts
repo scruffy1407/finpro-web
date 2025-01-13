@@ -7,72 +7,72 @@ import { AuthHandler } from "@/utils/auth.utils";
 import { LoginAuth } from "@/models/auth.model";
 
 interface PendingState {
-  dataLoading: boolean;
+	dataLoading: boolean;
 }
 
 interface LoginState {
-  baseId: number | null;
-  innerId: number | null;
-  photo?: string;
-  email: string;
-  name?: string;
-  phone_number?: string | null;
-  password?: string;
-  user_role: string | null;
-  isLoading?: boolean;
-  isLoggedIn: boolean;
-  subscriptionId: number;
-  isVerified: boolean;
-  subscriptionActive: boolean;
-  error?: string | null;
-  accessToken?: string | null;
-  refreshToken?: string | null;
-  callback?: string;
-  pendingState: PendingState;
+	baseId: number | null;
+	innerId: number | null;
+	photo?: string;
+	email: string;
+	name?: string;
+	phone_number?: string | null;
+	password?: string;
+	user_role: string | null;
+	isLoading?: boolean;
+	isLoggedIn: boolean;
+	subscriptionId: number;
+	isVerified: boolean;
+	subscriptionActive: boolean;
+	error?: string | null;
+	accessToken?: string | null;
+	refreshToken?: string | null;
+	callback?: string;
+	pendingState: PendingState;
 }
 const authHandler = new AuthHandler();
 
 const initialState: LoginState = {
-  baseId: null,
-  innerId: null,
-  photo: "",
-  email: "",
-  name: "",
-  password: "",
-  user_role: null,
-  isLoading: false,
-  isLoggedIn: false,
-  isVerified: false,
-  error: null,
-  subscriptionActive: false,
-  subscriptionId: 1,
-  accessToken: "",
-  refreshToken: "",
-  callback: "",
-  pendingState: {
-    dataLoading: false,
-  },
+	baseId: null,
+	innerId: null,
+	photo: "",
+	email: "",
+	name: "",
+	password: "",
+	user_role: null,
+	isLoading: false,
+	isLoggedIn: false,
+	isVerified: false,
+	error: null,
+	subscriptionActive: false,
+	subscriptionId: 1,
+	accessToken: "",
+	refreshToken: "",
+	callback: "",
+	pendingState: {
+		dataLoading: false,
+	},
 };
 
 export const loginUser = createAsyncThunk(
-  "auth/loginUser",
-  async (
-    loginForm: { loginData: LoginAuth },
-    { rejectWithValue }: { rejectWithValue: (value: string) => void },
-  ) => {
-    try {
-      loginSchema.parse(loginForm.loginData);
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/login`,
-        loginForm.loginData,
-        {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true,
-        },
-      );
-      const { access_token, refresh_token, data } = response.data.data;
-      Cookies.set("accessToken", access_token, { expires: 1 / 24 });
-      Cookies.set("refreshToken", refresh_token, { expires: 3 });
+	"auth/loginUser",
+	async (
+		loginForm: { loginData: LoginAuth },
+		{ rejectWithValue }: { rejectWithValue: (value: string) => void }
+	) => {
+		try {
+			loginSchema.parse(loginForm.loginData);
+			const response = await axios.post(
+				`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/login`,
+				loginForm.loginData,
+				{
+					headers: { "Content-Type": "application/json" },
+					withCredentials: true,
+				}
+			);
+			const { access_token, refresh_token, data } = response.data.data;
+			Cookies.set("accessToken", access_token, { expires: 1 / 24 });
+			Cookies.set("refreshToken", refresh_token, { expires: 3 });
 
       const callBackUrl = loginForm.loginData.callback || "";
 
@@ -90,27 +90,27 @@ export const loginUser = createAsyncThunk(
 );
 
 export const validateUserToken = createAsyncThunk(
-  "auth/validateToken",
-  async (token: string) => {
-    try {
-      const user = await authHandler.validateUserToken(token);
+	"auth/validateToken",
+	async (token: string) => {
+		try {
+			const user = await authHandler.validateUserToken(token);
 
-      if (user.status !== 200) {
-        return null;
-      } else {
-        return user.data;
-      }
-    } catch (e: unknown) {
-      return e;
-    }
-  },
+			if (user.status !== 200) {
+				return null;
+			} else {
+				return user.data;
+			}
+		} catch (e: unknown) {
+			return e;
+		}
+	}
 );
 
 export const refreshUserToken = createAsyncThunk(
-  "auth/refreshAccessToken",
-  async (refreshToken: string) => {
-    await authHandler.refreshUserAcessToken(refreshToken);
-  },
+	"auth/refreshAccessToken",
+	async (refreshToken: string) => {
+		await authHandler.refreshUserAcessToken(refreshToken);
+	}
 );
 
 const authSlice = createSlice({

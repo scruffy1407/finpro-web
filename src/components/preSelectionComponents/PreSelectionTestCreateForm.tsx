@@ -32,7 +32,67 @@ const PreSelectionTestCreateForm: React.FC<CreatePreSelectionFormProps> = ({
 	};
 
 	const handleSubmit = async (e: React.FormEvent) => {
-		e.preventDefault();
+		e.preventDefault(); // Prevent default form submission behavior
+
+		try {
+			// Ensure accessToken is available
+			if (!accessToken) {
+				alert("Authorization token is missing. Please log in.");
+				return;
+			}
+
+			// Prepare the request body
+			const requestBody = {
+				testName: formData.test_name,
+				image: "", // Set the image field to an empty string
+				passingGrade: formData.passing_grade, // Ensure this is a number
+				duration: formData.duration, // Ensure this is a number
+			};
+
+			// Send the POST request
+			const response = await fetch(
+				"http://localhost:8000/api/company/createpretest",
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${accessToken}`, // Include the access token
+					},
+					body: JSON.stringify(requestBody), // Convert the request body to JSON
+				}
+			);
+
+			if (!response.ok) {
+				// If the response is not OK, handle the error
+				const errorData = await response.json();
+				console.error("Error creating pre-selection test:", errorData);
+				alert(`Error: ${errorData.message || "Failed to create test."}`);
+				return;
+			}
+
+			// If the request is successful
+			const responseData = await response.json();
+			console.log("Pre-selection test created successfully:", responseData);
+			alert("Test created successfully!");
+
+			// Optionally reset the form
+			setFormData({
+				test_name: "",
+				passing_grade: 50,
+				duration: 30,
+			});
+
+			// Optionally close the form
+			setShowForm(false);
+			window.location.reload();
+
+		} catch (error) {
+			console.error(
+				"An error occurred while creating the pre-selection test:",
+				error
+			);
+			alert("An error occurred. Please try again.");
+		}
 	};
 
 	return (

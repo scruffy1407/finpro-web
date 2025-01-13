@@ -1,7 +1,10 @@
 import axios, { InternalAxiosRequestConfig } from "axios";
 import { job } from "@/utils/axiosInterface";
 import { location } from "@/utils/axiosInterface";
+import Cookies from "js-cookie";
+
 const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
+const accessToken = Cookies.get("accessToken");
 
 const api = axios.create({
 	baseURL,
@@ -35,46 +38,46 @@ export async function getJobPost(
 		companyCity?: string;
 	}
 ) {
-  const { jobTitle, categoryId, jobType, dateRange, sortOrder, companyCity } =
-    searchQuery;
+	const { jobTitle, categoryId, jobType, dateRange, sortOrder, companyCity } =
+		searchQuery;
 
-  // Build the query string
-  let queryString = `jobPosts?page=${currentPage}&limit=15`;
+	// Build the query string
+	let queryString = `jobPosts?page=${currentPage}&limit=15`;
 
-  if (jobTitle) {
-    queryString += `&job_title=${jobTitle}`;
-  }
+	if (jobTitle) {
+		queryString += `&job_title=${jobTitle}`;
+	}
 
-  if (categoryId) {
-    queryString += `&categoryId=${categoryId}`;
-  }
+	if (categoryId) {
+		queryString += `&categoryId=${categoryId}`;
+	}
 
-  // Ensure empty string is passed instead of "all" for jobType
-  if (jobType !== undefined && jobType !== "all") {
-    queryString += `&jobType=${jobType}`;
-  }
+	// Ensure empty string is passed instead of "all" for jobType
+	if (jobType !== undefined && jobType !== "all") {
+		queryString += `&jobType=${jobType}`;
+	}
 
-  // Ensure empty string is passed instead of "all" for dateRange
-  if (dateRange !== undefined && dateRange !== "all") {
-    queryString += `&dateRange=${dateRange}`;
-  }
+	// Ensure empty string is passed instead of "all" for dateRange
+	if (dateRange !== undefined && dateRange !== "all") {
+		queryString += `&dateRange=${dateRange}`;
+	}
 
-  if (sortOrder) {
-    queryString += `&sortOrder=${sortOrder}`;
-  }
+	if (sortOrder) {
+		queryString += `&sortOrder=${sortOrder}`;
+	}
 
-  if (companyCity) {
-    // Add companyCity to the query string if provided
-    queryString += `&companyCity=${encodeURIComponent(companyCity)}`;
-  }
+	if (companyCity) {
+		// Add companyCity to the query string if provided
+		queryString += `&companyCity=${encodeURIComponent(companyCity)}`;
+	}
 
-  try {
-    const response = await job.get(queryString); // Make the API request
-    return response; // Return the data part of the response
-  } catch (error) {
-    console.error("Error fetching job posts:", error);
-    throw error;
-  }
+	try {
+		const response = await job.get(queryString); // Make the API request
+		return response; // Return the data part of the response
+	} catch (error) {
+		console.error("Error fetching job posts:", error);
+		throw error;
+	}
 }
 
 export const getProvince = async () => {
@@ -98,17 +101,15 @@ export async function getCategories() {
 }
 
 export async function getJobPostDash({
-  accessToken,
-  limit = 10,
-  page = 1,
-  jobTitle = "",
-  sortOrder = "",
+	limit = 10,
+	page = 1,
+	jobTitle = "",
+	sortOrder = "",
 }: {
-  accessToken: string;
-  limit?: number;
-  page?: number;
-  jobTitle?: string;
-  sortOrder?: string;
+	limit?: number;
+	page?: number;
+	jobTitle?: string;
+	sortOrder?: string;
 }) {
 	// Build the query string
 	let queryString = `companydashjob?page=${page}&limit=${limit}`;
@@ -130,6 +131,10 @@ export async function getJobPostDash({
 			Authorization: `Bearer ${accessToken}`,
 		},
 	};
+
+	console.log("THIS IS QUERRY STRING ");
+	console.log(queryString);
+
 	try {
 		const response = await job.get(queryString, config); // Make the API request
 		return response.data.data; // Return the data part of the response
@@ -153,6 +158,8 @@ export async function deleteJobPostDash(
 				},
 			}
 		);
+		console.log(`Requesting DELETE on job/${job_Id}`);
+
 		// Assuming the response from the server contains a message property
 		// Return the response with the success message
 		return response.data; // Ensure response.data contains the message
@@ -161,8 +168,6 @@ export async function deleteJobPostDash(
 		console.error("Error deleting job post:", error);
 		throw error; // Rethrow the error to be caught by the calling function
 	}
-
-
 }
 
 export default api;
