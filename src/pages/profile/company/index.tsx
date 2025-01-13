@@ -46,7 +46,8 @@ function CompanyProfilePage() {
       >
         <UploadImage image={selectedImage as File} />
       </ModalContainer>
-      <Navbar />
+      <Navbar
+      pageRole="company" />
       <section className="p-4">
         <div className="w-full flex flex-col gap-4 md:flex-row md:gap-6 md:max-w-screen-xl md:mx-auto">
           <div className="flex flex-col gap-5">
