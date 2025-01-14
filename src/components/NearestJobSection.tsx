@@ -20,13 +20,25 @@ interface NearestProps {
   hasLocation: boolean;
 }
 
+enum JobType {
+  fulltime = "Full Time",
+  freelance = "Freelance",
+  internship = "Internship",
+}
+
+enum JobSpace {
+  remoteworking = "Remote Working",
+  onoffice = "On Office",
+  hybrid = "Hybrid",
+}
+
 function NearestJobSection({ hasLocation }: NearestProps) {
   const dispatch: AppDispatch = useDispatch();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
   const [jobList, setJobList] = useState<JobPostProps[]>([]);
   const bookmarks = useSelector(
-    (state: RootState) => state.bookmarks.bookmarks,
+    (state: RootState) => state.bookmarks.bookmarks
   );
 
   const handleToggleBookmark = async (jobPostId: number) => {
@@ -38,21 +50,21 @@ function NearestJobSection({ hasLocation }: NearestProps) {
       }
 
       const existingBookmark = bookmarks.find(
-        (bookmark) => bookmark.jobPostId === jobPostId,
+        (bookmark) => bookmark.jobPostId === jobPostId
       );
 
       if (existingBookmark) {
         await axios.post(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/applyjob/bookmark/remove`,
           { wishlist_id: existingBookmark.wishlist_id },
-          { headers: { Authorization: `Bearer ${token}` } },
+          { headers: { Authorization: `Bearer ${token}` } }
         );
         dispatch(removeBookmark(existingBookmark.wishlist_id));
       } else {
         const response = await axios.post(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/applyjob/bookmark`,
           { jobPostId },
-          { headers: { Authorization: `Bearer ${token}` } },
+          { headers: { Authorization: `Bearer ${token}` } }
         );
         dispatch(addBookmark(response.data.bookmark));
       }
@@ -75,14 +87,19 @@ function NearestJobSection({ hasLocation }: NearestProps) {
       // Parse JSON string from the API response
       const location = JSON.parse(lastLocation);
       const response = await getNearestJob(location?.lat, location?.lng);
+      console.log(response, "Full API Response");
       const mappedData = response?.data.map((job: any) => ({
         job_id: job.job_id,
         job_title: job.job_title,
-        companyName: job.company.company_name || "Unknown",
-        company_city: job.company.company_city || "Unknown",
+        companyName: job.company.company_name || "Undisclosed Name",
+        company_city: job.company.company_city || "Undisclosed Location",
+        company_province:
+          job.company.company_province || "Undisclosed Location",
         logo: job.company.logo,
-        jobType: job.job_type ? [job.job_type] : [],
-        jobSpace: job.job_space,
+        jobType: job.job_type
+          ? [JobType[job.job_type as keyof typeof JobType]]
+          : [],
+        jobSpace: JobSpace[job.job_space as keyof typeof JobSpace],
         created_at: job.created_at,
         salaryMin: job.salary_min,
         salaryMax: job.salary_max,
@@ -90,13 +107,13 @@ function NearestJobSection({ hasLocation }: NearestProps) {
         experienceMin: job.job_experience_min,
         experienceMax: job.job_experience_max,
       }));
+      console.log(response, "INI YANG KE 2 COYYY");
+      console.log(mappedData, "INI YANG ke 3 COYY");
       setJobList(mappedData);
       console.log(response);
       setIsLoading(false);
     } catch (e) {}
   }
-
-  console.log(jobList);
 
   useEffect(() => {
     if (hasLocation) {
@@ -109,7 +126,7 @@ function NearestJobSection({ hasLocation }: NearestProps) {
     <section className={`w-full flex flex-col gap-5`}>
       <HeadingComponent
         heading="Jobs Near you"
-        paragraph="Explore our partner companies and discover the exciting job openings available right now."
+        paragraph="Explore our partner companies and discover exciting job openings available for you right now."
         onClick={() => router.push("/jobs")}
       />
 
@@ -124,7 +141,7 @@ function NearestJobSection({ hasLocation }: NearestProps) {
         ) : jobList && jobList.length > 0 ? (
           jobList.map((jobPost: JobPostProps, index: number) => {
             const isBookmarked = bookmarks.some(
-              (bookmark) => bookmark.jobPostId === Number(jobPost.job_id),
+              (bookmark) => bookmark.jobPostId === Number(jobPost.job_id)
             );
             return (
               <div
@@ -135,7 +152,7 @@ function NearestJobSection({ hasLocation }: NearestProps) {
                   logo={jobPost.logo}
                   companyName={jobPost.companyName}
                   job_title={jobPost.job_title}
-                  company_province={jobPost.company_province}
+                  company_province={jobPost.company_city}
                   jobType={jobPost.jobType}
                   created_at={String(jobPost.created_at)}
                   salaryMin={jobPost.salaryMin}

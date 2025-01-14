@@ -12,10 +12,20 @@ import { RootState } from "@/store";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { toast } from "sonner";
 import ListSkeleton from "@/components/listSkeleton";
 import JobPostComponentSkeleton from "@/components/JobPostSkeleton";
 
+enum JobType {
+  fulltime = "Full Time",
+  freelance = "Freelance",
+  internship = "Internship",
+}
+
+enum JobSpace {
+  remoteworking = "Remote Working",
+  onoffice = "On Office",
+  hybrid = "Hybrid",
+}
 
 const JobPostSection: React.FC = () => {
   const [jobLpData, SetjobLpData] = useState<JobPostProps[]>([]);
@@ -39,11 +49,12 @@ const JobPostSection: React.FC = () => {
         const mappedData = response.map((job: any) => ({
           job_id: job.job_id,
           job_title: job.job_title,
-          companyName: job.company.company_name || "Unknown",
-          company_city: job.company.company_city || "Unknown",
+          companyName: job.company.company_name || "Undisclosed Name",
+          company_province: job.company.company_province || "Undisclosed Location" ,
+          company_city: job.company.company_city || "Undisclosed Location",
           logo: job.company.logo,
-          jobType: job.job_type ? [job.job_type] : [],
-          jobSpace: job.job_space,
+          jobType: job.job_type ? [JobType[job.job_type as keyof typeof JobType]] : [],
+          jobSpace: JobSpace[job.job_space as keyof typeof JobSpace],
           created_at: job.created_at,
           salaryMin: parseInt(job.salary_min, 10),
           salaryMax: parseInt(job.salary_max, 10),
@@ -116,7 +127,7 @@ const JobPostSection: React.FC = () => {
                 logo={jobPost.logo}
                 companyName={jobPost.companyName}
                 job_title={jobPost.job_title}
-                company_province={jobPost.company_province}
+                company_province={jobPost.company_city}
                 jobType={jobPost.jobType}
                 created_at={String(jobPost.created_at)}
                 salaryMin={jobPost.salaryMin}

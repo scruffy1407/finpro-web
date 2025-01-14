@@ -86,7 +86,7 @@ function Home() {
         <section className={"w-full flex flex-col gap-5"}>
           <HeadingComponent
             heading="This could be your next company"
-            paragraph="Explore our partner companies and discover the exciting job openings available right now."
+            paragraph="Explore our partner companies and discover exciting job openings available for you right now."
             onClick={() => router.push("/company")}
           />
           <CompanyMappingComponent />

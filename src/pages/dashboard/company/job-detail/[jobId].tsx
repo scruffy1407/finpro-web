@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { JobDetails } from "@/components/JobDetailsApplicant";
 import { ApplicantTable } from "@/components/ApplicantTable";
-import { JobStatus } from "@/models/applicant.model";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";
@@ -24,38 +23,15 @@ interface JobDetailsResponse {
   job_title: string;
   job_type: string;
   job_experience_min: number;
-  job_experience_max: number;
+  job_experience_max: number | null;
   salary_show: boolean;
   salary_min: number;
-  salary_max: number;
+  salary_max: number | null;
   job_space: string;
   selection_text_active: boolean;
   company: {
     logo: string;
   };
-}
-
-interface InterviewProps {
-  interview_id: number;
-  applicationId: number;
-  interview_date: Date;
-  interview_time_start: Date;
-  interview_time_end: Date;
-  interview_descrption: string;
-  interview_status: string;
-  interview_url: string;
-}
-
-interface ApplicantData {
-  application_id: number;
-  jobHunter: {
-    name: string;
-  };
-  expected_salary: number;
-  resume: string | null;
-  created_at: string;
-  application_status: JobStatus;
-  interview: InterviewProps[];
 }
 
 enum ViewSelection {
@@ -65,6 +41,18 @@ enum ViewSelection {
   Rejected = "rejected",
 }
 
+enum JobType {
+  fulltime = "Full Time",
+  freelance = "Freelance",
+  internship = "Internship",
+}
+
+enum JobSpace {
+  remoteworking = "Remote Working",
+  onoffice = "On Office",
+  hybrid = "Hybrid",
+}
+
 const JobApplicantDetail: React.FC = () => {
   const authHandler = new AuthHandler();
   const pagePermission = "company";
@@ -72,12 +60,11 @@ const JobApplicantDetail: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const { applicantList, pendingState } = useSelector(
-    (state: RootState) => state.applicantList,
+    (state: RootState) => state.applicantList
   );
-
   const [jobDetails, setJobDetails] = useState<JobDetailsResponse | null>(null);
   const [selectedView, setSelectedView] = useState<ViewSelection>(
-    ViewSelection.AllApplicant,
+    ViewSelection.AllApplicant
   );
   const router = useRouter();
   const { jobId } = router.query;
@@ -89,10 +76,9 @@ const JobApplicantDetail: React.FC = () => {
       minimumFractionDigits: 0,
     }).format(value);
   };
-  console.log("DATAAA", applicantList);
 
   const handleSelectChange = (value: any) => {
-    setSelectedView(value); // Update the state with the selected value
+    setSelectedView(value);
   };
 
   useEffect(() => {
@@ -104,9 +90,8 @@ const JobApplicantDetail: React.FC = () => {
           jobId: Number(jobId),
           token: accessToken as string,
           fetchType: selectedView,
-        }),
+        })
       );
-      // fetchApplicantDetails(selectedView);
     }
   }, [jobId, router, isLoggedIn, selectedView]);
 
@@ -124,7 +109,7 @@ const JobApplicantDetail: React.FC = () => {
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },
-          },
+          }
         );
         if (response.data.success) {
           setJobDetails(response.data.data);
@@ -144,6 +129,12 @@ const JobApplicantDetail: React.FC = () => {
     }
   }, [jobId, router, isLoggedIn]);
 
+  const getJobTypeLabel = (jobType: string): string =>
+    JobType[jobType as keyof typeof JobType] || "Unknown Job Type";
+
+  const getJobSpaceLabel = (jobSpace: string): string =>
+    JobSpace[jobSpace as keyof typeof JobSpace] || "Unknown Job Space";
+
   return (
     <div className="overflow-hidden mt-5">
       <div className="mx-4 w-auto">
@@ -160,16 +151,21 @@ const JobApplicantDetail: React.FC = () => {
                   jobId={jobDetails.job_id}
                   companyLogo={jobDetails.company.logo}
                   title={jobDetails.job_title}
-                  jobType={jobDetails.job_type}
-                  experience={`${jobDetails.job_experience_min} - ${jobDetails.job_experience_max} Years`}
+                  jobType={getJobTypeLabel(jobDetails.job_type)}
+                  experience={
+                    jobDetails.job_experience_max &&
+                    jobDetails.job_experience_max > 0
+                      ? `${jobDetails.job_experience_min} - ${jobDetails.job_experience_max} Years`
+                      : `${jobDetails.job_experience_min} Years`
+                  }
                   salary={
                     jobDetails.salary_show
-                      ? `${formatCurrency(jobDetails.salary_min)} - ${formatCurrency(
-                          jobDetails.salary_max,
-                        )}`
+                      ? jobDetails.salary_max && jobDetails.salary_max > 0
+                        ? `${formatCurrency(jobDetails.salary_min)} - ${formatCurrency(jobDetails.salary_max)}`
+                        : `${formatCurrency(jobDetails.salary_min)}`
                       : "Not Disclosed"
                   }
-                  location={jobDetails.job_space}
+                  location={getJobSpaceLabel(jobDetails.job_space)}
                   trueorfalse={jobDetails.selection_text_active}
                   onEdit={() => console.log("Edit clicked")}
                   onDisable={() => console.log("Disable clicked")}

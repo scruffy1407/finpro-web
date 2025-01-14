@@ -26,6 +26,20 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { toast } from "sonner";
 
+enum CompanyIndustry {
+  informationtechnologyandservices = "Information Technology and Services",
+  financeandbanking = "Finance and Banking",
+  businessandhr = "Business and HR",
+  hospitalandhealthcare = "Hospital and Healthcare",
+  constructionandrealestate = "Construction and Real Estate",
+  retaillogisticandconsumergoods = "Retail, Logistics, and Consumer Goods",
+  educationandresearch = "Education and Research",
+  manufacturingandengineering = "Manufacturing and Engineering",
+  mediaandentertainment = "Media and Entertainment",
+  governmentandnonprofit = "Government and Nonprofit",
+  others = "Others",
+}
+
 function CompanyPage() {
   const authHandler = new AuthHandler();
   authHandler.authorizeUser();
@@ -106,7 +120,7 @@ function CompanyPage() {
       const existingBookmark = bookmarks.find(
         (bookmark) => bookmark.jobPostId === jobPostId
       );
-      
+
       if (existingBookmark) {
         await axios.post(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/applyjob/bookmark/remove`,
@@ -134,6 +148,13 @@ function CompanyPage() {
     }
   }, [companyId]);
 
+  function getCompanyIndustryLabel(industry: string): string {
+    return (
+      CompanyIndustry[industry as keyof typeof CompanyIndustry] ||
+      "Unknown Industry"
+    );
+  }
+
   return (
     <div className="max-w-screen-xl mx-auto">
       <Navbar pageRole="jobhunter" />
@@ -145,7 +166,9 @@ function CompanyPage() {
           <CompanyHighlight
             logo={companyInfo?.logo || ""}
             companyName={companyInfo?.companyName || ""}
-            companyIndustry={companyInfo?.companyIndustry || ""}
+            companyIndustry={getCompanyIndustryLabel(
+              companyInfo?.companyIndustry || "Unknown"
+            )}
             ratingScore={avgReview}
             ratingAmount={reviewList.length}
             companyId={Number(companyId)}
@@ -180,7 +203,11 @@ function CompanyPage() {
               value="companyInfo"
               data={companyInfo}
               totalJob={companyInfo?.listJob.length as number}
-              lastPostJob={jobList[0]?.created_at as string}
+              lastPostJob={
+                jobList[0]?.created_at
+                  ? new Date(jobList[0].created_at).toISOString()
+                  : "N/A" // Fallback value
+              }
             />
             <JobListTab
               value="jobs"

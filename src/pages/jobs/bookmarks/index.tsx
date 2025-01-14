@@ -38,7 +38,7 @@ const BookmarkPage: React.FC = () => {
         }
       );
 
-      const jobWishlist = response.data.bookmarks?.jobWishlist || [];
+      const jobWishlist = response.data?.bookmarks?.jobWishlist || [];
       dispatch(setBookmarks(jobWishlist));
     } catch (error) {
       console.error("Failed to fetch bookmarks:", error);
@@ -56,13 +56,12 @@ const BookmarkPage: React.FC = () => {
         toast.error("You need to be logged in to add bookmark");
         return;
       }
-
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/applyjob/bookmark`,
         { jobPostId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      dispatch(addBookmark(response.data.bookmark));
+      dispatch(addBookmark(response.data?.bookmark));
       fetchBookmarks();
     } catch (error) {
       console.error("Failed to add bookmark:", error);
