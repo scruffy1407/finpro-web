@@ -25,12 +25,14 @@ import { Navbar } from "@/components/NavigationBar/Navbar";
 import Head from "next/head";
 import ForbiddenCompanyAction from "@/components/Modal/ForbiddenCompanyAction";
 import VerifyBanner from "@/components/VerifyBanner";
+import LoadingLoader from "@/components/LoadingLoader";
 import {
   setBookmarks,
   addBookmark,
   removeBookmark,
 } from "@/store/slices/bookmarkSlice";
 import { toast } from "sonner";
+
 
 function JobDetail() {
   const authHandler = new AuthHandler();
@@ -41,8 +43,9 @@ function JobDetail() {
     null
   );
   const [jobData, setJobData] = useState<any | null>(null);
+
   const [relatedPost, setRelatedPost] = useState<any[] | null>(null);
-  const [dataLoading, setDataLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [validateLoading, setValiateLoading] = useState<boolean>(false);
   const dispatch = useDispatch<AppDispatch>();
   const [callBackPath, setcallBackPath] = useState<string>("");
@@ -61,6 +64,7 @@ function JobDetail() {
 
   const fetchJobDetail = async () => {
     try {
+      setIsLoading(true);
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/company/jobDetails/${job_id}`
       );
@@ -68,9 +72,11 @@ function JobDetail() {
       if (response.status === 200) {
         setJobData(response.data.jobPostDetail);
         setRelatedPost(response.data.relatedJobPosts);
+        setIsLoading(false);
       } else {
         setJobData(null);
         setRelatedPost(null);
+        setIsLoading(false);
       }
 
       console.log("THis is response");
@@ -143,7 +149,6 @@ function JobDetail() {
       console.error("Failed to toggle bookmark:", error);
     }
   };
-
   const validateUserJob = async () => {
     const token = Cookies.get("accessToken");
     try {
@@ -153,7 +158,7 @@ function JobDetail() {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       if (response.status === 200 && response.data.code === "JOIN") {
         setApplicantData({
@@ -185,7 +190,7 @@ function JobDetail() {
       if (user_role === "jobhunter") {
         if (validApply && jobData.preSelectionTest) {
           router.push(
-            `/executionPretest/${jobData.preSelectionTestId}?job_id=${job_id}`
+            `/executionPretest/${jobData.preSelectionTestId}?job_id=${job_id}`,
           );
         } else {
           // Ensure applicationStatus is defined before comparing
@@ -397,6 +402,12 @@ function JobDetail() {
         <main
           className={`flex flex-col gap-10 px-4 max-w-screen-xl mx-auto ${!isVerified && isLoggedIn ? "mt-0" : "mt-5"}`}
         >
+          {isLoading ? (
+            <div className=" h-[300px] w-full flex justify-center items-center">
+              <LoadingLoader />
+            </div>
+          ) : (
+            <>
           <JobDetailComponent
             onApplyJob={handleApplyJob}
             jobData={jobData}

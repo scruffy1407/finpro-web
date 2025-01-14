@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import HeroComponent from "@/components/HeroComponent";
 import MarqueeComponent from "@/components/MarqueeComponent";
 import HeadingComponent from "@/components/HeadingComponent";
@@ -12,14 +12,47 @@ import { Button } from "@/components/ui/button";
 import VerifyBanner from "@/components/VerifyBanner";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
+import Cookies from "js-cookie";
+import NearestJobSection from "@/components/NearestJobSection";
 
 function Home() {
   const authHandler = new AuthHandler();
   authHandler.authorizeUser();
+  const [location, setLocation] = useState<GeolocationCoordinates | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter;
   const { isVerified, isLoggedIn } = useSelector(
     (state: RootState) => state.auth,
   );
+
+  const getLocation = () => {
+    if (!navigator.geolocation) {
+      setError("Geolocation is not supported by your browser");
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setLocation(position.coords);
+        const location = {
+          lat: position?.coords?.latitude,
+          lng: position?.coords?.longitude,
+        };
+
+        Cookies.set("last_user_location", JSON.stringify(location), {
+          expires: 3, // Expires in 3 days
+        });
+
+        setError(null);
+      },
+      (err) => {
+        setError(err.message);
+      },
+    );
+  };
+
+  useEffect(() => {
+    getLocation();
+  }, []);
 
   return (
     <div className="overflow-hidden">
@@ -47,6 +80,8 @@ function Home() {
             Explore More
           </Button>
         </section>
+
+        <NearestJobSection hasLocation={location !== null} />
 
         <section className={"w-full flex flex-col gap-5"}>
           <HeadingComponent

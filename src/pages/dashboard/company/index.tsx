@@ -29,7 +29,7 @@ function JobDashBoard() {
       </div>
 
       <div className="mt-20">
-        <FooterComponent />
+        <FooterComponent pageRole={"company"} />
       </div>
     </div>
   );

@@ -17,6 +17,7 @@ import SectionJoinApplicant from "@/components/SectionJoinApplicant";
 import { ShareButton } from "@/components/ShareButton";
 import { useEffect } from "react";
 import { JobApplication } from "@/models/applicant.model";
+import { useRouter } from "next/router";
 interface JobData {
   company: {
     company_name: string;
@@ -75,6 +76,7 @@ export default function JobDetailComponent({
   onRemoveBookmark,
   job_id,
 }: JobPostComponentProps) {
+  const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const { pendingState } = useSelector((state: RootState) => state.generalInfo);
@@ -127,9 +129,6 @@ export default function JobDetailComponent({
     }
   }, [alreadyJoined]);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>{error}</div>;
-  if (!jobData) return <div>No job details found.</div>;
   return (
     <section>
       <div className="flex flex-col justify-between gap-10 p-4 md:p-8 bg-white rounded-xl md:flex-row">
@@ -452,7 +451,7 @@ export default function JobDetailComponent({
             <ShareButton
               jobTitle={jobData?.job_title || "Job Title"}
               companyName={jobData?.company?.company_name || "Company Name"}
-              jobUrl={window.location.href}
+              jobUrl={router.pathname}
               onShare={handleShare}
             />
           </div>

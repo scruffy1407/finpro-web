@@ -3,13 +3,20 @@ import Image from "next/image";
 import { TabsContent } from "@/components/ui/tabs";
 import { TabsContentProps } from "@/models/page.model";
 import { companyDetailResponse } from "@/models/company.model";
+import { format } from "date-fns";
 
 interface companyInfoProps extends TabsContentProps {
   data: companyDetailResponse | undefined;
   totalJob: number;
+  lastPostJob: string;
 }
 
-function CompanyInfoTab({ value, data, totalJob }: companyInfoProps) {
+function CompanyInfoTab({
+  value,
+  data,
+  totalJob,
+  lastPostJob,
+}: companyInfoProps) {
   return (
     <TabsContent
       className={`flex flex-col gap-4 mt-0 data-[state=active]:flex data-[state=inactive]:hidden`}
@@ -59,7 +66,9 @@ function CompanyInfoTab({ value, data, totalJob }: companyInfoProps) {
               <div>
                 <p className={`text-sm mb-1 text-neutral-400`}>Last Post Job</p>
                 <p className="text-sm font-bold text-neutral-950">
-                  20 Dec 2024
+                  {lastPostJob
+                    ? format(new Date(lastPostJob), "dd MMM yyyy")
+                    : "-"}
                 </p>
               </div>
             </div>

@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ApplyJob } from "@/models/company.model";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/store";
 import { toast } from "sonner";
 import { CompanyUtils } from "@/utils/company.utils";
 import Cookies from "js-cookie";
 import LoadingLoader from "@/components/LoadingLoader";
 import { useRouter } from "next/router";
+import { closeModalAction } from "@/store/slices/ModalSlice";
 
 interface JobFormProps {
   jobId: number;
@@ -20,6 +21,7 @@ const FormJobApplication = ({
   waitingSubmissionStatus,
   applicationId,
 }: JobFormProps) => {
+  const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
   const companyUtils = new CompanyUtils();
   const { innerId } = useSelector((state: RootState) => state.auth);
@@ -87,21 +89,16 @@ const FormJobApplication = ({
         );
       } else {
         response = await companyUtils.applyJob(token as string, applyJobData);
+        console.log("RESPONSE APPLY", response);
       }
-      if (
-        (response.status === 200 ||
-          response.status === 201 ||
-          response.status === 204) &&
-        response.data?.success
-      ) {
+      if (response === 201) {
         toast.success("Application sent successfully");
+        router.push(
+          `${process.env.NEXT_PUBLIC_API_CLIENT_URL}/jobdetail/apply-success?job=${jobId}&apply=true`,
+        );
+        dispatch(closeModalAction());
         setIsLoading(false);
         setIsDisable(false);
-        setTimeout(() => {
-          router.push(
-            `${process.env.CLIENT_URL}/jobdetail/apply-success?job=${jobId}&apply=true`,
-          );
-        }, 2000);
       } else {
         toast.error(response.data?.message || "Submission failed");
         setIsLoading(false);

@@ -179,7 +179,8 @@ function CompanyPage() {
             <CompanyInfoTab
               value="companyInfo"
               data={companyInfo}
-              totalJob={jobList.length}
+              totalJob={companyInfo?.listJob.length as number}
+              lastPostJob={jobList[0]?.created_at as string}
             />
             <JobListTab
               value="jobs"
@@ -203,7 +204,7 @@ function CompanyPage() {
       )}
 
       <div className="mx-4 mt-20 mb-5">
-        <FooterComponent />
+        <FooterComponent pageRole={"jobhunter"} />
       </div>
     </div>
   );

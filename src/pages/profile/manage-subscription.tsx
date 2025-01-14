@@ -83,7 +83,7 @@ function ManageSubscription() {
 
   return (
     <>
-      <Navbar />
+      <Navbar pageRole={"jobhunter"} />
       <section
         className={"max-w-screen-xl mx-auto bg-white p-6 mt-10 rounded-2xl"}
       >

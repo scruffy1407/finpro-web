@@ -12,7 +12,7 @@ export interface JobPost {
   job_experience_max: number;
   expired_date: Date;
   status: boolean;
-  created_at: Date;
+  created_at?: Date;
   isBookmarked: boolean;
   job_type: "Full-Time" | "Freelance" | "Internship";
   job_space: "Remote Working" | "On Office" | "Hybrid";

@@ -105,7 +105,7 @@ const BookmarkPage: React.FC = () => {
           onAddBookmark={handleAddBookmark}
         />
       </div>
-      <FooterComponent />
+      <FooterComponent pageRole={"jobhunter"} />
     </div>
   );
 };
