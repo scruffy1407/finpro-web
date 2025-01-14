@@ -23,19 +23,19 @@ interface AssessmentProps {
 }
 
 function AssessmentDashPost() {
-  const [assessmentTest, setAssessmentTests] = useState<AssessmentProps[]>([]);
-  const [selectedTest, setSelectedTest] = useState<AssessmentProps | null>(
-    null,
-  );
-  const accessToken = Cookies.get("accessToken");
-  const [isDialogOpen, setDialogOpen] = useState(false);
-  const [isEditFormOpen, setEditFormOpen] = useState(false);
-  const [editFormData, setEditFormData] = useState({
-    testName: "",
-    passingGrade: 50,
-    duration: 30,
-    skillBadge: null as File | null, // Add skillBadge with a type of File | null
-  });
+	const [assessmentTest, setAssessmentTests] = useState<AssessmentProps[]>([]);
+	const [selectedTest, setSelectedTest] = useState<AssessmentProps | null>(
+		null
+	);
+	const accessToken = Cookies.get("accessToken");
+	const [isDialogOpen, setDialogOpen] = useState(false);
+	const [isEditFormOpen, setEditFormOpen] = useState(false);
+	const [editFormData, setEditFormData] = useState({
+		testName: "",
+		passingGrade: 50,
+		duration: 30,
+		skillBadge: null as File | null, // Add skillBadge with a type of File | null
+	});
 
   useEffect(() => {
     const fetchAssessmentTest = async () => {

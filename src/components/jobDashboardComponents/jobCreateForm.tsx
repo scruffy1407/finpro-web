@@ -126,16 +126,16 @@ const CreateJobForm: React.FC<CreateJobFormProps> = ({
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 
-		if (formData.categoryId === 0) { 
+		if (formData.categoryId === 0) {
 			alert("Please select a category.");
 			return;
-		  }
+		}
 
 		if (
 			formData.salary_max !== null &&
-			formData.salary_max < formData.salary_min
+			Number(formData.salary_max) < Number(formData.salary_min)
 		) {
-			alert("Salary Max should be greater than  Salary Min.");
+			alert("Salary Max should be greater than Salary Min.");
 			return;
 		}
 
@@ -143,9 +143,7 @@ const CreateJobForm: React.FC<CreateJobFormProps> = ({
 			formData.job_experience_max !== null &&
 			formData.job_experience_max < formData.job_experience_min
 		) {
-			alert(
-				"Job Experience Max should be greater than Job Experience Min."
-			);
+			alert("Job Experience Max should be greater than Job Experience Min.");
 			return;
 		}
 

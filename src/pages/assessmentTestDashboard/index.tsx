@@ -26,7 +26,6 @@ function AssessmentDashboard() {
           </div>
         </div>
       </div>
-
       <div className="mt-20">
         <FooterComponent pageRole={"company"} />
       </div>
