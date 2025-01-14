@@ -26,6 +26,13 @@ import Head from "next/head";
 import ForbiddenCompanyAction from "@/components/Modal/ForbiddenCompanyAction";
 import VerifyBanner from "@/components/VerifyBanner";
 import LoadingLoader from "@/components/LoadingLoader";
+import {
+  setBookmarks,
+  addBookmark,
+  removeBookmark,
+} from "@/store/slices/bookmarkSlice";
+import { toast } from "sonner";
+
 
 function JobDetail() {
   const authHandler = new AuthHandler();
@@ -33,7 +40,7 @@ function JobDetail() {
   const router = useRouter();
   const { job_id } = router.query;
   const [applicantData, setApplicantData] = useState<null | JobApplication>(
-    null,
+    null
   );
   const [jobData, setJobData] = useState<any | null>(null);
 
@@ -43,12 +50,12 @@ function JobDetail() {
   const dispatch = useDispatch<AppDispatch>();
   const [callBackPath, setcallBackPath] = useState<string>("");
   const { currentModalId } = useSelector(
-    (state: RootState) => state.modalController,
+    (state: RootState) => state.modalController
   );
   const { isLoggedIn, user_role, isVerified } = useSelector(
-    (state: RootState) => state.auth,
+    (state: RootState) => state.auth
   );
-  const { validApply, pendingState, listProvince, listCity, cityId } =
+  const { validApply, pendingState, listProvince, cityId } =
     useSelector((state: RootState) => state.generalInfo);
 
   const handleCloseModal = () => {
@@ -59,7 +66,7 @@ function JobDetail() {
     try {
       setIsLoading(true);
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/company/jobDetails/${job_id}`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/company/jobDetails/${job_id}`
       );
 
       if (response.status === 200) {
@@ -71,11 +78,77 @@ function JobDetail() {
         setRelatedPost(null);
         setIsLoading(false);
       }
+
+      console.log("THis is response");
+      console.log(response);
     } catch (err) {
       console.error("Error fetching job details:", err);
     }
   };
 
+  const bookmarks = useSelector(
+    (state: RootState) => state.bookmarks.bookmarks
+  );
+  const isBookmarked = bookmarks.some(
+    (bookmark) => bookmark.jobPostId === Number(job_id)
+  );
+
+  const fetchBookmarks = async () => {
+    try {
+      const token = Cookies.get("accessToken");
+      if (!token) {
+        console.error("Token is missing from cookies.");
+        return;
+      }
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/applyjob/bookmark`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      const jobWishlist = response.data.bookmarks?.jobWishlist || [];
+      dispatch(setBookmarks(jobWishlist));
+    } catch (error) {
+      console.error("Failed to fetch bookmarks:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchBookmarks();
+  }, [dispatch]);
+
+  const handleToggleBookmark = async (jobPostId: number) => {
+    try {
+      const token = Cookies.get("accessToken");
+      if (!token) {
+        toast.error("You need to be logged in to add bookmark");
+        return;
+      }
+
+      const existingBookmark = bookmarks.find(
+        (bookmark) => bookmark.jobPostId === jobPostId
+      );
+
+      if (existingBookmark) {
+        await axios.post(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/applyjob/bookmark/remove`,
+          { wishlist_id: existingBookmark.wishlist_id },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        dispatch(removeBookmark(existingBookmark.wishlist_id));
+      } else {
+        const response = await axios.post(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/applyjob/bookmark`,
+          { jobPostId },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        dispatch(addBookmark(response.data.bookmark));
+      }
+    } catch (error) {
+      console.error("Failed to toggle bookmark:", error);
+    }
+  };
   const validateUserJob = async () => {
     const token = Cookies.get("accessToken");
     try {
@@ -157,6 +230,7 @@ function JobDetail() {
 
   useEffect(() => {
     if (job_id) {
+      setDataLoading(true);
       fetchJobDetail();
       if (isLoggedIn && user_role === "jobhunter") {
         setValiateLoading(true);
@@ -166,6 +240,7 @@ function JobDetail() {
         }
         setValiateLoading(false);
       }
+      setDataLoading(false);
     }
   }, [job_id, isLoggedIn]);
 
@@ -333,22 +408,35 @@ function JobDetail() {
             </div>
           ) : (
             <>
-              <JobDetailComponent
-                onApplyJob={handleApplyJob}
-                jobData={jobData}
-                alreadyJoined={applicantData}
-                validateUserLoading={validateLoading}
-              />
-
-              <div className="flex flex-col gap-5">
-                <HeadingRelatedComponent
-                  heading="Related Jobs"
-                  paragraph="Take a look at the jobs we found that are similar to the job you currently have open"
-                />
-                <JobDetailSuggest listRelatedJob={relatedPost as any[]} />
-              </div>
-            </>
-          )}
+          <JobDetailComponent
+            onApplyJob={handleApplyJob}
+            jobData={jobData}
+            alreadyJoined={applicantData}
+            validateUserLoading={validateLoading}
+            job_id={String(job_id)}
+            isBookmarked={isBookmarked}
+            bookmarkedJobs={bookmarks.map((bookmark) => ({
+              ...bookmark,
+              job_id: bookmark.jobPostId,
+            }))}
+            onAddBookmark={handleToggleBookmark}
+            onRemoveBookmark={handleToggleBookmark}
+          />
+          <div className="flex flex-col gap-5">
+            <HeadingRelatedComponent
+              heading="Related Jobs"
+              paragraph="Take a look at the jobs we found that are similar to the job you currently have open"
+            />
+            <JobDetailSuggest
+              listRelatedJob={relatedPost as any[]}
+              bookmarkedJobs={bookmarks.map((bookmark) => ({
+                ...bookmark,
+                job_id: bookmark.jobPostId,
+              }))}
+              onAddBookmark={handleToggleBookmark}
+              onRemoveBookmark={handleToggleBookmark}
+            />
+          </div>
         </main>
         <div className="mx-4 mt-20 mb-5">
           <FooterComponent pageRole={"jobhunter"} />

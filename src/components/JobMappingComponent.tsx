@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import ListSkeleton from "@/components/listSkeleton";
 import JobPostComponentSkeleton from "@/components/JobPostSkeleton";
 
+
 const JobPostSection: React.FC = () => {
   const [jobLpData, SetjobLpData] = useState<JobPostProps[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);

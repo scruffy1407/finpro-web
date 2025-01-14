@@ -47,11 +47,23 @@ interface Review {
   work_balance_rating: number;
 }
 
+interface Bookmark {
+  job_id: number;
+}
+
 interface JobDetailProps {
   jobData: JobData;
   validateUserLoading: boolean;
   alreadyJoined: null | JobApplication;
   onApplyJob: () => void;
+  job_id: string;
+  bookmarkedJobs: Bookmark[];
+}
+
+export interface JobPostComponentProps extends JobDetailProps {
+  isBookmarked: boolean;
+  onAddBookmark: (jobId: number) => void;
+  onRemoveBookmark: (jobId: number) => void;
 }
 
 export default function JobDetailComponent({
@@ -59,8 +71,14 @@ export default function JobDetailComponent({
   onApplyJob,
   alreadyJoined,
   validateUserLoading,
-}: JobDetailProps) {
+  isBookmarked,
+  onAddBookmark,
+  onRemoveBookmark,
+  job_id,
+}: JobPostComponentProps) {
   const router = useRouter();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
   const { pendingState } = useSelector((state: RootState) => state.generalInfo);
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const [remainingTime, setRemainingTime] = useState<string | null>(null);
@@ -215,7 +233,19 @@ export default function JobDetailComponent({
           <div className="flex flex-col justify-center gap-2 items-start md:items-end">
             <div className="flex gap-6">
               <div className="items-center justify-center hidden md:flex">
-                <ButtonComponent type="ButtonBookmark" container="Bookmarks" />
+                <ButtonComponent
+                  type="ButtonBookmark"
+                  isBookmarked={isBookmarked}
+                  onClickBookmark={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    if (isBookmarked) {
+                      onRemoveBookmark(Number(job_id));
+                    } else {
+                      onAddBookmark(Number(job_id));
+                    }
+                  }}
+                />{" "}
               </div>
               {validateUserLoading ? (
                 <div

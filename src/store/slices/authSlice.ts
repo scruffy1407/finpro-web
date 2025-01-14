@@ -5,112 +5,140 @@ import { z } from "zod";
 import Cookies from "js-cookie";
 import { AuthHandler } from "@/utils/auth.utils";
 import { LoginAuth } from "@/models/auth.model";
+import { toast } from "sonner"
 
 interface PendingState {
-	dataLoading: boolean;
+  dataLoading: boolean;
+}
+
+interface LoginResponseData {
+  jobHunter?: {
+    name: string;
+    photo: string;
+    job_hunter_id: number;
+    jobHunterSubscription: {
+      subscriptionId: number;
+      subscription_active: boolean;
+    };
+  }[];
+  company?: {
+    company_name: string;
+    logo: string;
+    company_id: number;
+  }[];
+  developers?: {
+    developer_name: string;
+    developer_id: number;
+  }[];
+  email: string;
+  phone_number?: string;
+  verified: boolean;
 }
 
 interface LoginState {
-	baseId: number | null;
-	innerId: number | null;
-	photo?: string;
-	email: string;
-	name?: string;
-	phone_number?: string | null;
-	password?: string;
-	user_role: string | null;
-	isLoading?: boolean;
-	isLoggedIn: boolean;
-	subscriptionId: number;
-	isVerified: boolean;
-	subscriptionActive: boolean;
-	error?: string | null;
-	accessToken?: string | null;
-	refreshToken?: string | null;
-	callback?: string;
-	pendingState: PendingState;
+  baseId: number | null;
+  innerId: number | null;
+  photo?: string;
+  email: string;
+  name?: string;
+  phone_number?: string | null;
+  password?: string;
+  user_role: string | null;
+  isLoading?: boolean;
+  isLoggedIn: boolean;
+  subscriptionId: number;
+  isVerified: boolean;
+  subscriptionActive: boolean;
+  error?: string | null;
+  accessToken?: string | null;
+  refreshToken?: string | null;
+  callback?: string;
+  pendingState: PendingState;
 }
 const authHandler = new AuthHandler();
 
 const initialState: LoginState = {
-	baseId: null,
-	innerId: null,
-	photo: "",
-	email: "",
-	name: "",
-	password: "",
-	user_role: null,
-	isLoading: false,
-	isLoggedIn: false,
-	isVerified: false,
-	error: null,
-	subscriptionActive: false,
-	subscriptionId: 1,
-	accessToken: "",
-	refreshToken: "",
-	callback: "",
-	pendingState: {
-		dataLoading: false,
-	},
+  baseId: null,
+  innerId: null,
+  photo: "",
+  email: "",
+  name: "",
+  password: "",
+  user_role: null,
+  isLoading: false,
+  isLoggedIn: false,
+  isVerified: false,
+  error: null,
+  subscriptionActive: false,
+  subscriptionId: 1,
+  accessToken: "",
+  refreshToken: "",
+  callback: "",
+  pendingState: {
+    dataLoading: false,
+  },
 };
 
-export const loginUser = createAsyncThunk(
-	"auth/loginUser",
-	async (
-		loginForm: { loginData: LoginAuth },
-		{ rejectWithValue }: { rejectWithValue: (value: string) => void }
-	) => {
-		try {
-			loginSchema.parse(loginForm.loginData);
-			const response = await axios.post(
-				`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/login`,
-				loginForm.loginData,
-				{
-					headers: { "Content-Type": "application/json" },
-					withCredentials: true,
-				}
-			);
-			const { access_token, refresh_token, data } = response.data.data;
-			Cookies.set("accessToken", access_token, { expires: 1 / 24 });
-			Cookies.set("refreshToken", refresh_token, { expires: 3 });
-
-      const callBackUrl = loginForm.loginData.callback || "";
-
-      return { access_token, refresh_token, data, callBackUrl };
-    } catch (err: unknown) {
-      if (err instanceof z.ZodError) {
-        return rejectWithValue(err.errors[0]?.message || "Validation failed");
-      }
-      if (axios.isAxiosError(err)) {
-        return rejectWithValue(err.response?.data?.message || "Server error");
-      }
-      return rejectWithValue((err as Error).message || "Unknown error");
-    }
+export const loginUser = createAsyncThunk<
+  {
+    access_token: string;
+    refresh_token: string;
+    data: LoginResponseData;
+    callBackUrl: string;
   },
-);
+  { loginData: LoginAuth },
+  { rejectValue: string }
+>("auth/loginUser", async (loginForm, { rejectWithValue }) => {
+  try {
+    loginSchema.parse(loginForm.loginData);
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/login`,
+      loginForm.loginData,
+      {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      }
+    );
+    const { access_token, refresh_token, data } = response.data.data;
+    Cookies.set("accessToken", access_token, { expires: 1 / 24 });
+    Cookies.set("refreshToken", refresh_token, { expires: 3 });
+
+    const callBackUrl = loginForm.loginData.callback || "";
+
+    return { access_token, refresh_token, data, callBackUrl };
+  } catch (err: unknown) {
+    if (err instanceof z.ZodError) {
+      return rejectWithValue(err.errors[0]?.message || "Validation failed");
+    }
+    if (axios.isAxiosError(err)) {
+      return rejectWithValue(err.response?.data?.message || "Server error");
+    }
+    return rejectWithValue((err as Error).message || "Unknown error");
+  }
+});
 
 export const validateUserToken = createAsyncThunk(
-	"auth/validateToken",
-	async (token: string) => {
-		try {
-			const user = await authHandler.validateUserToken(token);
+  "auth/validateToken",
+  async (token: string) => {
+    try {
+      const user = await authHandler.validateUserToken(token);
 
-			if (user.status !== 200) {
-				return null;
-			} else {
-				return user.data;
-			}
-		} catch (e: unknown) {
-			return e;
-		}
-	}
+      if (user.status !== 200) {
+        return null;
+      } else {
+        return user.data;
+      }
+    } catch (e: unknown) {
+      return e;
+    }
+  }
 );
 
 export const refreshUserToken = createAsyncThunk(
-	"auth/refreshAccessToken",
-	async (refreshToken: string) => {
-		await authHandler.refreshUserAcessToken(refreshToken);
-	}
+  "auth/refreshAccessToken",
+  async (refreshToken: string) => {
+    await authHandler.refreshUserAcessToken(refreshToken);
+  }
 );
 
 const authSlice = createSlice({
@@ -209,10 +237,12 @@ const authSlice = createSlice({
         state.callback = action.payload?.callBackUrl;
         state.pendingState.dataLoading = false;
       })
-      .addCase(loginUser.rejected, (state) => {
+      .addCase(loginUser.rejected, (state, action) => {
         state.isLoading = false;
         state.pendingState.dataLoading = false;
-        state.error = "Something wentwrtong,please try again";
+        state.error =
+          action.payload || "Failed to login, please check credentials or role";
+        toast.error(state.error);
       })
       .addCase(validateUserToken.pending, (state) => {
         state.pendingState.dataLoading = true;
