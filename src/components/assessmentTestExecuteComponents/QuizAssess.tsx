@@ -12,17 +12,18 @@ import { useEffect } from "react";
 import Cookies from "js-cookie";
 import axios from "axios";
 import { useSelector } from "react-redux";
-import { RootState } from "@/store"; // Adjust the import path to match your store setup
+import { RootState } from "@/store"; 
+import { AuthHandler } from "@/utils/auth.utils";
 
 type QuizState = {
 	currentQuestionIndex: number;
-	answers: { [key: string]: string }; // or { [key: number]: string } if question IDs are numbers
+	answers: { [key: string]: string }; 
 	score: number;
 	skillAssessmentId: number | null;
 	jobHunterId: number;
 };
 export interface QuestionAssess {
-	question_id: string; // Or 'number' if IDs are numbers
+	question_id: string; 
 	question: string;
 	answer_1: string;
 	answer_2: string;
@@ -31,29 +32,49 @@ export interface QuestionAssess {
 }
 
 export default function Quiz() {
+	const authHandler = new AuthHandler();
+	authHandler.authorizeUser();
+
+	const jobHunterId = useSelector((state: RootState) => state.auth.innerId);
+
 	const [isTimerReady, setIsTimerReady] = useState(false);
 	const [isSubmitted, setIsSubmitted] = useState(false);
+	const [isLoading, setIsLoading] = useState(true); 
 
 	const { toast } = useToast();
 	const router = useRouter();
-	const skillAssessmentId = router.query.skillAssessmentId; // Extract `job_id` from the URL
-	const jobHunterId = useSelector((state: RootState) => state.auth.innerId);
+	const skillAssessmentId = router.query.skillAssessmentId;
+
 	const [quizState, setQuizState] = useState<QuizState>({
 		currentQuestionIndex: 0,
 		answers: {},
 		score: 0,
-		jobHunterId: jobHunterId || 0, // Use jobHunterId from Redux
+		jobHunterId: jobHunterId || 0,
 		skillAssessmentId: testConfig.data.preSelectionTest.test_id,
 	});
 
 	const [questions, setQuestions] = useState<QuestionAssess[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
-	const [duration, setDuration] = useState(0); // New state for duration
+	const [duration, setDuration] = useState(0); 
 	const [skillAssessId, setSkillAssessId] = useState<number | null>(null);
 	const [hunterId, setHunterId] = useState<number | null>(null);
 
-	// Check for query parameters and update state
+	console.log("jobHunterId:", jobHunterId); 
+
+
+	useEffect(() => {
+		if (jobHunterId && skillAssessmentId) {
+			setQuizState((prev) => ({
+				...prev,
+				jobHunterId,
+				skillAssessmentId: Number(skillAssessmentId),
+			}));
+			setIsLoading(false); 
+		}
+	}, [jobHunterId, skillAssessmentId]); 
+
+
 	useEffect(() => {
 		if (skillAssessmentId) {
 			setHunterId(Number(jobHunterId));
@@ -75,7 +96,7 @@ export default function Quiz() {
 				return;
 			}
 
-			const token = Cookies.get("accessToken"); // Assuming you're using cookies to get the token
+			const token = Cookies.get("accessToken"); 
 			try {
 				const response = await axios.get(
 					`http://localhost:8000/api/dev/getassessmentquest/${skillAssessmentId}`,
@@ -87,13 +108,13 @@ export default function Quiz() {
 				);
 
 				if (response.status === 200) {
-					setQuestions(response.data.questions); // Update questions state
-					setDuration(response.data.duration); // Update duration state
+					setQuestions(response.data.questions); 
+					setDuration(response.data.duration); 
 					setQuizState((prev) => {
-						const updatedState = { ...prev, testId: response.data.testId }; // Update quiz state with testId
+						const updatedState = { ...prev, testId: response.data.testId };
 						return updatedState;
 					});
-					setError(null); // Clear any existing errors
+					setError(null);
 				} else {
 					setError(`Unexpected response status: ${response.status}`);
 				}
@@ -106,14 +127,14 @@ export default function Quiz() {
 					);
 				}
 			} finally {
-				setLoading(false); // Ensure loading is set to false after the API call
+				setLoading(false); 
 			}
 		};
 
 		fetchAssessmentQuestions();
 	}, [skillAssessmentId]);
 
-	const currentQuestion = questions[quizState.currentQuestionIndex] || {}; // Safely access current question
+	const currentQuestion = questions[quizState.currentQuestionIndex] || {}; 
 
 	const totalQuestions = questions.length;
 	const isLastQuestion = quizState.currentQuestionIndex === totalQuestions - 1;
@@ -128,7 +149,7 @@ export default function Quiz() {
 				[currentQuestion.question_id]: answer,
 			};
 
-			// Store updated answers in cookies
+			
 			Cookies.set("quizAnswers", JSON.stringify(updatedAnswers), {
 				expires: 1,
 			});
@@ -176,32 +197,31 @@ export default function Quiz() {
 		});
 		if (!isSubmitted) {
 			handleSubmit();
-			setIsSubmitted(true); // Set isSubmitted to true to prevent further submissions
+			setIsSubmitted(true); 
 		}
 	};
 
 	const handleSubmit = async () => {
-		if (isSubmitted) return; // Prevent further submission if already submitted
+		if (isSubmitted) return; 
 		setIsSubmitted(true);
 
 		const token = Cookies.get("accessToken");
 
-		// Format answers
-		// Format answers with correct field names
+
 		const formattedAnswers = questions.map((q) => {
-			const questionId = q.question_id; // Correct field name
+			const questionId = q.question_id; 
 			const chosenAnswer = quizState.answers[questionId] || "";
 
 			return {
-				skill_assessment_question_id: questionId, // Correct field name
+				skill_assessment_question_id: questionId, 
 				chosen_answer: chosenAnswer,
 			};
 		});
 
-		// Create the submission payload
+
 		const submission = {
-			skillAssessmentId: quizState.skillAssessmentId, // Use skillAssessmentId
-			jobHunterId: quizState.jobHunterId, // Use jobHunterId
+			skillAssessmentId: quizState.skillAssessmentId, 
+			jobHunterId: quizState.jobHunterId, 
 			answers: formattedAnswers,
 		};
 
@@ -221,14 +241,17 @@ export default function Quiz() {
 
 			if (response.status === 200 || response.status === 201) {
 				const result = response.data;
-				if (result.completionStatus === "pass") {
+
+				const completionStatus = result?.data?.completionStatus;
+
+				if (completionStatus === "pass") {
 					alert("Congratulations! You've passed the assessment.");
-				} else if (result.completionStatus === "failed") {
+				} else if (completionStatus === "failed") {
 					alert("Assessment Failed. Try again in the next due time.");
 				} else {
-					alert("Assessment Failed. Try again in the next due time.");
+					alert("Unexpected completion status. Please try again.");
 				}
-				router.push("/skill-assessment");
+				router.push("/skills-assessment");
 			} else {
 				alert(`Unexpected response: ${response.status}`);
 			}
@@ -241,11 +264,14 @@ export default function Quiz() {
 				alert("An unexpected error occurred during submission.");
 			}
 		} finally {
-			// Optional: Clean up saved data or reset state
 			Cookies.remove("quizAnswers");
 			router.push("/skills-assessment");
 		}
 	};
+
+	if (isLoading) {
+		return <div className="text-center">Loading user data...</div>;
+	}
 
 	if (loading) {
 		return <div className="text-center">Loading questions...</div>;

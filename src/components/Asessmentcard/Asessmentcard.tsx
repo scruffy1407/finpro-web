@@ -42,6 +42,8 @@ function Asessmentcard({
 	const dispatch = useDispatch<AppDispatch>();
 	const [callBackPath, setcallBackPath] = useState<string>("");
 	const jobHunterId = useSelector((state: RootState) => state.auth.innerId);
+	const userRole = useSelector((state: RootState) => state.auth.user_role);
+
 	const [completionStatus, setCompletionStatus] = useState<string | null>(null); // State to track completion status
 	const [canTakeTest, setCanTakeTest] = useState<boolean>(true); // State to control button visibility
 	const [timeLeft, setTimeLeft] = useState<string | null>(null); // State for remaining time
@@ -130,8 +132,9 @@ function Asessmentcard({
 				}
 			}
 		};
-
-		fetchCompletionData();
+		if (userRole === "jobhunter") {
+			fetchCompletionData();
+		}
 	}, [isLoggedIn, jobHunterId, skillAssessmentId, token]);
 
 	const handleNavigate = () => {
@@ -260,7 +263,23 @@ function Asessmentcard({
 				</div>
 
 				{/* Conditionally render the button */}
-				{completionStatus !== "failed" || canTakeTest ? (
+				{completionStatus === "ongoing" ? (
+					<Button
+						onClick={() => {
+							// Logic to continue the test, e.g., navigating to the test in progress
+							if (skillAssessmentId) {
+								router.push(`/executionAssessmentTestQuiz/${skillAssessmentId}`);
+							} else {
+								console.error("Skill Assessment ID is undefined");
+							}
+						}}
+						className={"w-full sm:w-fit"}
+						variant={"outline"}
+						size={"sm"}
+					>
+						Continue Test
+					</Button>
+				) : completionStatus !== "failed" || canTakeTest ? (
 					<Button
 						onClick={handleNavigate} // Handle navigation here
 						className={"w-full sm:w-fit"}

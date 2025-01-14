@@ -55,6 +55,7 @@ interface JobDetailProps {
   jobData: JobData;
   validateUserLoading: boolean;
   alreadyJoined: null | JobApplication;
+  jobId ?: number;
   onApplyJob: () => void;
   job_id: string;
   bookmarkedJobs: Bookmark[];
@@ -71,6 +72,7 @@ export default function JobDetailComponent({
   onApplyJob,
   alreadyJoined,
   validateUserLoading,
+  jobId,
   isBookmarked,
   onAddBookmark,
   onRemoveBookmark,
@@ -400,6 +402,7 @@ export default function JobDetailComponent({
               createdAt={alreadyJoined.createdAt}
               jobHunterId={alreadyJoined.jobHunterId}
               resume={alreadyJoined.resume}
+              jobId = {jobId}
             />
           ) : (
             ""

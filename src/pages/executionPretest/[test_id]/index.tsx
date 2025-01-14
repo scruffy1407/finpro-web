@@ -22,7 +22,6 @@ export default function executionPretest() {
 	const [error, setError] = useState<string | null>(null);
 	const accessToken = Cookies.get("accessToken");
 
-	const testId = router.query.test_id ? String(router.query.test_id) : ""; // Extract test_id from the route
 	const jobId = router.query.job_id ? String(router.query.job_id) : ""; // Extract job_id from the query string
 
 	useEffect(() => {
@@ -117,13 +116,12 @@ export default function executionPretest() {
 				const { resultPreSelection, application } = response.data;
 
 				// Extract jobHunterId and applicationId from the API response
-				const jobHunterId = application.jobHunterId;
 				const applicationId = resultPreSelection.applicationId;
 
 				// Redirect with query parameters
 				router.push({
 					pathname: `/executionPretestQuiz/${jobId}`,
-					query: { jobHunterId, applicationId },
+					query: { applicationId },
 				});
 			} else {
 				setError(`Unexpected response status: ${response.status}`);
