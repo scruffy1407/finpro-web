@@ -22,12 +22,11 @@ interface AssessmentProps {
 }
 
 function AssessmentDashPost() {
-	const accessToken =
-		"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo2MSwicm9sZV90eXBlIjoiZGV2ZWxvcGVyIiwidmVyaWZpZWQiOmZhbHNlLCJpYXQiOjE3MzYyNTY2OTAsImV4cCI6MTczNjI2MDI5MH0.ctdtUx9BxY1sLzROABHD1rhL-PUdy4S7-CYgLRCkrVc";
 	const [assessmentTest, setAssessmentTests] = useState<AssessmentProps[]>([]);
 	const [selectedTest, setSelectedTest] = useState<AssessmentProps | null>(
 		null
 	);
+	const accessToken = Cookies.get("accessToken");
 	const [isDialogOpen, setDialogOpen] = useState(false);
 	const [isEditFormOpen, setEditFormOpen] = useState(false);
 	const [editFormData, setEditFormData] = useState({

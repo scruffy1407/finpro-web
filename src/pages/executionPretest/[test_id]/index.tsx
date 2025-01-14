@@ -130,8 +130,18 @@ export default function executionPretest() {
 			if (axios.isAxiosError(error) && error.response) {
 				const status = error.response.status;
 				console.error("API error response:", error.response?.data); // Log the error response
+
+				// Access the 'error' property directly from the API response
+				const errorMessage =
+					error.response?.data?.error || "An unknown error occurred";
+
+				// Show the error message in the alert
+				alert(errorMessage);
+
 				if (status === 400) {
-					setError("Bad Request: Invalid job ID or missing parameters");
+					setError(
+						"Bad Request: Invalid Skill Assessment ID or missing parameters. You may be accessing an invalid URL."
+					);
 				} else {
 					setError(`Error: ${error.response.statusText}`);
 				}

@@ -2,6 +2,8 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
+import axios from "axios";
+import { useRouter } from "next/router";
 
 interface CreatePreSelectionFormProps {
 	showForm: boolean;
@@ -17,6 +19,7 @@ const PreSelectionTestCreateForm: React.FC<CreatePreSelectionFormProps> = ({
 		passing_grade: 50,
 		duration: 30,
 	});
+	const router = useRouter();
 
 	const accessToken = Cookies.get("accessToken");
 
@@ -25,9 +28,11 @@ const PreSelectionTestCreateForm: React.FC<CreatePreSelectionFormProps> = ({
 	) => {
 		const { name, value } = e.target;
 
+		// Convert the value to number if the name is passing_grade or duration
 		setFormData((prev) => ({
 			...prev,
-			[name]: name === "passing_grade" ? Number(value) : value,
+			[name]:
+				name === "passing_grade" || name === "duration" ? Number(value) : value,
 		}));
 	};
 
@@ -50,42 +55,26 @@ const PreSelectionTestCreateForm: React.FC<CreatePreSelectionFormProps> = ({
 			};
 
 			// Send the POST request
-			const response = await fetch(
+			const response = await axios.post(
 				"http://localhost:8000/api/company/createpretest",
+				requestBody,
 				{
-					method: "POST",
 					headers: {
 						"Content-Type": "application/json",
 						Authorization: `Bearer ${accessToken}`, // Include the access token
 					},
-					body: JSON.stringify(requestBody), // Convert the request body to JSON
 				}
 			);
-
-			if (!response.ok) {
-				// If the response is not OK, handle the error
-				const errorData = await response.json();
-				console.error("Error creating pre-selection test:", errorData);
-				alert(`Error: ${errorData.message || "Failed to create test."}`);
-				return;
-			}
-
-			// If the request is successful
-			const responseData = await response.json();
-			console.log("Pre-selection test created successfully:", responseData);
 			alert("Test created successfully!");
-
 			// Optionally reset the form
 			setFormData({
 				test_name: "",
 				passing_grade: 50,
 				duration: 30,
 			});
-
+			router.reload()
 			// Optionally close the form
 			setShowForm(false);
-			window.location.reload();
-
 		} catch (error) {
 			console.error(
 				"An error occurred while creating the pre-selection test:",

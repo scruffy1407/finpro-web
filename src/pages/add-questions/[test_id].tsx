@@ -34,8 +34,38 @@ const AddQuestions = () => {
 				);
 				setTestName(response.data.data.test_name); // Assume test_name is part of the response
 			} catch (error) {
-				console.error("Error fetching test details:", error);
-				alert("Failed to fetch test details.");
+				// Handle specific error statuses
+				if (axios.isAxiosError(error)) {
+					// Check if the error is from Axios
+					if (error.response) {
+						// The request was made, and the server responded with a status code
+						const status = error.response.status;
+						if (status === 400) {
+							alert(
+								"Bad Request:Test Edit Failed or you want to try to access invalid URL"
+							);
+						} else if (status === 401) {
+							alert("Unauthorized: Please log in to continue.");
+						} else if (status === 403) {
+							alert(
+								"Forbidden: You don't have permission to perform this action."
+							);
+						} else {
+							alert(
+								`Error: ${error.response.data.error || "An error occurred."}`
+							);
+						}
+					} else if (error.request) {
+						// The request was made, but no response was received
+						alert("No response from the server. Please try again later.");
+					} else {
+						// Something went wrong in setting up the request
+						alert("Error in request setup. Please try again.");
+					}
+				} else {
+					// If the error is not from Axios
+					alert("Unexpected error occurred. Please try again.");
+				}
 			}
 		};
 		fetchTestDetails();
@@ -182,7 +212,7 @@ const AddQuestions = () => {
 						Submit Questions
 					</button>
 					<Button variant="outline" onClick={handleCancel}>
-						Cancel Creationg
+						Cancel Creation
 					</Button>
 				</div>
 			</form>
