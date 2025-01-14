@@ -28,6 +28,7 @@ const CreateJobForm: React.FC<CreateJobFormProps> = ({
 		salary_max: 0 || null,
 		job_description: "",
 		job_experience_min: 0,
+		job_experience_max: null,
 		expired_date: "",
 		status: true,
 		job_type: "",
@@ -37,12 +38,13 @@ const CreateJobForm: React.FC<CreateJobFormProps> = ({
 
 	const [preSelectionTests, setPreSelectionTests] = useState<any[]>([]);
 	const [category, setCategory] = useState<CategoriesRealForForm[]>([]);
-	const [isSalaryMaxChecked, setIsSalaryMaxChecked] = useState(false); // state to track checkbox
+	const [isSalaryMaxChecked, setIsSalaryMaxChecked] = useState(false);
+	const [isExperienceMaxChecked, setIsExperienceMaxChecked] = useState(false);
 
 	useEffect(() => {
 		const fetchPreSelectionTests = async () => {
 			const response = await fetch(
-				`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/company/viewpretest`,
+				`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/company/viewpretestforselection`,
 				{
 					method: "GET",
 					headers: {
@@ -58,7 +60,6 @@ const CreateJobForm: React.FC<CreateJobFormProps> = ({
 		fetchPreSelectionTests();
 	}, [accessToken]);
 
-	// Fetch categories and locations on mount
 	useEffect(() => {
 		const fetchCategories = async () => {
 			try {
@@ -70,7 +71,6 @@ const CreateJobForm: React.FC<CreateJobFormProps> = ({
 		};
 		fetchCategories();
 	}, []);
-	//debugging purposed
 	useEffect(() => {}, [category]);
 
 	const handleInputChange = (
@@ -82,6 +82,10 @@ const CreateJobForm: React.FC<CreateJobFormProps> = ({
 
 		if (target instanceof HTMLInputElement) {
 			const { name, value, checked, type } = target;
+
+			if (type === "number" && Number(value) < 0) {
+				return;
+			}
 
 			if (type === "checkbox") {
 				setFormData((prev) => ({
@@ -110,17 +114,40 @@ const CreateJobForm: React.FC<CreateJobFormProps> = ({
 	};
 
 	const handleCheckboxChange = () => {
-		setIsSalaryMaxChecked(!isSalaryMaxChecked); // toggle the checkbox state
+		setIsSalaryMaxChecked(!isSalaryMaxChecked);
 		if (!isSalaryMaxChecked) {
 			setFormData({
 				...formData,
-				salary_max: null, // reset salary_max when unchecked
+				salary_max: null,
 			});
 		}
 	};
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
+
+		if (formData.categoryId === 0) { 
+			alert("Please select a category.");
+			return;
+		  }
+
+		if (
+			formData.salary_max !== null &&
+			formData.salary_max < formData.salary_min
+		) {
+			alert("Salary Max should be greater than  Salary Min.");
+			return;
+		}
+
+		if (
+			formData.job_experience_max !== null &&
+			formData.job_experience_max < formData.job_experience_min
+		) {
+			alert(
+				"Job Experience Max should be greater than Job Experience Min."
+			);
+			return;
+		}
 
 		const transformedData = {
 			...formData,
@@ -131,8 +158,16 @@ const CreateJobForm: React.FC<CreateJobFormProps> = ({
 			salary_min: Number(formData.salary_min),
 			salary_max: formData.salary_max ? Number(formData.salary_max) : null,
 			job_experience_min: Number(formData.job_experience_min),
+			job_experience_max: formData.job_experience_max
+				? Number(formData.job_experience_max)
+				: null,
 			expired_date: new Date(formData.expired_date).toISOString(),
 		};
+
+		if (new Date(formData.expired_date) < new Date()) {
+			alert("Expired date cannot be in the past.");
+			return;
+		}
 
 		try {
 			console.log("Transformed Data:", transformedData);
@@ -167,7 +202,7 @@ const CreateJobForm: React.FC<CreateJobFormProps> = ({
 		<>
 			{showForm && (
 				<div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
-					<div className="bg-white p-6 rounded-md shadow-md w-full max-w-2xl">
+					<div className="bg-white p-6 rounded-md shadow-md w-full max-w-2xl  max-h-[90vh] overflow-y-auto">
 						<h2 className="text-2xl font-bold mb-4">Create New Job</h2>
 						<form onSubmit={handleSubmit} className="flex flex-col gap-4">
 							<p>Job Title</p>
@@ -253,9 +288,7 @@ const CreateJobForm: React.FC<CreateJobFormProps> = ({
 							</select>
 
 							<p>Job Description</p>
-							<RichTextEditor
-								onUpdate={handleDescriptionChange} // Handle rich text change
-							/>
+							<RichTextEditor onUpdate={handleDescriptionChange} />
 							<p>Salary Min</p>
 							<input
 								type="number"
@@ -310,6 +343,37 @@ const CreateJobForm: React.FC<CreateJobFormProps> = ({
 								required
 								className="p-2 border rounded"
 							/>
+
+							<label>
+								<input
+									type="checkbox"
+									checked={isExperienceMaxChecked}
+									onChange={() => {
+										setIsExperienceMaxChecked(!isExperienceMaxChecked);
+										if (!isExperienceMaxChecked) {
+											setFormData((prev) => ({
+												...prev,
+												job_experience_max: null,
+											}));
+										}
+									}}
+								/>
+								Put Experience Max (yrs)
+							</label>
+
+							{isExperienceMaxChecked && (
+								<div>
+									<p>Maximum of job experience (yrs)</p>
+									<input
+										type="number"
+										name="job_experience_max"
+										placeholder="Maximum Experience (Years)"
+										value={formData.job_experience_max ?? ""}
+										onChange={handleInputChange}
+										className="p-2 border rounded"
+									/>
+								</div>
+							)}
 							<p>Expired date</p>
 							<input
 								type="date"

@@ -50,6 +50,7 @@ interface JobDetailProps {
   jobData: JobData;
   validateUserLoading: boolean;
   alreadyJoined: null | JobApplication;
+  jobId ?: number;
   onApplyJob: () => void;
 }
 
@@ -58,6 +59,7 @@ export default function JobDetailComponent({
   onApplyJob,
   alreadyJoined,
   validateUserLoading,
+  jobId,
 }: JobDetailProps) {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
@@ -373,6 +375,7 @@ export default function JobDetailComponent({
               createdAt={alreadyJoined.createdAt}
               jobHunterId={alreadyJoined.jobHunterId}
               resume={alreadyJoined.resume}
+              jobId = {jobId}
             />
           ) : (
             ""

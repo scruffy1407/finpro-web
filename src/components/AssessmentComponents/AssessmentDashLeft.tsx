@@ -1,13 +1,9 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";
-import Cookies from "js-cookie";
-// import PreSelectionTestCreateForm from "./PreSelectionTestCreateForm";
+import { useState} from "react";
 import CreateAssessmentTestForm from "./AssessmentTestCreateForm";
-import axios from "axios";
 
 function AssessmentDashLeft() {
-	const accessToken = Cookies.get("accessToken");
 	const [showForm, setShowForm] = useState(false);
 
 	return (
@@ -30,8 +26,6 @@ function AssessmentDashLeft() {
 					showForm={showForm}
 					setShowForm={setShowForm}
 				/>
-
-				{/* <CreateJobForm showForm={showForm} setShowForm={setShowForm} /> */}
 			</div>
 
 			<div className="flex flex-col gap-3">

@@ -53,8 +53,38 @@ const EditQuestions = () => {
 				setTestName(response.data.data.test_name);
 				setQuestions(questionsWithId); // Set the questions with the correct IDs
 			} catch (error) {
-				console.error("Error fetching test details:", error);
-				alert("Failed to fetch test details.");
+				// Handle specific error statuses
+				if (axios.isAxiosError(error)) {
+					// Check if the error is from Axios
+					if (error.response) {
+						// The request was made, and the server responded with a status code
+						const status = error.response.status;
+						if (status === 400) {
+							alert(
+								"Bad Request:Test Edit Failed or you want to try to access invalid URL"
+							);
+						} else if (status === 401) {
+							alert("Unauthorized: Please log in to continue.");
+						} else if (status === 403) {
+							alert(
+								"Forbidden: You don't have permission to perform this action."
+							);
+						} else {
+							alert(
+								`Error: ${error.response.data.error || "An error occurred."}`
+							);
+						}
+					} else if (error.request) {
+						// The request was made, but no response was received
+						alert("No response from the server. Please try again later.");
+					} else {
+						// Something went wrong in setting up the request
+						alert("Error in request setup. Please try again.");
+					}
+				} else {
+					// If the error is not from Axios
+					alert("Unexpected error occurred. Please try again.");
+				}
 			}
 		};
 		fetchTestDetails();
@@ -107,18 +137,44 @@ const EditQuestions = () => {
 				alert(`Error: ${response.data.error || "Unknown error occurred"}`);
 			}
 		} catch (error) {
-			console.error("Error updating questions:", error);
-			alert("Failed to update questions.");
+			if (axios.isAxiosError(error)) {
+				if (error.response) {
+					const status = error.response.status;
+					// Handle 400 error (Bad Request)
+					if (status === 400) {
+						alert("Bad Request: Please check your input and try again.");
+					} else if (status === 401) {
+						alert("Unauthorized: Please log in to continue.");
+					} else if (status === 403) {
+						alert(
+							"Forbidden: You don't have permission to perform this action."
+						);
+					} else {
+						alert(
+							`Error: ${error.response.data.error || "An error occurred."}`
+						);
+					}
+				} else if (error.request) {
+					// The request was made, but no response was received
+					alert("No response from the server. Please try again later.");
+				} else {
+					// Something went wrong in setting up the request
+					alert("Error in request setup. Please try again.");
+				}
+			} else {
+				// If the error is not from Axios
+				alert("Unexpected error occurred. Please try again.");
+			}
 		}
 	};
 
-	const handleCancel = () => {
-		// Navigate to the assessment test dashboard
+	const handleCancel = (e: React.MouseEvent) => {
+		e.preventDefault();
 		router.push("/preSelectionDashboard"); // Navigate back to the homepage or another page
 	};
 
 	return (
-		<div className="p-6 max-w-3xl mx-auto bg-white shadow rounded-md">
+		<div className="p-6 max-w-3xl mx-auto bg-white shadow rounded-md my-4">
 			<h1 className="text-2xl font-bold mb-6">Edit Questions Form</h1>
 			<h1 className="text-xl mb-6">
 				Pre-selection Test Title: {testName || "Loading..."}
@@ -177,7 +233,7 @@ const EditQuestions = () => {
 					>
 						Update Questions
 					</button>
-					<Button variant="outline" onClick={handleCancel}>
+					<Button variant="outline" type="button" onClick={handleCancel}>
 						Cancel Edit
 					</Button>
 				</div>

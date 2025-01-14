@@ -118,6 +118,7 @@ function JobDetail() {
           router.push(
             `/executionPretest/${jobData.preSelectionTestId}?job_id=${job_id}`
           );
+		  return
         } else {
           // Ensure applicationStatus is defined before comparing
           if (applicantData?.applicationStatus as string === "pass") {
@@ -334,7 +335,8 @@ function JobDetail() {
             jobData={jobData}
             alreadyJoined={applicantData}
             validateUserLoading={validateLoading}
-          />
+			jobId={Number(job_id)}
+			/>
           <div className="flex flex-col gap-5">
             <HeadingRelatedComponent
               heading="Related Jobs"
