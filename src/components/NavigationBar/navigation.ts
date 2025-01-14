@@ -108,6 +108,11 @@ export const dropDownItemConfig: Record<UserRole, NavigationItem[]> = {
       icon: FileBadge,
     },
     { name: "Saved Jobs", href: "/jobs/bookmarks", icon: BookmarkCheck },
+    {
+      name: "My Transaction",
+      href: "/profile/user/manage-subscription",
+      icon: FileBadge,
+    },
   ],
   company: [
     { name: "Company Profile", href: "/profile/company", icon: Building },

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 // import type { SubscriptionPlan } from "@/types/subscription";
 import PlanHeader from "@/components/Subscription/Confirmation/PlanHeader";
 import PaymentButton from "@/components/Subscription/Confirmation/PaymentButton";
@@ -8,23 +8,36 @@ import type { SubscriptionPlan } from "@/models/subscription";
 import { toast } from "sonner";
 import { PaymentHandler } from "@/utils/payment.utils";
 import Cookies from "js-cookie";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/store";
 import { useRouter } from "next/router";
 import { AxiosResponse } from "axios";
+import ModalContainer from "@/components/Modal/ModalContainer";
+import VerifyEmailModal from "@/components/Modal/VerifyEmailModal";
+import { openModalAction } from "@/store/slices/ModalSlice";
 
 export default function ConfirmationCard({ plan }: { plan: SubscriptionPlan }) {
   const paymentHandler = new PaymentHandler();
   const router = useRouter();
-
+  const dispatch = useDispatch<AppDispatch>();
   const [isAgreed, setIsAgreed] = useState(false);
-  const { isLoggedIn } = useSelector((state: RootState) => state.auth);
+  const { isLoggedIn, isVerified } = useSelector(
+    (state: RootState) => state.auth,
+  );
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isDisable, setIsDisable] = useState<boolean>(false);
 
   const handlePayment = async () => {
     const token = Cookies.get("accessToken");
     let subscriptionId: number = 1;
+    if (!isLoggedIn) {
+      dispatch(openModalAction("needToVerifyModal"));
+      return;
+    }
+    if (!isVerified) {
+      dispatch(openModalAction("needToVerifyModal"));
+      return;
+    }
     if (plan.subsParam === "standard-plan") {
       subscriptionId = 2;
     } else if (plan.subsParam === "professional-plan") {
@@ -69,16 +82,18 @@ export default function ConfirmationCard({ plan }: { plan: SubscriptionPlan }) {
   };
 
   return (
-    <div className="bg-white rounded-2xl overflow-hidden">
-      <PlanHeader plan={plan} />
-      <BenefitsList benefits={plan.features} />
-      <TermsAndConditions isAgreed={isAgreed} onAgreeChange={setIsAgreed} />
-      <PaymentButton
-        isLoading={isLoading}
-        isDisable={isDisable}
-        isAgreed={isAgreed}
-        onPayment={handlePayment}
-      />
-    </div>
+    <>
+      <div className="bg-white rounded-2xl overflow-hidden">
+        <PlanHeader plan={plan} />
+        <BenefitsList benefits={plan.features} />
+        <TermsAndConditions isAgreed={isAgreed} onAgreeChange={setIsAgreed} />
+        <PaymentButton
+          isLoading={isLoading}
+          isDisable={isDisable}
+          isAgreed={isAgreed}
+          onPayment={handlePayment}
+        />
+      </div>
+    </>
   );
 }

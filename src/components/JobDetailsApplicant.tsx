@@ -47,7 +47,7 @@ export const JobDetails: React.FC<JobDetailsProps> = ({
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },
-          }
+          },
         );
 
         if (response.status === 200) {
@@ -80,13 +80,13 @@ export const JobDetails: React.FC<JobDetailsProps> = ({
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
-        }
+        },
       );
 
       if (response.status === 200) {
         setJobStatus(!jobStatus);
         toast.success(
-          `Job status updated to ${!jobStatus ? "Active" : "Inactive"}`
+          `Job status updated to ${!jobStatus ? "Active" : "Inactive"}`,
         );
       } else {
         toast.error("Failed to update job status.");
@@ -105,18 +105,17 @@ export const JobDetails: React.FC<JobDetailsProps> = ({
   return (
     <div className="bg-white rounded-2xl p-6">
       <div className="flex items-center gap-4 mb-6">
-        <div className="bg-blue-100 p-3 rounded-lg">
-          <Image
-            src={
-              companyLogo ||
-              "https://res.cloudinary.com/dgnce1xzd/image/upload/v1734781439/ohlj0zikblpzrexcrd2w.png"
-            }
-            alt={"Company Logo"}
-            width={40}
-            height={40}
-            className="rounded-full"
-          />
-        </div>
+        <Image
+          src={
+            companyLogo ||
+            "https://res.cloudinary.com/dgnce1xzd/image/upload/v1734781439/ohlj0zikblpzrexcrd2w.png"
+          }
+          alt={"Company Logo"}
+          width={40}
+          height={40}
+          className="rounded-full"
+        />
+
         <h2 className="text-xl font-bold text-gray-800">{title}</h2>
       </div>
 
