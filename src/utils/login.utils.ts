@@ -6,7 +6,7 @@ import { NextRouter } from "next/router";
 
 export const handleFormChange = <T extends Record<string, unknown>>(
   e: React.ChangeEvent<HTMLInputElement>,
-  setter: React.Dispatch<React.SetStateAction<T>>
+  setter: React.Dispatch<React.SetStateAction<T>>,
 ) => {
   const { name, value } = e.target;
   setter((prev) => ({
@@ -19,14 +19,14 @@ export const handleLogin = async (
   e: React.FormEvent<HTMLFormElement>,
   loginForm: LoginAuth,
   dispatch: AppDispatch,
-  setBtnDisable: React.Dispatch<React.SetStateAction<boolean>>
+  setBtnDisable: React.Dispatch<React.SetStateAction<boolean>>,
 ) => {
   e.preventDefault();
   setBtnDisable(true);
   await dispatch(
     loginUser({
       loginData: loginForm,
-    })
+    }),
   );
   setBtnDisable(false);
 };
@@ -37,7 +37,7 @@ export const handleLoginEffect = (
   error: string | null,
   router: NextRouter,
   dispatch: AppDispatch,
-  callback?: string
+  callback?: string,
 ) => {
   if (isLoggedIn) {
     toast.success("Login Successful!");
@@ -52,7 +52,7 @@ export const handleLoginEffect = (
       dispatch(resetState());
       return;
     } else if (userRole === UserRole.DEVELOPER) {
-      router.push("/dashboard/admin");
+      router.push("/developer/analytics");
       dispatch(resetState());
       return;
     } else {
@@ -62,7 +62,7 @@ export const handleLoginEffect = (
     }
   }
   if (error) {
-    console.error(error)
+    console.error(error);
     // toast.error(error);
   }
 };

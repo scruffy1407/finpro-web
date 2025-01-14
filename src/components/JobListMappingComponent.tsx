@@ -9,6 +9,18 @@ interface Bookmark {
   job_id: number;
 }
 
+enum JobType {
+  fulltime = "Full Time",
+  freelance = "Freelance",
+  internship = "Internship",
+}
+
+enum JobSpace {
+  remoteworking = "Remote Working",
+  onoffice = "On Office",
+  hybrid = "Hybrid",
+}
+
 interface JobListMappingComponentProps {
   jobPosts: JobPostPropsReal[];
   bookmarkedJobs: Bookmark[];
@@ -22,6 +34,11 @@ const JobListMappingComponent: React.FC<JobListMappingComponentProps> = ({
   onRemoveBookmark,
 }) => {
   const { bookmarks } = useSelector((state: RootState) => state.bookmarks);
+  const getJobTypeLabel = (jobType: string): string =>
+    JobType[jobType as keyof typeof JobType] || "Unknown Job Type";
+
+  const getJobSpaceLabel = (jobSpace: string): string =>
+    JobSpace[jobSpace as keyof typeof JobSpace] || "Unknown Job Space";
   if (jobPosts.length === 0) {
     return (
       <div className="flex justify-center items-center">
@@ -48,7 +65,10 @@ const JobListMappingComponent: React.FC<JobListMappingComponentProps> = ({
               isBookmarked={isBookmarked}
               onAddBookmark={onAddBookmark}
               onRemoveBookmark={onRemoveBookmark}
-              logo={jobListPostReal.company.logo || "/burger.svg"}
+              logo={
+                jobListPostReal.company.logo ||
+                "https://res.cloudinary.com/dgnce1xzd/image/upload/v1734781490/orwyxtvz6a1zzwa6wk4j.png"
+              }
               companyName={
                 jobListPostReal.company.company_name || "Name Undisclosed"
               }
@@ -60,8 +80,8 @@ const JobListMappingComponent: React.FC<JobListMappingComponentProps> = ({
               salaryMin={jobListPostReal.salary_min}
               salaryMax={jobListPostReal.salary_max}
               salaryShow={jobListPostReal.salary_show}
-              jobType={jobListPostReal.job_type}
-              jobSpace={jobListPostReal.job_space}
+              jobType={getJobTypeLabel(jobListPostReal.job_type)}
+              jobSpace={getJobSpaceLabel(jobListPostReal.job_space)}
               experienceMin={jobListPostReal.job_experience_min}
               experienceMax={jobListPostReal.job_experience_max}
             />

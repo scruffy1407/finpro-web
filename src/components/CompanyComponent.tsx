@@ -41,7 +41,7 @@ function CompanyComponent({
       </div>
       <div className="flex p-5">
         <p className="text-sm border rounded-xl py-1 px-2 bg-sky-950 text-white">
-          {jobsOpen} Jobs Open{" "}
+          {jobsOpen} Jobs Available{" "}
         </p>
       </div>
     </Link>

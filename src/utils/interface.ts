@@ -79,6 +79,7 @@ export interface JobPostProps {
   companyName: string;
   job_title: string;
   company_province: string;
+  company_city: string;
   jobType: string;
   created_at: Date;
   salaryMin: number;

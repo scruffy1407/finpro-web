@@ -71,7 +71,7 @@ function SelectionJobsComponents() {
               <SelectContent>
                 <SelectItem value="all">All Job Type</SelectItem>
                 <SelectItem value="fulltime">Full Time</SelectItem>
-                <SelectItem value="freelance">FreeLance</SelectItem>
+                <SelectItem value="freelance">Freelance</SelectItem>
                 <SelectItem value="internship">Internship</SelectItem>
               </SelectContent>
             </Select>

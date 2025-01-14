@@ -67,7 +67,7 @@ const BookmarkJobListMappingComponent: React.FC<
     job_title: job.jobPost.job_title,
     companyName: job.jobPost.company.company_name || "Unknown",
     company_city: job.jobPost.company.company_city || "Unknown",
-    logo: job.jobPost.company.logo || "/burger.svg",
+    logo: job.jobPost.company.logo,
     jobType: job.jobPost.job_type || "Unknown",
     jobSpace: job.jobPost.job_space,
     created_at: job.jobPost.created_at,

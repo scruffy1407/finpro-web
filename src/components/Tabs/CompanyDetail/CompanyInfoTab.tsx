@@ -5,6 +5,14 @@ import { TabsContentProps } from "@/models/page.model";
 import { companyDetailResponse } from "@/models/company.model";
 import { format } from "date-fns";
 
+enum CompanySize {
+  small = "Small",
+  smallmedium = "Small Medium",
+  medium = "Medium",
+  large = "Large",
+  enterprise = "Enterprise",
+}
+
 interface companyInfoProps extends TabsContentProps {
   data: companyDetailResponse | undefined;
   totalJob: number;
@@ -17,6 +25,9 @@ function CompanyInfoTab({
   totalJob,
   lastPostJob,
 }: companyInfoProps) {
+  function getCompanySizeLabel(size: string): string {
+    return CompanySize[size as keyof typeof CompanySize] || "Unknown Size";
+  }
   return (
     <TabsContent
       className={`flex flex-col gap-4 mt-0 data-[state=active]:flex data-[state=inactive]:hidden`}
@@ -36,7 +47,7 @@ function CompanyInfoTab({
               <div>
                 <p className={`text-sm mb-1 text-neutral-400`}>Company Size</p>
                 <p className="text-sm font-bold text-neutral-950">
-                  {data?.companySize || "-"}
+                {getCompanySizeLabel(data?.companySize || "Unknown")}
                 </p>
               </div>
             </div>
