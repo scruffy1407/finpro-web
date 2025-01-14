@@ -26,10 +26,24 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { toast } from "sonner";
 
+enum CompanyIndustry {
+  informationtechnologyandservices = "Information Technology and Services",
+  financeandbanking = "Finance and Banking",
+  businessandhr = "Business and HR",
+  hospitalandhealthcare = "Hospital and Healthcare",
+  constructionandrealestate = "Construction and Real Estate",
+  retaillogisticandconsumergoods = "Retail, Logistics, and Consumer Goods",
+  educationandresearch = "Education and Research",
+  manufacturingandengineering = "Manufacturing and Engineering",
+  mediaandentertainment = "Media and Entertainment",
+  governmentandnonprofit = "Government and Nonprofit",
+  others = "Others",
+}
+
 function CompanyPage() {
   const authHandler = new AuthHandler();
   authHandler.authorizeUser();
-
+  const { user_role } = useSelector((state: RootState) => state.auth);
   const companyUtils = new CompanyUtils();
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
@@ -42,7 +56,7 @@ function CompanyPage() {
   const [avgReview, setAvgReview] = useState<number>(0);
 
   const bookmarks = useSelector(
-    (state: RootState) => state.bookmarks.bookmarks
+    (state: RootState) => state.bookmarks.bookmarks,
   );
 
   const calculateAverageRating = (reviews: reviewResponse[]) => {
@@ -54,7 +68,7 @@ function CompanyPage() {
         review.culturalRating +
         review.facilityRating +
         review.workLifeBalanceRating,
-      0
+      0,
     );
     return Number((totalRatings / (reviews.length * 4)).toFixed(2));
   };
@@ -63,7 +77,7 @@ function CompanyPage() {
     setIsLoading(true);
     try {
       const response = await companyUtils.getCompanyPageDetail(
-        Number(companyId)
+        Number(companyId),
       );
       const companyDetail: companyDetailResponse = response.data;
 
@@ -85,7 +99,7 @@ function CompanyPage() {
 
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/applyjob/bookmark`,
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token}` } },
       );
 
       const jobWishlist = response.data.bookmarks?.jobWishlist || [];
@@ -102,23 +116,27 @@ function CompanyPage() {
         toast.error("You need to be logged in to add bookmark");
         return;
       }
+      if (user_role !== "jobhunter") {
+        toast.error("Please login as Job Hunter to add bookmark");
+        return;
+      }
 
       const existingBookmark = bookmarks.find(
-        (bookmark) => bookmark.jobPostId === jobPostId
+        (bookmark) => bookmark.jobPostId === jobPostId,
       );
-      
+
       if (existingBookmark) {
         await axios.post(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/applyjob/bookmark/remove`,
           { wishlist_id: existingBookmark.wishlist_id },
-          { headers: { Authorization: `Bearer ${token}` } }
+          { headers: { Authorization: `Bearer ${token}` } },
         );
         dispatch(removeBookmark(existingBookmark.wishlist_id));
       } else {
         const response = await axios.post(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/applyjob/bookmark`,
           { jobPostId },
-          { headers: { Authorization: `Bearer ${token}` } }
+          { headers: { Authorization: `Bearer ${token}` } },
         );
         dispatch(addBookmark(response.data.bookmark));
       }
@@ -134,6 +152,13 @@ function CompanyPage() {
     }
   }, [companyId]);
 
+  function getCompanyIndustryLabel(industry: string): string {
+    return (
+      CompanyIndustry[industry as keyof typeof CompanyIndustry] ||
+      "Unknown Industry"
+    );
+  }
+
   return (
     <div className="max-w-screen-xl mx-auto">
       <Navbar pageRole="jobhunter" />
@@ -145,7 +170,9 @@ function CompanyPage() {
           <CompanyHighlight
             logo={companyInfo?.logo || ""}
             companyName={companyInfo?.companyName || ""}
-            companyIndustry={companyInfo?.companyIndustry || ""}
+            companyIndustry={getCompanyIndustryLabel(
+              companyInfo?.companyIndustry || "Unknown"
+            )}
             ratingScore={avgReview}
             ratingAmount={reviewList.length}
             companyId={Number(companyId)}
@@ -180,14 +207,18 @@ function CompanyPage() {
               value="companyInfo"
               data={companyInfo}
               totalJob={companyInfo?.listJob.length as number}
-              lastPostJob={jobList[0]?.created_at as string}
+              lastPostJob={
+                jobList[0]?.created_at
+                  ? new Date(jobList[0].created_at).toISOString()
+                  : "N/A" // Fallback value
+              }
             />
             <JobListTab
               value="jobs"
               data={jobList.map((job) => ({
                 ...job,
                 isBookmarked: bookmarks.some(
-                  (bookmark) => bookmark.jobPostId === job.job_id
+                  (bookmark) => bookmark.jobPostId === job.job_id,
                 ),
               }))}
               companyName={companyInfo?.companyName || ""}

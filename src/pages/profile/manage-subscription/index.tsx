@@ -18,7 +18,7 @@ interface SubscriptionProps {
   statusPayment: string;
 }
 
-function ManageSubscription() {
+function Index() {
   const authHandler = new AuthHandler();
   authHandler.authorizeUser("jobhunter");
   const paymentHandler = new PaymentHandler();
@@ -148,4 +148,4 @@ function ManageSubscription() {
   );
 }
 
-export default ManageSubscription;
+export default Index;

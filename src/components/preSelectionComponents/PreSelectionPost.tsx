@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
 import ConfirmDelete from "@/components/Modal/ConfirmDelete";
 import Link from "next/link";
+import { AppDispatch, RootState } from "@/store";
+
 import {
 	Popover,
 	PopoverTrigger,
@@ -22,6 +24,8 @@ interface PreSelectionTestProps {
 }
 
 function PreSelectionPost() {
+	const dispatch = useDispatch<AppDispatch>();
+
 	const accessToken = Cookies.get("accessToken");
 	const [preSelectionTest, setPreSelectionTests] = useState<
 		PreSelectionTestProps[]
@@ -49,9 +53,6 @@ function PreSelectionPost() {
 			) {
 				setPreSelectionTests(response.data.data);
 			}
-
-			console.log ("This is response")
-			console.log(response)
 		} catch (error) {
 			console.error("Error fetching pre-selection tests:", error);
 		}
@@ -132,16 +133,35 @@ function PreSelectionPost() {
 				}
 			);
 
-			if (response.data.message) {
-				alert(response.data.message);
+			alert(response.data?.message || "Test deleted successfully");
+
+			if (response.data?.message) {
 				setPreSelectionTests((prev) =>
 					prev.filter((test) => test.test_id !== selectedTest.test_id)
 				);
 				setDialogOpen(false);
+				setDialogOpen(false);
+				setSelectedTest(null);
+			} else {
+				alert("Unexpected response structure.");
 			}
-		} catch (error) {
-			console.error("Error deleting test:", error);
-			alert("Failed to delete the test. Please try again.");
+		} catch (error: any) {
+			// Ensure you are handling AxiosError properly
+			if (axios.isAxiosError(error)) {
+				if (error.response) {
+					// Extract the message from error response
+					const message = error.response.data?.message || "An error occurred.";
+					console.error("Error deleting test:", message);
+					alert(message); // Show the error message
+				} else {
+					// Handle case where error.response is not available
+					alert("Network error or no response from the server.");
+				}
+			} else {
+				// Handle non-axios errors (if any)
+				console.error("Unexpected error:", error);
+				alert("Failed to delete the test. Please try again.");
+			}
 		}
 	};
 
@@ -295,13 +315,14 @@ function PreSelectionPost() {
 			)}
 
 			{/* Delete Confirmation Modal */}
-			<Dialog open={isDialogOpen}>
+			<Dialog
+				open={isDialogOpen}
+				onOpenChange={(isOpen) => setDialogOpen(isOpen)}
+			>
 				<DialogContent>
 					<DialogHeader>
 						<ConfirmDelete
-							onDelete={() => {
-								handleDelete();
-							}}
+							onDelete={handleDelete}
 							loadingState={false}
 							disableState={false}
 						/>

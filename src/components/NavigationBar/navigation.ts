@@ -71,12 +71,21 @@ export const navItemConfig: Record<UserRole, NavigationItem[]> = {
     { name: "Explore Companies", href: "/company", icon: Building2 },
   ],
   company: [
-    { name: "Job List", href: "/post-job", icon: FileText },
-    { name: "Test Template", href: "/candidates", icon: Users },
+    { name: "Job List", href: "/dashboard/company", icon: FileText },
+    { name: "Test Template", href: "/preSelectionDashboard", icon: Users },
   ],
   developer: [
-    { name: "Dashboard", href: "/post-job", icon: FileText },
-    { name: "Manage Assessment", href: "/candidates", icon: Users },
+    {
+      name: "Dashboard Analytics",
+      href: "/developer/analytics",
+      icon: FileText,
+    },
+    {
+      name: "Manage Assessment",
+      href: "/assessmentTestDashboard",
+      icon: Users,
+    },
+    { name: "User List", href: "/developer/manage-user", icon: Users },
   ],
   default: [
     { name: "Find Jobs", href: "/jobs", icon: Briefcase },
@@ -99,6 +108,11 @@ export const dropDownItemConfig: Record<UserRole, NavigationItem[]> = {
       icon: FileBadge,
     },
     { name: "Saved Jobs", href: "/jobs/bookmarks", icon: BookmarkCheck },
+    {
+      name: "My Transaction",
+      href: "/profile/user/manage-subscription",
+      icon: FileBadge,
+    },
   ],
   company: [
     { name: "Company Profile", href: "/profile/company", icon: Building },

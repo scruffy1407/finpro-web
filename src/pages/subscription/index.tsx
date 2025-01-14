@@ -12,6 +12,7 @@ import { AppDispatch, RootState } from "@/store";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/router";
 import { Navbar } from "@/components/NavigationBar/Navbar";
+import VerifyEmailModal from "@/components/Modal/VerifyEmailModal";
 
 function Index() {
   const authHandler = new AuthHandler();
@@ -19,10 +20,10 @@ function Index() {
   const router = useRouter();
   const callbackPath = `/auth/login/jobhunter?callback=${router.pathname}`;
   const dispatch = useDispatch<AppDispatch>();
+
   const { currentModalId } = useSelector(
     (state: RootState) => state.modalController,
   );
-
   function handleRedirect() {
     router.push(callbackPath);
   }
@@ -65,6 +66,12 @@ function Index() {
           </div>
         </div>
       </ModalContainer>
+      <ModalContainer
+        isOpen={currentModalId === "needToVerifyModal"}
+        onClose={handleCloseModal}
+      >
+        <VerifyEmailModal />
+      </ModalContainer>
       <Navbar pageRole={"jobhunter"} />
 
       <div className="mx-auto max-w-screen-xl mt-5 mb-10">
@@ -74,7 +81,7 @@ function Index() {
           <SupportSection />
         </div>
       </div>
-      <FooterComponent />
+      <FooterComponent pageRole={"jobhunter"} />
     </main>
   );
 }

@@ -5,20 +5,22 @@ import { Scroll, CheckCircle } from "lucide-react";
 import { useRouter } from "next/router";
 import axios from "axios";
 import Cookies from "js-cookie";
+import LoadingLoader from "@/components/LoadingLoader";
 
 interface TestData {
-	message: string;
-	data: {
-		test_id: number;
-		test_name: string;
-		duration: number;
-		passing_grade: number;
-	};
+  message: string;
+  data: {
+    test_id: number;
+    test_name: string;
+    duration: number;
+    passing_grade: number;
+  };
 }
 
 export default function executionPretest() {
 	const router = useRouter();
 	const [testData, setTestData] = useState<TestData | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [error, setError] = useState<string | null>(null);
 	const accessToken = Cookies.get("accessToken");
 
@@ -99,7 +101,7 @@ export default function executionPretest() {
 
 		try {
 			const token = accessToken;
-
+      setIsLoading(true);
 			// Call the API to apply for the test
 			const apiUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/jobhunter/applytest/${jobId}`;
 			const response = await axios.post(
@@ -123,20 +125,37 @@ export default function executionPretest() {
 					pathname: `/executionPretestQuiz/${jobId}`,
 					query: { applicationId },
 				});
+        setIsLoading(false);
+
 			} else {
 				setError(`Unexpected response status: ${response.status}`);
+        setIsLoading(false);
 			}
 		} catch (error) {
 			if (axios.isAxiosError(error) && error.response) {
 				const status = error.response.status;
 				console.error("API error response:", error.response?.data); // Log the error response
+
+				// Access the 'error' property directly from the API response
+				const errorMessage =
+					error.response?.data?.error || "An unknown error occurred";
+
+				// Show the error message in the alert
+				alert(errorMessage);
+        setIsLoading(false);
+
 				if (status === 400) {
-					setError("Bad Request: Invalid job ID or missing parameters");
+					setError(
+						"Bad Request: Invalid Skill Assessment ID or missing parameters. You may be accessing an invalid URL."
+					);
+          setIsLoading(false);
 				} else {
 					setError(`Error: ${error.response.statusText}`);
+          setIsLoading(false);
 				}
 			} else {
 				setError("An unexpected error occurred");
+        setIsLoading(false);
 			}
 		}
 	};
@@ -169,19 +188,25 @@ export default function executionPretest() {
 					</div>
 				</div>
 
-				<Button size="lg" className="w-full" onClick={handleStartTest}>
-					I Understand, Start Test
-				</Button>
+				 <Button
+          size="lg"
+          className="w-full"
+          variant={"primary"}
+          onClick={handleStartTest}
+          disabled={isLoading}
+        >
+          {isLoading ? <LoadingLoader /> : "I Understand, Start Test"}
+        </Button>
 			</Card>
 		</div>
 	);
 }
 
 function RuleItem({ text }: { text: string }) {
-	return (
-		<div className="flex items-start gap-3">
-			<CheckCircle className="h-5 w-5 text-primary mt-0.5" />
-			<p className="text-lg">{text}</p>
-		</div>
-	);
+  return (
+    <div className="flex items-start gap-3">
+      <CheckCircle className="h-5 w-5 text-primary mt-0.5" />
+      <p className="text-lg">{text}</p>
+    </div>
+  );
 }

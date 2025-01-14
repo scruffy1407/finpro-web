@@ -24,11 +24,14 @@ export function PricingCard({
 }: PricingCardProps) {
   const router = useRouter();
   const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
+  const isVerified = useSelector((state: RootState) => state.auth.isVerified);
   const dispatch = useDispatch<AppDispatch>();
 
   function handleClick() {
     if (!isLoggedIn) {
       dispatch(openModalAction("needToLoginModal"));
+    } else if (!isVerified) {
+      dispatch(openModalAction("needToVerifyModal"));
     } else {
       router.push(`/subscription/${subParam}`);
     }

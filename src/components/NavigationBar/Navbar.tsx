@@ -27,13 +27,9 @@ export function Navbar({ pageRole }: { pageRole: UserRole }) {
     (state: RootState) => state.auth.pendingState,
   );
 
-  const theme = themeConfig[(userRole as UserRole) || "jobhunter"];
-  const navigation = navItemConfig[(userRole as UserRole) || "jobhunter"];
-
   const navigationUpdate = navItemConfig[pageRole];
   const themeUpdate = themeConfig[pageRole];
 
-  // const Logo = (userRole as UserRole) === "jobhunter" ? "/logo" : Building2;
   const handleLogout = async () => {
     dispatch(logoutUser());
     window.location.href = "/";

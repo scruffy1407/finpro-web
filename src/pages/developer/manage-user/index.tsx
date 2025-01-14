@@ -90,7 +90,6 @@ function Index() {
         currentPage,
       );
 
-      console.log(response);
       const userList: JobHunter[] = [];
       response?.data?.listUser.map((user: any) => {
         userList.push({
@@ -129,7 +128,7 @@ function Index() {
     <>
       <Navbar pageRole={"developer"} />
       <main className={"px-4 max-w-screen-xl mx-auto"}>
-        <section className={"mt-5 p-6 bg-white rounded-2xl"}>
+        <section className={"mt-5 p-6 bg-white rounded-2xl mb-10"}>
           <h1 className={"font-bold text-2xl mb-3"}>User Management</h1>
           <p className={"text-sm text-neutral-600 mb-10"}>
             View all user that register in Pathway Platform

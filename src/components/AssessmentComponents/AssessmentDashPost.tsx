@@ -11,6 +11,7 @@ import {
   PopoverContent,
 } from "@/components/ui/popover";
 import { DotsVerticalIcon } from "@radix-ui/react-icons";
+import { toast } from "sonner";
 
 interface AssessmentProps {
   skill_assessment_id: number;
@@ -22,19 +23,19 @@ interface AssessmentProps {
 }
 
 function AssessmentDashPost() {
-  const [assessmentTest, setAssessmentTests] = useState<AssessmentProps[]>([]);
-  const [selectedTest, setSelectedTest] = useState<AssessmentProps | null>(
-    null,
-  );
-  const accessToken = Cookies.get("accessToken");
-  const [isDialogOpen, setDialogOpen] = useState(false);
-  const [isEditFormOpen, setEditFormOpen] = useState(false);
-  const [editFormData, setEditFormData] = useState({
-    testName: "",
-    passingGrade: 50,
-    duration: 30,
-    skillBadge: null as File | null, // Add skillBadge with a type of File | null
-  });
+	const [assessmentTest, setAssessmentTests] = useState<AssessmentProps[]>([]);
+	const [selectedTest, setSelectedTest] = useState<AssessmentProps | null>(
+		null
+	);
+	const accessToken = Cookies.get("accessToken");
+	const [isDialogOpen, setDialogOpen] = useState(false);
+	const [isEditFormOpen, setEditFormOpen] = useState(false);
+	const [editFormData, setEditFormData] = useState({
+		testName: "",
+		passingGrade: 50,
+		duration: 30,
+		skillBadge: null as File | null, // Add skillBadge with a type of File | null
+	});
 
   useEffect(() => {
     const fetchAssessmentTest = async () => {
@@ -307,14 +308,29 @@ function AssessmentDashPost() {
                 name="skillBadge"
                 type="file"
                 className="w-full border rounded px-3 py-2"
-                onChange={(e) =>
-                  setEditFormData((prev) => ({
-                    ...prev,
-                    skillBadge: e.target.files
-                      ? e.target.files[0]
-                      : prev.skillBadge,
-                  }))
-                }
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  const input = e.target;
+                  const files = input.files; // Get files from the input element
+
+                  if (!files || files.length === 0) {
+                    toast.error("No file selected");
+                    input.value = ""; // Clear the file input
+                    return;
+                  }
+
+                  const file = files[0]; // Access the first file
+
+                  // Check if file size exceeds 2 MB
+                  if (file.size > 2 * 1024 * 1024) {
+                    toast.error("File size should not exceed 2 MB");
+                    input.value = ""; // Clear the file input
+                  } else {
+                    setEditFormData((prev) => ({
+                      ...prev,
+                      skillBadge: file,
+                    }));
+                  }
+                }}
               />
             </div>
             <div>

@@ -20,8 +20,9 @@ const BookmarkPage: React.FC = () => {
 
   const dispatch = useDispatch<AppDispatch>();
   const bookmarks = useSelector(
-    (state: RootState) => state.bookmarks.bookmarks
+    (state: RootState) => state.bookmarks.bookmarks,
   );
+  const { user_role } = useSelector((state: RootState) => state.auth);
   const validBookmarks = Array.isArray(bookmarks) ? bookmarks : [];
 
   const fetchBookmarks = async () => {
@@ -35,10 +36,10 @@ const BookmarkPage: React.FC = () => {
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/applyjob/bookmark`,
         {
           headers: { Authorization: `Bearer ${token}` },
-        }
+        },
       );
 
-      const jobWishlist = response.data.bookmarks?.jobWishlist || [];
+      const jobWishlist = response.data?.bookmarks?.jobWishlist || [];
       dispatch(setBookmarks(jobWishlist));
     } catch (error) {
       console.error("Failed to fetch bookmarks:", error);
@@ -57,12 +58,17 @@ const BookmarkPage: React.FC = () => {
         return;
       }
 
+      if (user_role !== "jobhunter") {
+        toast.error("Please login as Job Hunter to add bookmark");
+        return;
+      }
+        
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/applyjob/bookmark`,
         { jobPostId },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token}` } },
       );
-      dispatch(addBookmark(response.data.bookmark));
+      dispatch(addBookmark(response.data?.bookmark));
       fetchBookmarks();
     } catch (error) {
       console.error("Failed to add bookmark:", error);
@@ -80,7 +86,7 @@ const BookmarkPage: React.FC = () => {
       await axios.post(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/applyjob/bookmark/remove`,
         { wishlist_id: wishlistId },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token}` } },
       );
       dispatch(removeBookmark(wishlistId));
       fetchBookmarks();

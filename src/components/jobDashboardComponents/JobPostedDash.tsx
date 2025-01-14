@@ -63,15 +63,14 @@ function JobPostedDash() {
     setLoadingState(true);
     try {
       const response = await deleteJobPostDash(jobId, token as string);
-      if (response?.message) {
-        alert(response.message);
+      if (response.success) {
+        toast.success("Job deleted successfully.");
+        setJobPosts((prevPosts) =>
+          prevPosts.filter((post) => Number(post.job_id) !== jobId),
+        );
       } else {
-        alert("Job post deleted successfully.");
+        toast.error(response.message);
       }
-
-      setJobPosts((prevPosts) =>
-        prevPosts.filter((post) => Number(post.job_id) !== jobId),
-      );
     } catch (error) {
       // Debug: Log the error caught
       console.error("Error deleting job post:", error);

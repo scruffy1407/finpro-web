@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { Button } from "./ui/button";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import axios from "axios";
@@ -47,7 +46,7 @@ export const JobDetails: React.FC<JobDetailsProps> = ({
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },
-          }
+          },
         );
 
         if (response.status === 200) {
@@ -80,13 +79,13 @@ export const JobDetails: React.FC<JobDetailsProps> = ({
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
-        }
+        },
       );
 
       if (response.status === 200) {
         setJobStatus(!jobStatus);
         toast.success(
-          `Job status updated to ${!jobStatus ? "Active" : "Inactive"}`
+          `Job status updated to ${!jobStatus ? "Active" : "Inactive"}`,
         );
       } else {
         toast.error("Failed to update job status.");
@@ -105,7 +104,6 @@ export const JobDetails: React.FC<JobDetailsProps> = ({
   return (
     <div className="bg-white rounded-2xl p-6">
       <div className="flex items-center gap-4 mb-6">
-        <div className="bg-blue-100 p-3 rounded-lg">
           <Image
             src={
               companyLogo ||
@@ -116,7 +114,6 @@ export const JobDetails: React.FC<JobDetailsProps> = ({
             height={40}
             className="rounded-full"
           />
-        </div>
         <h2 className="text-xl font-bold text-gray-800">{title}</h2>
       </div>
 
@@ -148,9 +145,6 @@ export const JobDetails: React.FC<JobDetailsProps> = ({
       </div>
 
       <div className="flex flex-col items-center gap-4 justify-between">
-        <Button variant="primary" className="w-full">
-          Edit Job
-        </Button>
         <div className="flex items-center gap-2">
           <Label htmlFor="JobStatus" className="text-xs text-neutral-600">
             Unpublish Job
