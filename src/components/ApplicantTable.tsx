@@ -60,6 +60,24 @@ export const ApplicantTable: React.FC<ApplicantTableProps> = ({
           <option value="rejected">Rejected</option>
         </>
       );
+    } else if (applicantStatus === "onTest") {
+      return (
+        <>
+          <option value="onTest">On Test</option>
+        </>
+      );
+    } else if (applicantStatus === "waitingSubmission") {
+      return (
+        <>
+          <option value="waitingSubmission">Waiting Submission</option>
+        </>
+      );
+    } else if (applicantStatus === "failed") {
+      return (
+        <>
+          <option value="failed">Failed</option>
+        </>
+      );
     } else {
       return (
         <>
