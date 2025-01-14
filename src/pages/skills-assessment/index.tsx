@@ -16,6 +16,7 @@ import Image from "next/image";
 import axios from "axios";
 import VerifyBanner from "@/components/VerifyBanner";
 import FooterComponent from "@/components/FooterComponent";
+import VerifyEmailModal from "@/components/Modal/VerifyEmailModal";
 
 // DUMMY
 
@@ -27,18 +28,18 @@ function Index() {
   const skillAsessmentUtils = new SkillAssessmentUtils();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [assessmentData, setAssessmentData] = useState<AssessmentCardProps[]>(
-    []
+    [],
   );
   const [hasMore, setHasMore] = useState<boolean>(true); // For pagination
   const [error, setError] = useState<string | null>(null);
   const [callBackPath, setcallBackPath] = useState<string>("");
   const { isLoggedIn, subscriptionId, isVerified } = useSelector(
-    (state: RootState) => state.auth
+    (state: RootState) => state.auth,
   );
   const [offset, setOffset] = useState(0);
   const limit = 6; // Set your pagination limit here
   const { currentModalId } = useSelector(
-    (state: RootState) => state.modalController
+    (state: RootState) => state.modalController,
   );
   const handleCloseModal = () => {
     dispatch(closeModalAction());
@@ -49,6 +50,12 @@ function Index() {
       dispatch(openModalAction("needToLoginModal"));
       return;
     }
+    
+    if (!isVerified) {
+      dispatch(openModalAction("needToVerifyModal"));
+      return;
+    }
+
     if (subscriptionId === 1) {
       dispatch(openModalAction("subscribePackageModal"));
       return;
@@ -65,7 +72,7 @@ function Index() {
             offset: reset ? 0 : offset,
             limit: limit,
           },
-        }
+        },
       );
 
       if (response.status === 200) {
@@ -80,7 +87,7 @@ function Index() {
         }));
 
         setAssessmentData((prev) =>
-          reset ? newAssessments : [...prev, ...newAssessments]
+          reset ? newAssessments : [...prev, ...newAssessments],
         );
         setHasMore(data.pagination.hasMore);
         if (reset)
@@ -247,7 +254,7 @@ function Index() {
           </div>
         </section>
       </main>
-      <FooterComponent />
+      <FooterComponent pageRole={"jobhunter"} />
     </>
   );
 }

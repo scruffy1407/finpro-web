@@ -152,10 +152,7 @@ export async function getJobPostDash({
   }
 }
 
-export async function deleteJobPostDash(
-  job_Id: number,
-  accessToken: string,
-): Promise<{ message: string }> {
+export async function deleteJobPostDash(job_Id: number, accessToken: string) {
   try {
     // Perform the DELETE request
     const response = await job.put(
@@ -165,13 +162,17 @@ export async function deleteJobPostDash(
         headers: {
           Authorization: `Bearer ${accessToken}`, // Include your token
         },
+        validateStatus: (status) => status < 500,
       },
     );
     console.log(`Requesting DELETE on job/${job_Id}`);
+    console.log(response);
 
-    // Assuming the response from the server contains a message property
-    // Return the response with the success message
-    return response.data; // Ensure response.data contains the message
+    if (response.status === 200) {
+      return { success: true };
+    } else {
+      return { success: false, message: response?.data?.error };
+    }
   } catch (error) {
     // Handle errors, e.g., log or throw the error
     console.error("Error deleting job post:", error);

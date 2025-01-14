@@ -66,7 +66,7 @@ export class CompanyUtils {
       } else {
         return response.data.message;
       }
-    } catch (e) {
+    } catch (e: any) {
       return e.response;
     }
   }

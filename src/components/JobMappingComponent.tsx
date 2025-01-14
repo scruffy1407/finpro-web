@@ -34,6 +34,7 @@ const JobPostSection: React.FC = () => {
   const bookmarks = useSelector(
     (state: RootState) => state.bookmarks.bookmarks,
   );
+  const { user_role } = useSelector((state: RootState) => state.auth);
 
   const dispatch: AppDispatch = useDispatch();
 
@@ -77,6 +78,10 @@ const JobPostSection: React.FC = () => {
       const token = Cookies.get("accessToken");
       if (!token) {
         console.error("Token is missing from cookies.");
+        return;
+      }
+      if (user_role !== "jobhunter") {
+        toast.error("Please login as Job Hunter to add bookmark");
         return;
       }
 

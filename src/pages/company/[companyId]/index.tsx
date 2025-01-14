@@ -43,7 +43,7 @@ enum CompanyIndustry {
 function CompanyPage() {
   const authHandler = new AuthHandler();
   authHandler.authorizeUser();
-
+  const { user_role } = useSelector((state: RootState) => state.auth);
   const companyUtils = new CompanyUtils();
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
@@ -56,7 +56,7 @@ function CompanyPage() {
   const [avgReview, setAvgReview] = useState<number>(0);
 
   const bookmarks = useSelector(
-    (state: RootState) => state.bookmarks.bookmarks
+    (state: RootState) => state.bookmarks.bookmarks,
   );
 
   const calculateAverageRating = (reviews: reviewResponse[]) => {
@@ -68,7 +68,7 @@ function CompanyPage() {
         review.culturalRating +
         review.facilityRating +
         review.workLifeBalanceRating,
-      0
+      0,
     );
     return Number((totalRatings / (reviews.length * 4)).toFixed(2));
   };
@@ -77,7 +77,7 @@ function CompanyPage() {
     setIsLoading(true);
     try {
       const response = await companyUtils.getCompanyPageDetail(
-        Number(companyId)
+        Number(companyId),
       );
       const companyDetail: companyDetailResponse = response.data;
 
@@ -99,7 +99,7 @@ function CompanyPage() {
 
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/applyjob/bookmark`,
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token}` } },
       );
 
       const jobWishlist = response.data.bookmarks?.jobWishlist || [];
@@ -116,23 +116,27 @@ function CompanyPage() {
         toast.error("You need to be logged in to add bookmark");
         return;
       }
+      if (user_role !== "jobhunter") {
+        toast.error("Please login as Job Hunter to add bookmark");
+        return;
+      }
 
       const existingBookmark = bookmarks.find(
-        (bookmark) => bookmark.jobPostId === jobPostId
+        (bookmark) => bookmark.jobPostId === jobPostId,
       );
 
       if (existingBookmark) {
         await axios.post(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/applyjob/bookmark/remove`,
           { wishlist_id: existingBookmark.wishlist_id },
-          { headers: { Authorization: `Bearer ${token}` } }
+          { headers: { Authorization: `Bearer ${token}` } },
         );
         dispatch(removeBookmark(existingBookmark.wishlist_id));
       } else {
         const response = await axios.post(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/applyjob/bookmark`,
           { jobPostId },
-          { headers: { Authorization: `Bearer ${token}` } }
+          { headers: { Authorization: `Bearer ${token}` } },
         );
         dispatch(addBookmark(response.data.bookmark));
       }
@@ -214,7 +218,7 @@ function CompanyPage() {
               data={jobList.map((job) => ({
                 ...job,
                 isBookmarked: bookmarks.some(
-                  (bookmark) => bookmark.jobPostId === job.job_id
+                  (bookmark) => bookmark.jobPostId === job.job_id,
                 ),
               }))}
               companyName={companyInfo?.companyName || ""}

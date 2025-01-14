@@ -46,7 +46,7 @@ export const JobDetails: React.FC<JobDetailsProps> = ({
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },
-          }
+          },
         );
 
         if (response.status === 200) {
@@ -79,13 +79,13 @@ export const JobDetails: React.FC<JobDetailsProps> = ({
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
-        }
+        },
       );
 
       if (response.status === 200) {
         setJobStatus(!jobStatus);
         toast.success(
-          `Job status updated to ${!jobStatus ? "Active" : "Inactive"}`
+          `Job status updated to ${!jobStatus ? "Active" : "Inactive"}`,
         );
       } else {
         toast.error("Failed to update job status.");

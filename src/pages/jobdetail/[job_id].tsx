@@ -32,6 +32,7 @@ import {
   removeBookmark,
 } from "@/store/slices/bookmarkSlice";
 import { toast } from "sonner";
+import VerifyEmailModal from "@/components/Modal/VerifyEmailModal";
 
 function JobDetail() {
   const authHandler = new AuthHandler();
@@ -125,6 +126,10 @@ function JobDetail() {
         toast.error("You need to be logged in to add bookmark");
         return;
       }
+      if (user_role !== "jobhunter") {
+        toast.error("Please login as Job Hunter to add bookmark");
+        return;
+      }
 
       const existingBookmark = bookmarks.find(
         (bookmark) => bookmark.jobPostId === jobPostId,
@@ -187,6 +192,10 @@ function JobDetail() {
   }
   const handleApplyJob = async () => {
     if (isLoggedIn) {
+      if (!isVerified) {
+        dispatch(openModalAction("needToVerifyModal"));
+        return;
+      }
       if (user_role === "jobhunter") {
         if (validApply && jobData.preSelectionTest) {
           router.push(
@@ -270,6 +279,12 @@ function JobDetail() {
             applicationId={Number(applicantData?.applicationId ?? 0)} // Provide a default value
           />
         </>
+      </ModalContainer>
+      <ModalContainer
+        isOpen={currentModalId === "needToVerifyModal"}
+        onClose={handleCloseModal}
+      >
+        <VerifyEmailModal />
       </ModalContainer>
 
       <ModalContainer

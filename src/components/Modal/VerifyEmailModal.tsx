@@ -1,15 +1,19 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { closeModalAction } from "@/store/slices/ModalSlice";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { AuthHandler } from "@/utils/auth.utils";
-import { RootState } from "@/store";
+import { AppDispatch, RootState } from "@/store";
 import { toast } from "sonner";
 import LoadingLoader from "@/components/LoadingLoader";
+import Cookies from "js-cookie";
+import { logoutUser } from "@/store/slices/authSlice";
+import { useRouter } from "next/router";
 
 function VerifyEmailModal() {
   const authHandler = new AuthHandler();
+  const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
   const { email } = useSelector((state: RootState) => state.auth);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [verifiedEmail, setVerifiedEmail] = useState<boolean>(false);
@@ -66,7 +70,17 @@ function VerifyEmailModal() {
           )}
         </Button>
         {verifiedEmail ? (
-          <Button variant={"outline"}>I Already Verified</Button>
+          <Button
+            onClick={() => {
+              dispatch(logoutUser());
+              Cookies.remove("accessToken");
+              Cookies.remove("refreshToken");
+              router.push("/auth/login/jobhunter");
+            }}
+            variant={"outline"}
+          >
+            I Already Verified
+          </Button>
         ) : null}
       </div>
     </div>
