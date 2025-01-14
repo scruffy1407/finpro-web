@@ -100,7 +100,7 @@ export class CompanyUtils {
     currentPage?: number,
     limit?: number,
   ) {
-    let queryString = `?page=${currentPage}&limit=${limit || 12}`;
+    let queryString = `?page=${currentPage}&limit=${limit || 12}&companyName=${companyName || ""}&companyCity=${companyLocation}`;
 
     try {
       const response = await api.get(`/api/company/company${queryString}`);

@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import Image from "next/image";
+import React from "react";
 import { TabsContent } from "@/components/ui/tabs";
 import { TabsContentProps } from "@/models/page.model";
 import JobPostComponent from "@/components/JobPostComponent";
@@ -16,6 +15,32 @@ interface jobListProps extends TabsContentProps {
   companyProvince: string;
 }
 
+export interface JobBookmark {
+  wishlist_id: number;
+  jobPost: {
+    job_id: number;
+    job_title: string;
+    salary_min: string;
+    salary_max: string;
+    job_type: string;
+    job_space: string;
+    job_experience_min: string;
+    job_experience_max: string;
+    salary_show: boolean;
+    created_at: Date;
+    company: {
+      company_name: string;
+      company_city: string;
+      logo: string;
+    };
+  };
+}
+
+interface BookmarkJobListProps extends jobListProps {
+  onRemoveBookmark: (wishlistId: number) => void;
+  onAddBookmark: (jobPostId: number) => void;
+}
+
 function JobListTab({
   value,
   data,
@@ -23,7 +48,9 @@ function JobListTab({
   companyProvince,
   companyName,
   isLoading,
-}: jobListProps) {
+  onAddBookmark,
+  onRemoveBookmark,
+}: BookmarkJobListProps) {
   return (
     <TabsContent
       className={`flex flex-col gap-4 mt-0 data-[state=active]:flex data-[state=inactive]:hidden`}
@@ -52,6 +79,8 @@ function JobListTab({
 
           <div className="grid lg:grid-cols-2 xl:grid-cols-3 gap-4 overflow-hidden">
             {data?.map((job: JobPost, i: number) => {
+              console.log(data, "INI DATE");
+
               return (
                 <JobPostComponent
                   key={i}
@@ -61,7 +90,7 @@ function JobListTab({
                   jobType={job.job_type}
                   company_province={companyProvince}
                   companyName={companyName}
-                  created_at={new Date("11/11/2024")}
+                  created_at={String(job.created_at)}
                   salaryMin={job.salary_min}
                   salaryMax={job.salary_max}
                   jobSpace={job.job_space}
@@ -69,6 +98,9 @@ function JobListTab({
                   experienceMin={job.job_experience_min}
                   salaryShow={job.salary_show}
                   logo={companyLogo}
+                  isBookmarked={job.isBookmarked}
+                  onAddBookmark={() => onAddBookmark(job.job_id)}
+                  onRemoveBookmark={() => onRemoveBookmark(job.job_id)}
                 />
               );
             })}

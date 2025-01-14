@@ -32,6 +32,7 @@ interface SkillAssessment {
   completion_score: string;
   skillAssessment: {
     skill_assessment_name: string;
+    skill_badge: string;
   };
 }
 
@@ -72,7 +73,7 @@ const CertificatePage = () => {
             (assessment: SkillAssessment) =>
               assessment.certificate.map((cert: Certificate) => ({
                 id: cert.certificate_id,
-                name: cert.certificate_name,
+                name: assessment.skillAssessment.skill_assessment_name,
                 issuer: cert.certificate_issuer,
                 score: assessment.completion_score,
                 skillName: assessment.skillAssessment.skill_assessment_name,

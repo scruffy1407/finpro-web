@@ -13,9 +13,13 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { toast } from "sonner";
+import ListSkeleton from "@/components/listSkeleton";
+import JobPostComponentSkeleton from "@/components/JobPostSkeleton";
+
 
 const JobPostSection: React.FC = () => {
   const [jobLpData, SetjobLpData] = useState<JobPostProps[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const bookmarks = useSelector(
     (state: RootState) => state.bookmarks.bookmarks,
@@ -29,6 +33,7 @@ const JobPostSection: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true);
       try {
         const response = await getJobNewLp();
         const mappedData = response.map((job: any) => ({
@@ -36,7 +41,7 @@ const JobPostSection: React.FC = () => {
           job_title: job.job_title,
           companyName: job.company.company_name || "Unknown",
           company_city: job.company.company_city || "Unknown",
-          logo: job.logo || "/burger.svg",
+          logo: job.company.logo,
           jobType: job.job_type ? [job.job_type] : [],
           jobSpace: job.job_space,
           created_at: job.created_at,
@@ -46,8 +51,8 @@ const JobPostSection: React.FC = () => {
           experienceMin: parseInt(job.job_experience_min),
           experienceMax: parseInt(job.job_experience_max),
         }));
-
         SetjobLpData(mappedData);
+        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching job data:", error);
       }
@@ -89,8 +94,15 @@ const JobPostSection: React.FC = () => {
   };
 
   return (
-    <div className="overflow-x-auto flex gap-6 justify-start sm:justify-start snap-x sm:snap-none px-4 sm:px-0">
-      {jobLpData && jobLpData.length > 0 ? (
+    <div className="overflow-x-auto flex gap-5 justify-start snap-x sm:snap-none px-4 sm:px-0 sm:justify-start lg:grid lg:grid-cols-3">
+      {isLoading ? (
+        <ListSkeleton
+          ListItemComponent={JobPostComponentSkeleton}
+          numberItem={3}
+          setShrink={true}
+          className={"flex gap-5"}
+        />
+      ) : jobLpData && jobLpData.length > 0 ? (
         jobLpData.map((jobPost: JobPostProps, index: number) => {
           const isBookmarked = bookmarks.some(
             (bookmark) => bookmark.jobPostId === Number(jobPost.job_id),
@@ -98,7 +110,7 @@ const JobPostSection: React.FC = () => {
           return (
             <div
               key={index}
-              className="flex-shrink-0 w-full sm:w-[410px] snap-start bg-white rounded-xl hover:shadow-lg"
+              className="flex-shrink-0 w-fit snap-start bg-white rounded-xl hover:shadow-lg  lg:w-full"
             >
               <JobPostComponent
                 logo={jobPost.logo}

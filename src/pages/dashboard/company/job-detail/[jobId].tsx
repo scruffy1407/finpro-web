@@ -91,7 +91,7 @@ const JobApplicantDetail: React.FC = () => {
   };
   console.log("DATAAA", applicantList);
 
-  const handleSelectChange = (value) => {
+  const handleSelectChange = (value: any) => {
     setSelectedView(value); // Update the state with the selected value
   };
 

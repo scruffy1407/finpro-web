@@ -18,10 +18,15 @@ function JobHunterLogin() {
   const router = useRouter();
 
   const { isLoggedIn, error, callback } = useSelector(
-    (state: RootState) => state.auth,
+    (state: RootState) => state.auth
   );
 
-  const [loginForm, setLoginForm] = useState({
+  const [loginForm, setLoginForm] = useState<{
+    email: string;
+    password: string;
+    user_role: UserRole;
+    callback: string;
+  }>({
     email: "",
     password: "",
     user_role: UserRole.JOBHUNTER,
@@ -34,7 +39,8 @@ function JobHunterLogin() {
     if (router.isReady && router.query.callback) {
       setLoginForm((prev) => ({
         ...prev,
-        callback: router.query.callback as string,
+        callback: (router.query.callback as string) || "",
+        user_role: prev.user_role as UserRole,
       }));
     }
   }, [router.isReady, router.query.callback]);
@@ -47,7 +53,7 @@ function JobHunterLogin() {
         error as null,
         router,
         dispatch,
-        callback as string,
+        callback || ""
       );
     }
   }, [isLoggedIn, error, router, callback, dispatch]);

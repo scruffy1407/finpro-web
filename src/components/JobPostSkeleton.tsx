@@ -2,7 +2,7 @@ import React from "react";
 
 const JobPostComponentSkeleton = () => {
   return (
-    <div className="bg-white w-full h-fit bg-white rounded-xl hover:shadow-lg">
+    <div className="bg-white w-full h-fit rounded-xl hover:shadow-lg">
       <div className="p-4 flex flex-col gap-6">
         <div className={`flex flex-col gap-5`}>
           <div className="flex justify-between items-center">
