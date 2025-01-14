@@ -8,7 +8,6 @@ export class DeveloperUtils {
     currentPage?: number,
     limit?: number,
   ) {
-    console.log("tes");
     let queryString = `?page=${currentPage}&limit=${limit || 12}&subsId=${subsId || ""}`;
     try {
       const response = await api.get(`/api/dev/get-user${queryString}`, {

@@ -52,16 +52,12 @@ export default function Quiz() {
 		jobHunterId: jobHunterId || 0,
 		skillAssessmentId: testConfig.data.preSelectionTest.test_id,
 	});
-
 	const [questions, setQuestions] = useState<QuestionAssess[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const [duration, setDuration] = useState(0); 
 	const [skillAssessId, setSkillAssessId] = useState<number | null>(null);
 	const [hunterId, setHunterId] = useState<number | null>(null);
-
-	console.log("jobHunterId:", jobHunterId); 
-
 
 	useEffect(() => {
 		if (jobHunterId && skillAssessmentId) {
@@ -218,14 +214,11 @@ export default function Quiz() {
 			};
 		});
 
-
 		const submission = {
 			skillAssessmentId: quizState.skillAssessmentId, 
 			jobHunterId: quizState.jobHunterId, 
 			answers: formattedAnswers,
 		};
-
-		console.log("Prepared Submission Data:", submission);
 
 		try {
 			const response = await axios.put(

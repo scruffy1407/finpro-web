@@ -53,7 +53,6 @@ function ProfileDetail({ applicantId }: ProfileDetailProps) {
       token as string,
     );
     if (response.success) {
-      console.log("RESPONSE", response.data.data);
       const detailUser = response?.data?.data;
 
       const setList: WorkingExperience[] = detailUser?.workExperience.map(
@@ -98,13 +97,10 @@ function ProfileDetail({ applicantId }: ProfileDetailProps) {
       });
       setIsLoading(false);
     } else {
-      console.log(response);
       setIsLoading(false);
     }
   }
   const [isSummaryExpanded, setIsSummaryExpanded] = useState(false);
-
-  console.log("DETAIL", detailUser);
 
   useEffect(() => {
     if (!initialRender.current) {

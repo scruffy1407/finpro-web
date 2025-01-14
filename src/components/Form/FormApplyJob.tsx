@@ -89,7 +89,6 @@ const FormJobApplication = ({
         );
       } else {
         response = await companyUtils.applyJob(token as string, applyJobData);
-        console.log("RESPONSE APPLY", response);
       }
       if (response === 201) {
         toast.success("Application sent successfully");

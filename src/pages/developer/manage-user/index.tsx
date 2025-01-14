@@ -4,11 +4,8 @@ import { RootState } from "@/store";
 import { DeveloperUtils } from "@/utils/developer.utls";
 import Cookies from "js-cookie";
 import { toast } from "sonner";
-import { useRouter } from "next/router";
 import { AuthHandler } from "@/utils/auth.utils";
 import { Navbar } from "@/components/NavigationBar/Navbar";
-import { formatNumber } from "@/utils/formater.utils";
-import Image from "next/image";
 import { UserTable } from "@/components/Table/ListUser.table";
 import {
   Select,
@@ -70,12 +67,10 @@ function Index() {
 
   async function fetchUsers(currentPage: number = 1, subsId: string = "") {
     if (!isLoggedIn) {
-      console.log("not logged in");
       toast.error("Please login to your developer account");
       return;
     }
     if (!token) {
-      console.log("tokeeen");
       toast.error(
         "Please refresh your browser and try again or try to re-login",
       );
@@ -112,6 +107,7 @@ function Index() {
       setUserList(userList);
       setIsLoading(false);
     } catch (e) {
+      console.error(e)
       toast.error(
         "Error happen on our side, please refresh your browser or try to re-login",
       );
@@ -119,10 +115,8 @@ function Index() {
   }
 
   useEffect(() => {
-    console.log("hit use effect");
     fetchUsers(pagination.currentPage || 1);
   }, [pagination.currentPage, isLoggedIn]);
-  console.log("DATA", userList);
 
   return (
     <>
@@ -131,7 +125,7 @@ function Index() {
         <section className={"mt-5 p-6 bg-white rounded-2xl mb-10"}>
           <h1 className={"font-bold text-2xl mb-3"}>User Management</h1>
           <p className={"text-sm text-neutral-600 mb-10"}>
-            View all user that register in Pathway Platform
+            View all user that register in the platform
           </p>
           <div className={"flex gap-3 mb-3"}>
             <Select

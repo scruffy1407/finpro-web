@@ -43,7 +43,6 @@ export const handleLoginEffect = (
     toast.success("Login Successful!");
     if (userRole === UserRole.JOBHUNTER) {
       const redirectTo = callback || "/";
-      console.log("REDIRECTTOK", redirectTo);
       router.push(redirectTo);
       dispatch(resetState());
       return;

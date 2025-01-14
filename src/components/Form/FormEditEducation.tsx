@@ -69,7 +69,6 @@ function FormEditEducation({
       educationDate: educationDate,
       jobHunterId: jobHunterId,
     };
-    console.log("DATAAA", data);
     dispatch(initEditEducation(data));
   }, []);
 

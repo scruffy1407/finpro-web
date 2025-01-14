@@ -167,8 +167,8 @@ const JobApplicantDetail: React.FC = () => {
                   }
                   location={getJobSpaceLabel(jobDetails.job_space)}
                   trueorfalse={jobDetails.selection_text_active}
-                  onEdit={() => console.log("Edit clicked")}
-                  onDisable={() => console.log("Disable clicked")}
+                  onEdit={() => {}}
+                  onDisable={() => {}}
                 />
               ) : (
                 <p>Loading job details...</p>

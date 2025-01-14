@@ -25,7 +25,6 @@ function Index() {
     user_role: UserRole.DEVELOPER,
     callback: router.query.callback || "",
   });
-  console.log(loginForm.callback);
 
   const [btnDisable, setBtnDisable] = useState(false);
 

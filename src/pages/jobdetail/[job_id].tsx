@@ -79,9 +79,6 @@ function JobDetail() {
         setRelatedPost(null);
         setIsLoading(false);
       }
-
-      console.log("THis is response");
-      console.log(response);
     } catch (err) {
       console.error("Error fetching job details:", err);
     }
@@ -176,10 +173,8 @@ function JobDetail() {
           completionStatus:
             response.data.data.resultPreSelection[0]?.completion_status,
         });
-        console.log("This is applicant data");
       } else if (response.status === 200 && response.data.code === "NOT_JOIN") {
         setApplicantData(null);
-        console.log("This is applicant data Failes");
       }
     } catch (err) {
       console.error("Error fetching job details:", err);

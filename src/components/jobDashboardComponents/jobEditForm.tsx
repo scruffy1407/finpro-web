@@ -258,8 +258,6 @@ const JobEditForm: React.FC<UpdateJobFormProps> = ({
 			selection_test_active: formData.selection_test_active,
 		};
 		try {
-			console.log("This is transformed Data");
-			console.log(transformedData);
 			const response = await axios.put(
 				`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/company/job/${job_id}`,
 				transformedData,

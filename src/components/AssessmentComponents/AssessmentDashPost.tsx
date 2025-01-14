@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Cookies from "js-cookie";
 import axios from "axios";
@@ -23,25 +24,25 @@ interface AssessmentProps {
 }
 
 function AssessmentDashPost() {
-	const [assessmentTest, setAssessmentTests] = useState<AssessmentProps[]>([]);
-	const [selectedTest, setSelectedTest] = useState<AssessmentProps | null>(
-		null
-	);
-	const accessToken = Cookies.get("accessToken");
-	const [isDialogOpen, setDialogOpen] = useState(false);
-	const [isEditFormOpen, setEditFormOpen] = useState(false);
-	const [editFormData, setEditFormData] = useState({
-		testName: "",
-		passingGrade: 50,
-		duration: 30,
-		skillBadge: null as File | null, // Add skillBadge with a type of File | null
-	});
+  const [assessmentTest, setAssessmentTests] = useState<AssessmentProps[]>([]);
+  const [selectedTest, setSelectedTest] = useState<AssessmentProps | null>(
+    null
+  );
+  const accessToken = Cookies.get("accessToken");
+  const [isDialogOpen, setDialogOpen] = useState(false);
+  const [isEditFormOpen, setEditFormOpen] = useState(false);
+  const [editFormData, setEditFormData] = useState({
+    testName: "",
+    passingGrade: 50,
+    duration: 30,
+    skillBadge: null as File | null, // Add skillBadge with a type of File | null
+  });
 
   useEffect(() => {
     const fetchAssessmentTest = async () => {
       try {
         const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/dev/getassessmenttestdash`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/dev/getassessmenttestdash`
         );
         const data = response.data; // The response should have data and pagination
 
@@ -67,7 +68,7 @@ function AssessmentDashPost() {
   };
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     setEditFormData((prev) => ({
@@ -86,7 +87,7 @@ function AssessmentDashPost() {
       const formData = new FormData();
       formData.append(
         "skill_assessment_id",
-        selectedTest.skill_assessment_id.toString(),
+        selectedTest.skill_assessment_id.toString()
       ); // Add ID as text
       formData.append("skill_assessment_name", editFormData.testName); // Add name
       if (editFormData.skillBadge) {
@@ -104,7 +105,7 @@ function AssessmentDashPost() {
             Authorization: `Bearer ${accessToken}`,
             "Content-Type": "multipart/form-data", // Ensure proper headers for file upload
           },
-        },
+        }
       );
 
       if (response.data.message) {
@@ -123,8 +124,8 @@ function AssessmentDashPost() {
                     ? URL.createObjectURL(editFormData.skillBadge) // Update badge preview
                     : test.skill_badge, // Retain existing badge if no new file is uploaded
                 }
-              : test,
-          ),
+              : test
+          )
         );
 
         setEditFormOpen(false); // Close the modal
@@ -144,7 +145,7 @@ function AssessmentDashPost() {
         {},
         {
           headers: { Authorization: `Bearer ${accessToken}` },
-        },
+        }
       );
 
       if (response.data.message) {
@@ -152,8 +153,8 @@ function AssessmentDashPost() {
         setAssessmentTests((prev) =>
           prev.filter(
             (test) =>
-              test.skill_assessment_id !== selectedTest.skill_assessment_id,
-          ),
+              test.skill_assessment_id !== selectedTest.skill_assessment_id
+          )
         );
         setDialogOpen(false);
       }
@@ -175,10 +176,12 @@ function AssessmentDashPost() {
             <div className="flex ">
               <div className="justify-center items-center">
                 {" "}
-                <img
+                <Image
                   src={test.skill_badge}
                   alt={`${test.skill_assessment_name} Badge`}
-                  className="w-16 h-16 rounded-full mb-4 mt-8 "
+                  width={80}
+                  height={80}
+                  className="rounded-full mb-4 mt-8"
                 />
               </div>
 

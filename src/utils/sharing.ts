@@ -32,15 +32,10 @@ export async function shareToSocialMedia(
       shareUrl = createWhatsAppShareUrl(shareData);
       break;
   }
-
-  // Track sharing analytics
   trackShareEvent(platform, shareData.jobTitle);
-
-  // Open share dialog in a new window
   window.open(shareUrl, '_blank', 'width=600,height=400');
 }
 
 function trackShareEvent(platform: SharePlatform, jobTitle: string) {
-  // Implementation for analytics tracking
   console.log(`Job shared on ${platform}: ${jobTitle}`);
 }

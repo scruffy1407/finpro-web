@@ -96,8 +96,6 @@ function JobListTab({
 
           <div className="grid lg:grid-cols-2 xl:grid-cols-3 gap-4 overflow-hidden">
             {data?.map((job: JobPost, i: number) => {
-              console.log(data, "INI DATE");
-
               return (
                 <JobPostComponent
                   key={i}

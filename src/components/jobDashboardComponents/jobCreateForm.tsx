@@ -168,7 +168,6 @@ const CreateJobForm: React.FC<CreateJobFormProps> = ({
 		}
 
 		try {
-			console.log("Transformed Data:", transformedData);
 			const response = await fetch(
 				`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/company/job`,
 				{

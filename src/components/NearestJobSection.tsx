@@ -93,7 +93,6 @@ function NearestJobSection({ hasLocation }: NearestProps) {
       // Parse JSON string from the API response
       const location = JSON.parse(lastLocation);
       const response = await getNearestJob(location?.lat, location?.lng);
-      console.log(response, "Full API Response");
       const mappedData = response?.data.map((job: any) => ({
         job_id: job.job_id,
         job_title: job.job_title,
@@ -112,11 +111,8 @@ function NearestJobSection({ hasLocation }: NearestProps) {
         salaryShow: job.salary_show,
         experienceMin: job.job_experience_min,
         experienceMax: job.job_experience_max,
-      }));
-      console.log(response, "INI YANG KE 2 COYYY");
-      console.log(mappedData, "INI YANG ke 3 COYY");
+      }))
       setJobList(mappedData);
-      console.log(response);
       setIsLoading(false);
     } catch (e) {}
   }

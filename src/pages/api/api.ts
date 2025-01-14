@@ -29,7 +29,6 @@ export async function getJobNewLp() {
 export async function getNearestJob(lat: number, lang: number) {
   const queryString = `?lat=${lat}&lang${lang}`;
   const response = await job.get(`nearest-job${queryString}`);
-  console.log(response);
   return response.data;
 }
 
@@ -140,9 +139,6 @@ export async function getJobPostDash({
     },
   };
 
-  console.log("THIS IS QUERRY STRING ");
-  console.log(queryString);
-
   try {
     const response = await job.get(queryString, config); // Make the API request
     return response.data.data; // Return the data part of the response
@@ -165,8 +161,6 @@ export async function deleteJobPostDash(job_Id: number, accessToken: string) {
         validateStatus: (status) => status < 500,
       },
     );
-    console.log(`Requesting DELETE on job/${job_Id}`);
-    console.log(response);
 
     if (response.status === 200) {
       return { success: true };

@@ -51,7 +51,6 @@ const CompanyPage: React.FC = () => {
     companyCity: string = "",
   ) {
     setIsLoading(true);
-    console.log("FETCH", companyName, companyCity);
     const response = await companyUtls.getCompanyList(
       companyName,
       companyCity,
@@ -76,7 +75,6 @@ const CompanyPage: React.FC = () => {
   }
 
   async function handleSearch() {
-    console.log("QUERY", companyName, companyCity);
     await fetchCompany(1, companyName, companyCity);
     dispatch(resetPaginationState());
   }
