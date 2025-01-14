@@ -50,13 +50,13 @@ function Index() {
       dispatch(openModalAction("needToLoginModal"));
       return;
     }
+    
     if (!isVerified) {
-      console.log("tes");
       dispatch(openModalAction("needToVerifyModal"));
       return;
     }
+
     if (subscriptionId === 1) {
-      console.log("tessss");
       dispatch(openModalAction("subscribePackageModal"));
       return;
     }

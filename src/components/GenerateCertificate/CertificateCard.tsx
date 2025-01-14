@@ -1,16 +1,19 @@
 import React from "react";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 
 export interface CertificateCardProps {
   certificate_name: string;
   certificate_issuer: string;
   completion_score: number;
+  logo: string;
   showCertificate?: () => void;
 }
 function Certificatecard({
   certificate_name,
   certificate_issuer,
   completion_score,
+  logo,
   showCertificate,
 }: CertificateCardProps) {
   return (
@@ -20,6 +23,13 @@ function Certificatecard({
       }
     >
       <div className={"flex gap-4 items-center"}>
+      <Image
+            src={logo}
+            alt={`${certificate_name} logo`}
+            width={80}
+            height={80}
+            className="rounded-full"
+          />
         <div className={"flex flex-col gap-2"}>
           <h3 className={"text-lg font-bold text-neutral-950"}>
             Certificate of {certificate_name}

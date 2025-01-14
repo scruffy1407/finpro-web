@@ -80,6 +80,7 @@ const CertificatePage = () => {
                 date: cert.certificate_date,
                 uniqueId: cert.certificate_unique_id,
                 profileName: profileName,
+                logo: assessment.skillAssessment.skill_badge,
               })),
           );
           setCertificates(fetchedCertificates);
@@ -136,6 +137,7 @@ const CertificatePage = () => {
                 certificate_name={certificate.name}
                 certificate_issuer={certificate.issuer}
                 completion_score={certificate.score}
+                logo={certificate.logo}
                 showCertificate={() => handleShowCertificate(certificate)}
               />
             ))

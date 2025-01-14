@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { Button } from "./ui/button";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import axios from "axios";
@@ -105,17 +104,16 @@ export const JobDetails: React.FC<JobDetailsProps> = ({
   return (
     <div className="bg-white rounded-2xl p-6">
       <div className="flex items-center gap-4 mb-6">
-        <Image
-          src={
-            companyLogo ||
-            "https://res.cloudinary.com/dgnce1xzd/image/upload/v1734781439/ohlj0zikblpzrexcrd2w.png"
-          }
-          alt={"Company Logo"}
-          width={40}
-          height={40}
-          className="rounded-full"
-        />
-
+          <Image
+            src={
+              companyLogo ||
+              "https://res.cloudinary.com/dgnce1xzd/image/upload/v1734781439/ohlj0zikblpzrexcrd2w.png"
+            }
+            alt={"Company Logo"}
+            width={40}
+            height={40}
+            className="rounded-full"
+          />
         <h2 className="text-xl font-bold text-gray-800">{title}</h2>
       </div>
 
@@ -147,9 +145,6 @@ export const JobDetails: React.FC<JobDetailsProps> = ({
       </div>
 
       <div className="flex flex-col items-center gap-4 justify-between">
-        <Button variant="primary" className="w-full">
-          Edit Job
-        </Button>
         <div className="flex items-center gap-2">
           <Label htmlFor="JobStatus" className="text-xs text-neutral-600">
             Unpublish Job

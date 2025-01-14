@@ -7,6 +7,18 @@ import ListSkeleton from "@/components/listSkeleton";
 import JobPostComponentSkeleton from "@/components/JobPostSkeleton";
 import { JobPost } from "@/models/company.model";
 
+enum JobType {
+  fulltime = "Full Time",
+  freelance = "Freelance",
+  internship = "Internship",
+}
+
+enum JobSpace {
+  remoteworking = "Remote Working",
+  onoffice = "On Office",
+  hybrid = "Hybrid",
+}
+
 interface jobListProps extends TabsContentProps {
   data: JobPost[] | undefined;
   isLoading: boolean;
@@ -51,6 +63,11 @@ function JobListTab({
   onAddBookmark,
   onRemoveBookmark,
 }: BookmarkJobListProps) {
+  const getJobTypeLabel = (jobType: string): string =>
+    JobType[jobType as keyof typeof JobType] || "Unknown Job Type";
+
+  const getJobSpaceLabel = (jobSpace: string): string =>
+    JobSpace[jobSpace as keyof typeof JobSpace] || "Unknown Job Space";
   return (
     <TabsContent
       className={`flex flex-col gap-4 mt-0 data-[state=active]:flex data-[state=inactive]:hidden`}
@@ -87,13 +104,13 @@ function JobListTab({
                   job_id={job.job_id.toString()}
                   companyId={job.companyId as number}
                   job_title={job.job_title}
-                  jobType={job.job_type}
+                  jobType={getJobTypeLabel(job.job_type)}
                   company_province={companyProvince}
                   companyName={companyName}
                   created_at={String(job.created_at)}
                   salaryMin={job.salary_min}
                   salaryMax={job.salary_max}
-                  jobSpace={job.job_space}
+                  jobSpace={getJobSpaceLabel(job.job_space)}
                   experienceMax={job.job_experience_max}
                   experienceMin={job.job_experience_min}
                   salaryShow={job.salary_show}
