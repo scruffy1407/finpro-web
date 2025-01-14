@@ -12,8 +12,10 @@ export interface JobPost {
   job_experience_max: number;
   expired_date: Date;
   status: boolean;
-  job_type: "Full-Time" | "Freelance" | "Internship"; // Enum-like values
-  job_space: "Remote Working" | "On Office" | "Hybrid"; // Enum-like values
+  created_at?: Date;
+  isBookmarked: boolean;
+  job_type: "Full-Time" | "Freelance" | "Internship";
+  job_space: "Remote Working" | "On Office" | "Hybrid";
 }
 
 export interface reviewResponse {

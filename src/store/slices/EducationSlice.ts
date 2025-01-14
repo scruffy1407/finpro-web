@@ -95,7 +95,7 @@ export const getEducation = createAsyncThunk(
     } catch (e) {
       return e;
     }
-  }
+  },
 );
 
 export const addNewEducation = createAsyncThunk(
@@ -106,7 +106,7 @@ export const addNewEducation = createAsyncThunk(
       try {
         const response = await profileHandler.addNewEducation(
           newData.token,
-          newData.data
+          newData.data,
         );
         if (response.status === 201) {
           return response.data;
@@ -119,7 +119,7 @@ export const addNewEducation = createAsyncThunk(
     } else {
       toast.error("Please filled all the field");
     }
-  }
+  },
 );
 
 export const editEducationData = createAsyncThunk(
@@ -130,7 +130,7 @@ export const editEducationData = createAsyncThunk(
       try {
         const response = await profileHandler.editEducation(
           updateData.token,
-          updateData.data
+          updateData.data,
         );
         if (response.status === 200) {
           return response.data;
@@ -144,13 +144,13 @@ export const editEducationData = createAsyncThunk(
     {
       toast.error("Please filled all the field");
     }
-  }
+  },
 );
 
 const handleInputChange = (
   state: EducationList,
   action: { payload: InputChangePayload },
-  targetObject: Education
+  targetObject: Education,
 ) => {
   const { name, value } = action.payload;
 
@@ -184,7 +184,7 @@ export const deleteEducation = createAsyncThunk(
     try {
       const response = await profileHandler.deleteEducation(
         data.token,
-        data.education_id
+        data.education_id,
       );
       if (response.status === 200) {
         return {
@@ -197,7 +197,7 @@ export const deleteEducation = createAsyncThunk(
     } catch (e) {
       throw e;
     }
-  }
+  },
 );
 
 const educationSlice = createSlice({
@@ -213,7 +213,8 @@ const educationSlice = createSlice({
       state.editEducation.educationName = updatedEducation.educationName;
       state.editEducation.educationDescription =
         updatedEducation.educationDescription;
-      state.editEducation.education_degree = updatedEducation.education_degree;
+      state.editEducation.education_degree =
+        updatedEducation.education_degree as EducationDegreeType;
       state.editEducation.cumulativeGpa = updatedEducation.cumulativeGpa;
       state.editEducation.educationId = updatedEducation.educationId;
       state.editEducation.jobHunterId = updatedEducation.jobHunterId;
@@ -282,7 +283,7 @@ const educationSlice = createSlice({
         state.pendingState.dataLoading = false;
         state.pendingState.isRender = true;
         toast.error(
-          "Failed to get your personal information,please refresh your browser"
+          "Failed to get your personal information,please refresh your browser",
         );
       })
       //   Add Education
@@ -317,7 +318,7 @@ const educationSlice = createSlice({
         state.pendingState.actionDisable = false;
         state.pendingState.actionLoading = false;
         toast.error(
-          "Its on us. We failed to add new education, please try again or refresh browser"
+          "Its on us. We failed to add new education, please try again or refresh browser",
         );
       })
       .addCase(deleteEducation.pending, (state) => {
@@ -331,7 +332,7 @@ const educationSlice = createSlice({
         } = action.payload;
 
         const deletedIndex = state.educationList.findIndex(
-          (education) => education.educationId === deletedData.educationId
+          (education) => education.educationId === deletedData.educationId,
         );
         if (deletedIndex !== -1) {
           state.educationList.splice(deletedIndex, 1);
@@ -344,7 +345,7 @@ const educationSlice = createSlice({
         state.pendingState.actionLoading = false;
         state.pendingState.actionDisable = false;
         toast.error(
-          "Its on us. We failed to add new education, please try again or refresh browser"
+          "Its on us. We failed to add new education, please try again or refresh browser",
         );
       })
       .addCase(editEducationData.pending, (state) => {
@@ -357,7 +358,7 @@ const educationSlice = createSlice({
 
         const updateEducation = action.payload.education_id;
         const educationIndex = state.educationList.findIndex(
-          (edu) => edu.educationId === updateEducation
+          (edu) => edu.educationId === updateEducation,
         );
 
         if (educationIndex !== -1) {
@@ -378,7 +379,7 @@ const educationSlice = createSlice({
         state.pendingState.actionDisable = false;
         state.pendingState.actionLoading = true;
         toast.error(
-          `Its on us. We failed to add new education, please try again or refresh browser`
+          `Its on us. We failed to add new education, please try again or refresh browser`,
         );
       });
   },

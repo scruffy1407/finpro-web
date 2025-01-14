@@ -9,7 +9,7 @@ export enum UserRole {
 export interface LoginAuth {
   email: string;
   password: string;
-  user_role: string;
+  user_role: UserRole;
   callback?: string;
 }
 

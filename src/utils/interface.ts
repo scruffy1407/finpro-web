@@ -145,6 +145,7 @@ interface CompanySuggest {
 }
 
 export interface JobListingSuggest {
+  companyId: number;
   job_id: number; // Unique job identifier
   job_title: string; // Title of the job position
   salary_min: string; // Minimum salary for the job

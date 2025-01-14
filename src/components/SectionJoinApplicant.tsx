@@ -7,6 +7,7 @@ import Link from "next/link";
 import { openModalAction } from "@/store/slices/ModalSlice";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/store";
+import { useRouter } from "next/router";
 
 function SectionJoinApplicant({
   applicationId,
@@ -14,11 +15,13 @@ function SectionJoinApplicant({
   resume,
   jobHunterId,
   createdAt,
+ jobId
 }: JobApplication) {
   const dispatch = useDispatch<AppDispatch>();
 
   const createdDate = new Date(createdAt);
-  const formattedDate = format(createdDate, "EEE, d MMM yyyy");
+  const formattedDate = format(createdDate, "EEE, d MMM yyyy")
+ const router = useRouter();
 
   const displayText = () => {
     switch (applicationStatus) {
@@ -78,7 +81,8 @@ function SectionJoinApplicant({
             </p>
             <Button
               onClick={() =>
-                dispatch(openModalAction("applyJobModalWaitingSubmission"))
+                // dispatch(openModalAction("applyJobModalWaitingSubmission"))
+                router.push(`/executionPretestQuiz/${jobId}?applicationId=${applicationId}`)
               }
               variant={"primary"}
               size={"default"}

@@ -24,7 +24,9 @@ function CompanyListMappingComponent({ companies }: CompanyListProps) {
     indexOfLastJob,
   );
 
-  return (
+  return companies.length === 0 ? (
+    <div className={"mx-auto"}>No Companies found</div>
+  ) : (
     <div
       className={
         "grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3  lg:grid-cols-4"

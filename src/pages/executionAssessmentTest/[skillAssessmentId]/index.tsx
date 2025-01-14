@@ -69,7 +69,7 @@ export default function ExecutionAssessmentTest() {
 					console.error("API error response:", error.response?.data);
 					if (status === 400) {
 						setError(
-							"Bad Request: Invalid Skill Assessment ID or missing parameters"
+							"Bad Request: Invalid Skill Assessment ID or missing parameters You may accessing into invalid URL "
 						);
 					} else {
 						setError(`Error: ${error.response.statusText}`);
@@ -121,9 +121,11 @@ export default function ExecutionAssessmentTest() {
 			if (axios.isAxiosError(error) && error.response) {
 				const status = error.response.status;
 				console.error("API error response:", error.response?.data);
+				const apiMessage = error.response.data.message; // Extract the message from the response
+
 				if (status === 400) {
 					setError(
-						"Bad Request: Invalid Skill Assessment ID or missing parameters"
+						`Bad Request: Invalid Skill Assessment ID or missing parameters. ${apiMessage}`
 					);
 				} else {
 					setError(`Error: ${error.response.statusText}`);

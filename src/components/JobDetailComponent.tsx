@@ -17,6 +17,7 @@ import SectionJoinApplicant from "@/components/SectionJoinApplicant";
 import { ShareButton } from "@/components/ShareButton";
 import { useEffect } from "react";
 import { JobApplication } from "@/models/applicant.model";
+import { useRouter } from "next/router";
 interface JobData {
   company: {
     company_name: string;
@@ -46,11 +47,24 @@ interface Review {
   work_balance_rating: number;
 }
 
+interface Bookmark {
+  job_id: number;
+}
+
 interface JobDetailProps {
   jobData: JobData;
   validateUserLoading: boolean;
   alreadyJoined: null | JobApplication;
+  jobId ?: number;
   onApplyJob: () => void;
+  job_id: string;
+  bookmarkedJobs: Bookmark[];
+}
+
+export interface JobPostComponentProps extends JobDetailProps {
+  isBookmarked: boolean;
+  onAddBookmark: (jobId: number) => void;
+  onRemoveBookmark: (jobId: number) => void;
 }
 
 export default function JobDetailComponent({
@@ -58,7 +72,13 @@ export default function JobDetailComponent({
   onApplyJob,
   alreadyJoined,
   validateUserLoading,
-}: JobDetailProps) {
+  jobId,
+  isBookmarked,
+  onAddBookmark,
+  onRemoveBookmark,
+  job_id,
+}: JobPostComponentProps) {
+  const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const { pendingState } = useSelector((state: RootState) => state.generalInfo);
@@ -111,9 +131,6 @@ export default function JobDetailComponent({
     }
   }, [alreadyJoined]);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>{error}</div>;
-  if (!jobData) return <div>No job details found.</div>;
   return (
     <section>
       <div className="flex flex-col justify-between gap-10 p-4 md:p-8 bg-white rounded-xl md:flex-row">
@@ -218,7 +235,19 @@ export default function JobDetailComponent({
           <div className="flex flex-col justify-center gap-2 items-start md:items-end">
             <div className="flex gap-6">
               <div className="items-center justify-center hidden md:flex">
-                <ButtonComponent type="ButtonBookmark" container="Bookmarks" />
+                <ButtonComponent
+                  type="ButtonBookmark"
+                  isBookmarked={isBookmarked}
+                  onClickBookmark={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    if (isBookmarked) {
+                      onRemoveBookmark(Number(job_id));
+                    } else {
+                      onAddBookmark(Number(job_id));
+                    }
+                  }}
+                />{" "}
               </div>
               {validateUserLoading ? (
                 <div
@@ -373,6 +402,7 @@ export default function JobDetailComponent({
               createdAt={alreadyJoined.createdAt}
               jobHunterId={alreadyJoined.jobHunterId}
               resume={alreadyJoined.resume}
+              jobId = {jobId}
             />
           ) : (
             ""
@@ -424,7 +454,7 @@ export default function JobDetailComponent({
             <ShareButton
               jobTitle={jobData?.job_title || "Job Title"}
               companyName={jobData?.company?.company_name || "Company Name"}
-              jobUrl={window.location.href}
+              jobUrl={router.pathname}
               onShare={handleShare}
             />
           </div>

@@ -41,30 +41,30 @@ const JobListMappingComponent: React.FC<JobListMappingComponentProps> = ({
             (bookmark) => bookmark.jobPostId === Number(jobListPostReal.job_id)
           );
           return (
-              <JobPostComponent
-            key={index}
-            companyId={jobListPostReal.companyId}
-            job_id={String(jobListPostReal.job_id)}
-                 isBookmarked={isBookmarked}
-                onAddBookmark={onAddBookmark}
-                onRemoveBookmark={onRemoveBookmark}
-            logo={jobListPostReal.company.logo || "/burger.svg"}
-            companyName={
-              jobListPostReal.company.company_name || "something Wrong"
-            }
-            job_title={jobListPostReal.job_title}
-            company_province={
-              jobListPostReal.company.company_city || "something Wrong"
-            }
-            created_at={new Date(jobListPostReal.created_at)}
-            salaryMin={jobListPostReal.salary_min}
-            salaryMax={jobListPostReal.salary_max}
-            salaryShow={jobListPostReal.salary_show}
-            jobType={jobListPostReal.job_type}
-            jobSpace={jobListPostReal.job_space}
-            experienceMin={jobListPostReal.job_experience_min}
-            experienceMax={jobListPostReal.job_experience_max}
-          />
+            <JobPostComponent
+              key={index}
+              companyId={jobListPostReal.companyId}
+              job_id={String(jobListPostReal.job_id)}
+              isBookmarked={isBookmarked}
+              onAddBookmark={onAddBookmark}
+              onRemoveBookmark={onRemoveBookmark}
+              logo={jobListPostReal.company.logo || "/burger.svg"}
+              companyName={
+                jobListPostReal.company.company_name || "Name Undisclosed"
+              }
+              job_title={jobListPostReal.job_title}
+              company_province={
+                jobListPostReal.company.company_city || "Location Undisclosed"
+              }
+              created_at={new Date(jobListPostReal.created_at).toISOString()}
+              salaryMin={jobListPostReal.salary_min}
+              salaryMax={jobListPostReal.salary_max}
+              salaryShow={jobListPostReal.salary_show}
+              jobType={jobListPostReal.job_type}
+              jobSpace={jobListPostReal.job_space}
+              experienceMin={jobListPostReal.job_experience_min}
+              experienceMax={jobListPostReal.job_experience_max}
+            />
           );
         })}
       </div>

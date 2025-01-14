@@ -4,8 +4,6 @@ import Cookies from "js-cookie";
 import { getCategories } from "@/pages/api/api";
 import { RichTextEditor } from "./richTextEditor";
 import axios from "axios";
-import { number } from "zod";
-
 
 interface UpdateJobFormProps {
 	number_applicants: number;
@@ -18,14 +16,32 @@ interface CategoriesRealForForm {
 	category_name: string;
 }
 
+interface FormData {
+	job_title: string;
+	preSelectionTestId: string | null;
+	category_id: number;
+	category_name: string;
+	selection_test_active: boolean;
+	salary_show: boolean;
+	salary_min: number;
+	salary_max: number | null;
+	job_description: string;
+	job_experience_min: number;
+	job_experience_max: number | null;
+	expired_date: string;
+	status: boolean;
+	job_type: string;
+	job_space: string;
+}
+
 const JobEditForm: React.FC<UpdateJobFormProps> = ({
 	number_applicants,
 	job_id,
-	closeModal, // Destructure closeModal from props
+	closeModal,
 }) => {
-	const [formData, setFormData] = useState({
+	const [formData, setFormData] = useState<FormData>({
 		job_title: "",
-		preSelectionTestId: 0,
+		preSelectionTestId: null,
 		category_id: 0,
 		category_name: "",
 		selection_test_active: false,
@@ -34,6 +50,7 @@ const JobEditForm: React.FC<UpdateJobFormProps> = ({
 		salary_max: 0 || null,
 		job_description: "",
 		job_experience_min: 0,
+		job_experience_max: null,
 		expired_date: "",
 		status: true,
 		job_type: "",
@@ -43,20 +60,23 @@ const JobEditForm: React.FC<UpdateJobFormProps> = ({
 
 	const [preSelectionTests, setPreSelectionTests] = useState<any[]>([]);
 	const [category, setCategory] = useState<CategoriesRealForForm[]>([]);
-	const [isSalaryMaxChecked, setIsSalaryMaxChecked] = useState(false); // state to track checkbox
-	const [loading, setLoading] = useState(false); // Loading state
+	const [isSalaryMaxChecked, setIsSalaryMaxChecked] = useState(false);
+	const [loading, setLoading] = useState(false);
+	const [isExperienceMaxChecked, setIsExperienceMaxChecked] =
+		useState<boolean>(false);
 
-	const jobIdFetched = useRef<string | null>(null); // Ensure ref can handle null as well
+	const jobIdFetched = useRef<string | null>(null);
+	const [isPreSelectionChecked, setIsPreSelectionChecked] = useState(true);
+
 	function formatExpiredDate(data: any) {
-		if (!data) return ""; // Return empty string for invalid input
+		if (!data) return "";
 		const date = new Date(data);
-		const day = String(date.getDate()).padStart(2, "0"); // Ensure 2 digits for day
-		const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed, so add 1
+		const day = String(date.getDate()).padStart(2, "0");
+		const month = String(date.getMonth() + 1).padStart(2, "0");
 		const year = date.getFullYear();
 		return `${year}-${month}-${day}`;
 	}
 
-	// Fetch pre-selection tests
 	useEffect(() => {
 		const fetchPreSelectionTests = async () => {
 			const response = await fetch(
@@ -76,7 +96,6 @@ const JobEditForm: React.FC<UpdateJobFormProps> = ({
 		fetchPreSelectionTests();
 	}, [accessToken]);
 
-	// Fetch categories
 	useEffect(() => {
 		const fetchCategories = async () => {
 			try {
@@ -89,13 +108,12 @@ const JobEditForm: React.FC<UpdateJobFormProps> = ({
 		fetchCategories();
 	}, []);
 
-	// Fetch job details as soon as job_id is available
 	useEffect(() => {
-		if (!job_id || jobIdFetched.current === job_id) return; // Prevent re-fetch if already fetched
+		if (!job_id || jobIdFetched.current === job_id) return;
 
 		const fetchJobDetail = async () => {
 			try {
-				setLoading(true); // Start loading
+				setLoading(true);
 
 				const response = await axios.get(
 					`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/company/jobDetails/${job_id}`
@@ -113,22 +131,25 @@ const JobEditForm: React.FC<UpdateJobFormProps> = ({
 					salary_max: jobPostDetail.salary_max || null,
 					salary_min: jobPostDetail.salary_min || 0,
 					job_experience_min: jobPostDetail.job_experience_min || 0,
+					job_experience_max: jobPostDetail.job_experience_max || null,
 					expired_date: formatExpiredDate(jobPostDetail.expired_date),
+					preSelectionTestId: jobPostDetail.preSelectionTestId || null,
+					selection_test_active: jobPostDetail.selection_text_active || false,
 				}));
 
 				setIsSalaryMaxChecked(jobPostDetail.salary_max);
+				setIsExperienceMaxChecked(!!jobPostDetail.job_experience_max);
 
-				// Mark the job_id as fetched
 				jobIdFetched.current = job_id;
 			} catch (error) {
 				console.error("Error fetching job details:", error);
 			} finally {
-				setLoading(false); // End loading
+				setLoading(false);
 			}
 		};
 
 		fetchJobDetail();
-	}, []); // Depend on both job_id and showForm
+	}, []);
 	const handleInputChange = (
 		e: React.ChangeEvent<
 			HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -138,6 +159,10 @@ const JobEditForm: React.FC<UpdateJobFormProps> = ({
 
 		if (target instanceof HTMLInputElement) {
 			const { name, value, checked, type } = target;
+
+			if (type === "number" && value && Number(value) < 0) {
+				return;
+			}
 
 			if (type === "checkbox") {
 				setFormData((prev) => ({
@@ -166,28 +191,75 @@ const JobEditForm: React.FC<UpdateJobFormProps> = ({
 	};
 
 	const handleCheckboxChange = () => {
-		setIsSalaryMaxChecked(!isSalaryMaxChecked); // toggle the checkbox state
+		setIsSalaryMaxChecked(!isSalaryMaxChecked);
 		if (!isSalaryMaxChecked) {
 			setFormData({
 				...formData,
-				salary_max: null, // reset salary_max when unchecked
+				salary_max: null,
 			});
+		}
+	};
+
+	const handlePreSelectionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setFormData((prev) => ({
+			...prev,
+			selection_test_active: e.target.checked,
+		}));
+		if (!e.target.checked) {
+			setFormData((prev) => ({
+				...prev,
+				preSelectionTestId: null,
+			}));
 		}
 	};
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 
+		if (formData.category_id === 0) {
+			alert("Please select a category.");
+			return;
+		}
+
+		if (
+			formData.salary_max !== null &&
+			formData.salary_max < formData.salary_min
+		) {
+			alert("Salary Max must be greater than Salary Min.");
+			return;
+		}
+
+		if (
+			formData.job_experience_max !== null &&
+			formData.job_experience_max < formData.job_experience_min
+		) {
+			alert("Job Experience Max must be greater than Job Experience Min.");
+			return;
+		}
+
+		const currentDate = new Date();
+		const selectedDate = new Date(formData.expired_date);
+		if (selectedDate <= currentDate) {
+			alert("Expired Date must be in the future.");
+			return;
+		}
+
 		const transformedData = {
 			...formData,
-			preSelectionTestId: Number(formData.preSelectionTestId),
+			preSelectionTestId: formData.preSelectionTestId
+				? Number(formData.preSelectionTestId)
+				: null,
 			categoryId: Number(formData.category_id),
 			salary_min: Number(formData.salary_min),
 			salary_max: formData.salary_max ? Number(formData.salary_max) : null,
 			job_experience_min: Number(formData.job_experience_min),
+			job_experience_max: Number(formData.job_experience_max),
 			expired_date: new Date(formData.expired_date).toISOString(),
+			selection_test_active: formData.selection_test_active,
 		};
 		try {
+			console.log("This is transformed Data");
+			console.log(transformedData);
 			const response = await axios.put(
 				`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/company/job/${job_id}`,
 				transformedData,
@@ -201,7 +273,7 @@ const JobEditForm: React.FC<UpdateJobFormProps> = ({
 
 			if (response.status === 200) {
 				alert("Job updated successfully!");
-				closeModal()
+				closeModal();
 			} else {
 				console.error("Error:");
 				alert("Failed to update job.");
@@ -214,7 +286,7 @@ const JobEditForm: React.FC<UpdateJobFormProps> = ({
 
 	return (
 		<div className="fixed inset-0 bg-gray-800 bg-opacity-20 flex justify-center items-center">
-			<div className="bg-white p-6 rounded-md shadow-md w-full max-w-2xl transition-opacity duration-500 opacity-100">
+			<div className="bg-white p-6 rounded-md shadow-md w-full max-w-2xl transition-opacity duration-500 opacity-100 max-h-[90vh] overflow-y-auto">
 				{loading ? (
 					<div>Loading job details...</div>
 				) : (
@@ -268,6 +340,42 @@ const JobEditForm: React.FC<UpdateJobFormProps> = ({
 										<option value="freelance">Freelance</option>
 										<option value="internship">Internship</option>
 									</select>
+									<div>
+										<label>
+											<input
+												type="checkbox"
+												name="selection_test_active"
+												checked={formData.selection_test_active}
+												onChange={handlePreSelectionChange}
+											/>
+											Enable Pre-Selection Test
+										</label>
+
+										{formData.selection_test_active && (
+											<div>
+												<p>Pre-Selection Test ID</p>
+												<select
+													name="preSelectionTestId"
+													value={formData.preSelectionTestId || ""}
+													onChange={(e) =>
+														setFormData((prev) => ({
+															...prev,
+															preSelectionTestId: e.target.value,
+														}))
+													}
+													required
+													className="p-2 border rounded"
+												>
+													<option value="">Select Test</option>
+													{preSelectionTests.map((test) => (
+														<option key={test.test_id} value={test.test_id}>
+															{test.test_name}
+														</option>
+													))}
+												</select>
+											</div>
+										)}
+									</div>
 
 									{/* Category */}
 									<p>Category</p>
@@ -350,6 +458,38 @@ const JobEditForm: React.FC<UpdateJobFormProps> = ({
 										required
 										className="p-2 border rounded"
 									/>
+
+									<label>
+										<input
+											type="checkbox"
+											checked={isExperienceMaxChecked}
+											onChange={() => {
+												const newCheckedState = !isExperienceMaxChecked;
+												setIsExperienceMaxChecked(newCheckedState);
+												setFormData((prev) => ({
+													...prev,
+													job_experience_max: newCheckedState
+														? prev.job_experience_max
+														: null, // Set to null when unchecked
+												}));
+											}}
+										/>
+										Put Experience Max (yrs)
+									</label>
+
+									{isExperienceMaxChecked && (
+										<div>
+											<p>Maximum of job experience (yrs)</p>
+											<input
+												type="number"
+												name="job_experience_max"
+												placeholder="Maximum Experience (Years)"
+												value={formData.job_experience_max ?? ""}
+												onChange={handleInputChange}
+												className="p-2 border rounded"
+											/>
+										</div>
+									)}
 
 									{/* Expired Date */}
 									<p>Expired Date</p>

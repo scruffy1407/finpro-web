@@ -42,18 +42,21 @@ function UploadImage({ image }: Props) {
       const response = (await profileHandler.updateProfileImage(
         accessToken as string,
         data,
-        user_role as string
+        user_role as string,
       )) as AxiosResponse;
       if (response.status === 200) {
         toast.success("Image uploaded successfully.");
         dispatch(updatePhoto(response.data.data));
         dispatch(closeModalAction());
       } else {
-        toast.error("Maximum image size is 1MB");
+        toast.error(
+          "Failed to update image, make sure its JPG or PNG and Max Size is 2 MB",
+        );
       }
-    } catch (e) {
-      console.error(e, "Failed to update image.");
-      toast.error("Failed to update image.");
+    } catch (error: any) {
+      toast.error(
+        "Failed to update image, make sure its JPG or PNG and Max Size is 2 MB",
+      );
     } finally {
       setIsLoading(false);
     }

@@ -49,6 +49,9 @@ function PreSelectionPost() {
 			) {
 				setPreSelectionTests(response.data.data);
 			}
+
+			console.log ("This is response")
+			console.log(response)
 		} catch (error) {
 			console.error("Error fetching pre-selection tests:", error);
 		}

@@ -9,10 +9,13 @@ import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/router";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store"; 
+import { AuthHandler } from "@/utils/auth.utils";
 
 type QuizState = {
 	currentQuestionIndex: number;
-	answers: { [key: string]: string }; // or { [key: number]: string } if question IDs are numbers
+	answers: { [key: string]: string }; 
 	score: number;
 	testId: number | null;
 	jobHunterId: number;
@@ -20,7 +23,7 @@ type QuizState = {
 };
 
 export interface Question {
-	question_id: string; // Or 'number' if IDs are numbers
+	question_id: string; 
 	question: string;
 	answer_1: string;
 	answer_2: string;
@@ -29,30 +32,31 @@ export interface Question {
 }
 
 export default function Quiz() {
+	const authHandler = new AuthHandler();
+	authHandler.authorizeUser();
 	const [isTimerReady, setIsTimerReady] = useState(false);
 	const [isSubmitted, setIsSubmitted] = useState(false);
 
 	const { toast } = useToast();
 	const router = useRouter();
-	const jobId = router.query.job_id; // Extract `job_id` from the URL
-	const jobHunterId = Number(router.query.jobHunterId) || 0; // Extract `jobHunterId` from query
-	const applicationId = Number(router.query.applicationId) || 0; // Extract `applicationId` from query
+	const jobId = router.query.job_id; 
+	const jobHunterId = useSelector((state: RootState) => state.auth.innerId);
+	const applicationId = Number(router.query.applicationId) || 0; 
 	const [quizState, setQuizState] = useState<QuizState>({
 		currentQuestionIndex: 0,
-		answers: {}, // Initially empty, but will have { questionId: chosenAnswer }
+		answers: {}, 
 		score: 0,
 		testId: null,
-		jobHunterId: 0, // Temporary value, will be updated later
-		applicationId: 0, // Temporary value, will be updated later
+		jobHunterId: 0, 
+		applicationId: 0, 
 	});
 	const [questions, setQuestions] = useState<Question[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
-	const [duration, setDuration] = useState(0); // New state for duration
+	const [duration, setDuration] = useState(0); 
 	const [hunterId, setHunterId] = useState<number | null>(null);
 	const [appId, setAppId] = useState<number | null>(null);
 
-	// Check for query parameters and update state
 	useEffect(() => {
 		if (jobId && jobHunterId && applicationId) {
 			setHunterId(Number(jobHunterId));
@@ -109,6 +113,19 @@ export default function Quiz() {
 		fetchQuestions();
 	}, [jobId]);
 
+	useEffect(() => {
+		if (router.isReady) {
+			const appId = Number(router.query.applicationId);
+			if (appId) {
+				setAppId(appId);
+				setQuizState((prev) => ({
+					...prev,
+					applicationId: appId,
+				}));
+			}
+		}
+	}, [router.isReady, router.query.applicationId]);
+
 	useEffect(() => {}, [quizState.testId]);
 
 	const currentQuestion = questions[quizState.currentQuestionIndex];
@@ -126,7 +143,6 @@ export default function Quiz() {
 				[currentQuestion.question_id]: answer,
 			};
 
-			// Store updated answers in cookies
 			Cookies.set("quizAnswers", JSON.stringify(updatedAnswers), {
 				expires: 1,
 			});
@@ -174,12 +190,12 @@ export default function Quiz() {
 		});
 		if (!isSubmitted) {
 			handleSubmit();
-			setIsSubmitted(true); // Set isSubmitted to true to prevent further submissions
+			setIsSubmitted(true); 
 		}
 	};
 
 	const handleSubmit = async () => {
-		if (isSubmitted) return; // Prevent further submission if already submitted
+		if (isSubmitted) return; 
 		setIsSubmitted(true);
 
 		const token = Cookies.get("accessToken");
@@ -283,7 +299,6 @@ export default function Quiz() {
 			sendPeriodicUpdate();
 		}, 15 * 1000);
 
-		// Cleanup interval when the component unmounts or quiz is finished
 		return () => {
 			clearInterval(intervalId);
 		};
@@ -293,6 +308,9 @@ export default function Quiz() {
 		quizState.applicationId,
 		quizState.answers,
 	]);
+	if (!router.isReady || !quizState.applicationId) {
+		return <div className="text-center">Loading...</div>;
+	}
 
 	if (loading) {
 		return <div className="text-center">Loading questions...</div>;

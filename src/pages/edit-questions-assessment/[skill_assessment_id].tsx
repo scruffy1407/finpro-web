@@ -4,6 +4,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { Button } from "@/components/ui/button";
 
+
 interface Question {
 	questionId: number;
 	question: string;
@@ -130,13 +131,14 @@ const EditQuestions = () => {
 		}
 	};
 
-	const handleCancel = () => {
+	const handleCancel = (e: React.MouseEvent) => {
+		e.preventDefault();
 		// Navigate to the assessment test dashboard
 		router.push("/assessmentTestDashboard");
 	};
 
 	return (
-		<div className="p-6 max-w-3xl mx-auto bg-white shadow rounded-md">
+		<div className="p-6 max-w-3xl mx-auto bg-white shadow rounded-md my-4">
 			<h1 className="text-2xl font-bold mb-6">Edit Questions Form</h1>
 			<h1 className="text-xl mb-6">Assessment Test</h1>
 			<form onSubmit={handleSubmit} className="space-y-6">

@@ -26,6 +26,13 @@ export async function getJobNewLp() {
   return response.data;
 }
 
+export async function getNearestJob(lat: number, lang: number) {
+  const queryString = `?lat=${lat}&lang${lang}`;
+  const response = await job.get(`nearest-job${queryString}`);
+  console.log(response);
+  return response.data;
+}
+
 export async function getJobPost(
   currentPage: number,
   searchQuery: {

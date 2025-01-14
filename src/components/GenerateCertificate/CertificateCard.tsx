@@ -22,7 +22,7 @@ function Certificatecard({
       <div className={"flex gap-4 items-center"}>
         <div className={"flex flex-col gap-2"}>
           <h3 className={"text-lg font-bold text-neutral-950"}>
-            {certificate_name}
+            Certificate of {certificate_name}
           </h3>
           <div className={"flex flex-col gap-2"}>
             <p className={"text-xs text-neutral-600"}>

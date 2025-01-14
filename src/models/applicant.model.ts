@@ -33,4 +33,5 @@ export interface JobApplication {
 	jobHunterId: string;
 	endDate?: string; // From resultPreSelection
 	completionStatus?: "pass" | "failed"; // From resultPreSelection
+	jobId ?: number
 }

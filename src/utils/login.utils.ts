@@ -1,29 +1,32 @@
 import { LoginAuth, UserRole } from "@/models/auth.model";
 import { toast } from "sonner";
 import { AppDispatch } from "@/store";
-import { loginUser, resetState, setCallback } from "@/store/slices/authSlice";
+import { loginUser, resetState } from "@/store/slices/authSlice";
 import { NextRouter } from "next/router";
 
-export const handleFormChange = (
-  e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-  setLoginForm: React.Dispatch<React.SetStateAction<LoginAuth>>,
+export const handleFormChange = <T extends Record<string, unknown>>(
+  e: React.ChangeEvent<HTMLInputElement>,
+  setter: React.Dispatch<React.SetStateAction<T>>
 ) => {
   const { name, value } = e.target;
-  setLoginForm((prev) => ({ ...prev, [name]: value }));
+  setter((prev) => ({
+    ...prev,
+    [name]: name === "callback" && value === undefined ? "" : value,
+  }));
 };
 
 export const handleLogin = async (
   e: React.FormEvent<HTMLFormElement>,
   loginForm: LoginAuth,
   dispatch: AppDispatch,
-  setBtnDisable: React.Dispatch<React.SetStateAction<boolean>>,
+  setBtnDisable: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
   e.preventDefault();
   setBtnDisable(true);
   await dispatch(
     loginUser({
       loginData: loginForm,
-    }),
+    })
   );
   setBtnDisable(false);
 };
@@ -34,12 +37,11 @@ export const handleLoginEffect = (
   error: string | null,
   router: NextRouter,
   dispatch: AppDispatch,
-  callback: string,
+  callback?: string
 ) => {
   if (isLoggedIn) {
-    toast.success("Login successful!");
+    toast.success("Login Successful!");
     if (userRole === UserRole.JOBHUNTER) {
-      // Redirect based on callback value
       const redirectTo = callback || "/";
       console.log("REDIRECTTOK", redirectTo);
       router.push(redirectTo);
@@ -60,6 +62,7 @@ export const handleLoginEffect = (
     }
   }
   if (error) {
-    toast.error(error);
+    console.error(error)
+    // toast.error(error);
   }
 };

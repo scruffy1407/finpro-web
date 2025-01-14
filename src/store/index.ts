@@ -14,6 +14,7 @@ import bookmarksReducer from "@/store/slices/bookmarkSlice";
 import generalInfoReducer from "@/store/slices/generalInfo";
 import companySearchReducer from "@/store/slices/companySearchSlice";
 import applicantReducer from "@/store/slices/applicantSlice";
+import manageUserReducer from "@/store/slices/manageUserSlice";
 
 const store = configureStore({
   reducer: {
@@ -32,6 +33,7 @@ const store = configureStore({
     generalInfo: generalInfoReducer,
     companySearch: companySearchReducer,
     applicantList: applicantReducer,
+    manageUserQuery: manageUserReducer,
   },
 });
 

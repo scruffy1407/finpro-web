@@ -9,6 +9,7 @@ import {
   EducationDegreeType,
   EducationDegreeResult,
   EducationDegree,
+  EducationDegreeOption,
 } from "@/models/educationDegree";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store";
@@ -46,15 +47,15 @@ function FormEditEducation({
   }
 
   function handleSelected(
-    selectedOption: SingleValue<{
-      value: EducationDegreeType | null;
+    newValue: SingleValue<{
+      value: string | undefined;
       label: EducationDegreeResult;
     }>,
   ) {
     const name = "education_degree";
     const payload = {
       name: name,
-      value: selectedOption?.value,
+      value: newValue?.value as EducationDegreeType | null, // Type assertion
     };
     dispatch(handleInputEditChange(payload));
   }
@@ -69,6 +70,7 @@ function FormEditEducation({
       educationDate: educationDate,
       jobHunterId: jobHunterId,
     };
+    console.log("DATAAA", data);
     dispatch(initEditEducation(data));
   }, []);
 
@@ -151,7 +153,7 @@ function FormEditEducation({
           onChange={handleSelected}
           options={educationDegreeOptions}
           defaultValue={{
-            value: editEducation.education_degree,
+            value: editEducation.education_degree?.toString(),
             label:
               EducationDegreeResult[
                 editEducation.education_degree as EducationDegreeType
