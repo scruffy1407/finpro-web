@@ -12,6 +12,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { AuthHandler } from "@/utils/auth.utils";
 import { Navbar } from "@/components/NavigationBar/Navbar";
+import { toast } from "sonner";
 
 const BookmarkPage: React.FC = () => {
   const authHandler = new AuthHandler();
@@ -19,7 +20,7 @@ const BookmarkPage: React.FC = () => {
 
   const dispatch = useDispatch<AppDispatch>();
   const bookmarks = useSelector(
-    (state: RootState) => state.bookmarks.bookmarks,
+    (state: RootState) => state.bookmarks.bookmarks
   );
   const validBookmarks = Array.isArray(bookmarks) ? bookmarks : [];
 
@@ -34,7 +35,7 @@ const BookmarkPage: React.FC = () => {
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/applyjob/bookmark`,
         {
           headers: { Authorization: `Bearer ${token}` },
-        },
+        }
       );
 
       const jobWishlist = response.data.bookmarks?.jobWishlist || [];
@@ -52,14 +53,14 @@ const BookmarkPage: React.FC = () => {
     try {
       const token = Cookies.get("accessToken");
       if (!token) {
-        console.error("Token is missing from cookies.");
+        toast.error("You need to be logged in to add bookmark");
         return;
       }
 
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/applyjob/bookmark`,
         { jobPostId },
-        { headers: { Authorization: `Bearer ${token}` } },
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       dispatch(addBookmark(response.data.bookmark));
       fetchBookmarks();
@@ -79,7 +80,7 @@ const BookmarkPage: React.FC = () => {
       await axios.post(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/applyjob/bookmark/remove`,
         { wishlist_id: wishlistId },
-        { headers: { Authorization: `Bearer ${token}` } },
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       dispatch(removeBookmark(wishlistId));
       fetchBookmarks();

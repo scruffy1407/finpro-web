@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { toast } from "sonner";
 
 export interface Job {
   wishlist_id: number;
@@ -70,9 +71,11 @@ const bookmarkSlice = createSlice({
       state.bookmarks = state.bookmarks.filter(
         (bookmark) => bookmark.wishlist_id !== action.payload
       );
+      toast.success("Job Removed from Bookmark")
     },
     addBookmark: (state, action: PayloadAction<Job>) => {
       state.bookmarks.push(action.payload);
+      toast.success("Job successfully added to bookmark!");
     },
   },
   extraReducers: (builder) => {

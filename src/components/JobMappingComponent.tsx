@@ -12,7 +12,6 @@ import { RootState } from "@/store";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { toast } from "sonner";
 
 const JobPostSection: React.FC = () => {
   const [jobLpData, SetjobLpData] = useState<JobPostProps[]>([]);

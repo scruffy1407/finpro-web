@@ -23,6 +23,7 @@ function CompanyLogin() {
     email: "",
     password: "",
     user_role: UserRole.COMPANY,
+    callback: "",
   });
 
   const [btnDisable, setBtnDisable] = useState(false);

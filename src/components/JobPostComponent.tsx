@@ -13,7 +13,7 @@ export interface JobPostProps {
   jobType: string;
   created_at: string;
   salaryMin: number;
-  salaryMax: number;
+  salaryMax: number | null;
   salaryShow?: boolean;
   jobSpace?: string;
   experienceMin?: number;
@@ -145,7 +145,11 @@ function JobPostComponent({
           <p className="text-xs text-neutral-400">{timeAgo}</p>
           <p className="text-blue-500 font-semibold">
             {salaryShow ? (
-              `Rp${formatSalary(salaryMin)} - Rp${formatSalary(salaryMax)}`
+              salaryMax && !isNaN(salaryMax) ? (
+                `Rp${formatSalary(salaryMin)} - Rp${formatSalary(salaryMax)}`
+              ) : (
+                `Rp${formatSalary(salaryMin)}`
+              )
             ) : (
               <span className="text-neutral-600">Salary not disclosed</span>
             )}
