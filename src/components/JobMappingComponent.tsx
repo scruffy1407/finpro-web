@@ -16,7 +16,6 @@ import { toast } from "sonner";
 import ListSkeleton from "@/components/listSkeleton";
 import JobPostComponentSkeleton from "@/components/JobPostSkeleton";
 
-
 const JobPostSection: React.FC = () => {
   const [jobLpData, SetjobLpData] = useState<JobPostProps[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -24,6 +23,7 @@ const JobPostSection: React.FC = () => {
   const bookmarks = useSelector(
     (state: RootState) => state.bookmarks.bookmarks,
   );
+  const { user_role } = useSelector((state: RootState) => state.auth);
 
   const dispatch: AppDispatch = useDispatch();
 
@@ -66,6 +66,10 @@ const JobPostSection: React.FC = () => {
       const token = Cookies.get("accessToken");
       if (!token) {
         console.error("Token is missing from cookies.");
+        return;
+      }
+      if (user_role !== "jobhunter") {
+        toast.error("Please login as Job Hunter to add bookmark");
         return;
       }
 

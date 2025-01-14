@@ -15,6 +15,7 @@ import { AppDispatch, RootState } from "@/store";
 import { useDispatch, useSelector } from "react-redux";
 import ListSkeleton from "@/components/listSkeleton";
 import JobPostComponentSkeleton from "@/components/JobPostSkeleton";
+import { toast } from "sonner";
 
 interface NearestProps {
   hasLocation: boolean;
@@ -28,12 +29,17 @@ function NearestJobSection({ hasLocation }: NearestProps) {
   const bookmarks = useSelector(
     (state: RootState) => state.bookmarks.bookmarks,
   );
+  const { user_role } = useSelector((state: RootState) => state.auth);
 
   const handleToggleBookmark = async (jobPostId: number) => {
     try {
       const token = Cookies.get("accessToken");
       if (!token) {
         console.error("Token is missing from cookies.");
+        return;
+      }
+      if (user_role !== "jobhunter") {
+        toast.error("Please login as Job Hunter to add bookmark");
         return;
       }
 

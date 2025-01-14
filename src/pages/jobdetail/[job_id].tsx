@@ -126,6 +126,10 @@ function JobDetail() {
         toast.error("You need to be logged in to add bookmark");
         return;
       }
+      if (user_role !== "jobhunter") {
+        toast.error("Please login as Job Hunter to add bookmark");
+        return;
+      }
 
       const existingBookmark = bookmarks.find(
         (bookmark) => bookmark.jobPostId === jobPostId,

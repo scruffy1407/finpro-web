@@ -41,15 +41,15 @@ const JobPostPage: React.FC = () => {
   const [jobPosts, setJobPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const bookmarks = useSelector(
-    (state: RootState) => state.bookmarks.bookmarks
+    (state: RootState) => state.bookmarks.bookmarks,
   );
   const { currentPage, totalPages } = useSelector(
-    (state: RootState) => state.pagination
+    (state: RootState) => state.pagination,
   );
   const { jobTitle, categoryId, jobType, dateRange, sortOrder, companyCity } =
     useSelector((state: RootState) => state.searchQuery);
-  const { isVerified, isLoggedIn } = useSelector(
-    (state: RootState) => state.auth
+  const { isVerified, isLoggedIn, user_role } = useSelector(
+    (state: RootState) => state.auth,
   );
 
   const dispatch: AppDispatch = useDispatch();
@@ -91,7 +91,7 @@ const JobPostPage: React.FC = () => {
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/applyjob/bookmark`,
           {
             headers: { Authorization: `Bearer ${token}` },
-          }
+          },
         );
 
         const jobWishlist = response.data.bookmarks?.jobWishlist || [];
@@ -121,22 +121,26 @@ const JobPostPage: React.FC = () => {
         toast.error("You need to be logged in to add bookmark");
         return;
       }
+      if (user_role !== "jobhunter") {
+        toast.error("Please login as Job Hunter to add bookmark");
+        return;
+      }
       const existingBookmark = bookmarks.find(
-        (bookmark) => bookmark.jobPostId === jobPostId
+        (bookmark) => bookmark.jobPostId === jobPostId,
       );
 
       if (existingBookmark) {
         await axios.post(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/applyjob/bookmark/remove`,
           { wishlist_id: existingBookmark.wishlist_id },
-          { headers: { Authorization: `Bearer ${token}` } }
+          { headers: { Authorization: `Bearer ${token}` } },
         );
         dispatch(removeBookmark(existingBookmark.wishlist_id));
       } else {
         const response = await axios.post(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/applyjob/bookmark`,
           { jobPostId },
-          { headers: { Authorization: `Bearer ${token}` } }
+          { headers: { Authorization: `Bearer ${token}` } },
         );
         dispatch(addBookmark(response.data.bookmark));
       }
