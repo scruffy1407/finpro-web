@@ -33,14 +33,13 @@ import {
 } from "@/store/slices/bookmarkSlice";
 import { toast } from "sonner";
 
-
 function JobDetail() {
   const authHandler = new AuthHandler();
   authHandler.authorizeUser();
   const router = useRouter();
   const { job_id } = router.query;
   const [applicantData, setApplicantData] = useState<null | JobApplication>(
-    null
+    null,
   );
   const [jobData, setJobData] = useState<any | null>(null);
 
@@ -50,13 +49,14 @@ function JobDetail() {
   const dispatch = useDispatch<AppDispatch>();
   const [callBackPath, setcallBackPath] = useState<string>("");
   const { currentModalId } = useSelector(
-    (state: RootState) => state.modalController
+    (state: RootState) => state.modalController,
   );
   const { isLoggedIn, user_role, isVerified } = useSelector(
-    (state: RootState) => state.auth
+    (state: RootState) => state.auth,
   );
-  const { validApply, pendingState, listProvince, cityId } =
-    useSelector((state: RootState) => state.generalInfo);
+  const { validApply, pendingState, listProvince, cityId } = useSelector(
+    (state: RootState) => state.generalInfo,
+  );
 
   const handleCloseModal = () => {
     dispatch(closeModalAction());
@@ -66,7 +66,7 @@ function JobDetail() {
     try {
       setIsLoading(true);
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/company/jobDetails/${job_id}`
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/company/jobDetails/${job_id}`,
       );
 
       if (response.status === 200) {
@@ -87,10 +87,10 @@ function JobDetail() {
   };
 
   const bookmarks = useSelector(
-    (state: RootState) => state.bookmarks.bookmarks
+    (state: RootState) => state.bookmarks.bookmarks,
   );
   const isBookmarked = bookmarks.some(
-    (bookmark) => bookmark.jobPostId === Number(job_id)
+    (bookmark) => bookmark.jobPostId === Number(job_id),
   );
 
   const fetchBookmarks = async () => {
@@ -104,7 +104,7 @@ function JobDetail() {
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/applyjob/bookmark`,
         {
           headers: { Authorization: `Bearer ${token}` },
-        }
+        },
       );
 
       const jobWishlist = response.data.bookmarks?.jobWishlist || [];
@@ -127,21 +127,21 @@ function JobDetail() {
       }
 
       const existingBookmark = bookmarks.find(
-        (bookmark) => bookmark.jobPostId === jobPostId
+        (bookmark) => bookmark.jobPostId === jobPostId,
       );
 
       if (existingBookmark) {
         await axios.post(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/applyjob/bookmark/remove`,
           { wishlist_id: existingBookmark.wishlist_id },
-          { headers: { Authorization: `Bearer ${token}` } }
+          { headers: { Authorization: `Bearer ${token}` } },
         );
         dispatch(removeBookmark(existingBookmark.wishlist_id));
       } else {
         const response = await axios.post(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/applyjob/bookmark`,
           { jobPostId },
-          { headers: { Authorization: `Bearer ${token}` } }
+          { headers: { Authorization: `Bearer ${token}` } },
         );
         dispatch(addBookmark(response.data.bookmark));
       }
@@ -192,7 +192,7 @@ function JobDetail() {
           router.push(
             `/executionPretest/${jobData.preSelectionTestId}?job_id=${job_id}`,
           );
-		  return
+          return;
         } else {
           // Ensure applicationStatus is defined before comparing
           if ((applicantData?.applicationStatus as string) === "pass") {
@@ -231,7 +231,6 @@ function JobDetail() {
 
   useEffect(() => {
     if (job_id) {
-      setDataLoading(true);
       fetchJobDetail();
       if (isLoggedIn && user_role === "jobhunter") {
         setValiateLoading(true);
@@ -241,7 +240,6 @@ function JobDetail() {
         }
         setValiateLoading(false);
       }
-      setDataLoading(false);
     }
   }, [job_id, isLoggedIn]);
 
@@ -397,48 +395,52 @@ function JobDetail() {
       </ModalContainer>
 
       {/*BODY*/}
-      <div className="overflow-hidden ">
+      <div className="overflow-hidden">
         <Navbar pageRole={"jobhunter"} />
         {isLoggedIn && !isVerified && <VerifyBanner />}
         <main
-          className={`flex flex-col gap-10 px-4 max-w-screen-xl mx-auto ${!isVerified && isLoggedIn ? "mt-0" : "mt-5"}`}
+          className={`flex flex-col gap-10 px-4 max-w-screen-xl mx-auto ${
+            !isVerified && isLoggedIn ? "mt-0" : "mt-5"
+          }`}
         >
           {isLoading ? (
-            <div className=" h-[300px] w-full flex justify-center items-center">
+            <div className="h-[300px] w-full flex justify-center items-center">
               <LoadingLoader />
             </div>
           ) : (
             <>
-          <JobDetailComponent
-            onApplyJob={handleApplyJob}
-            jobData={jobData}
-            alreadyJoined={applicantData}
-            validateUserLoading={validateLoading}
-			      jobId={Number(job_id)}
-            job_id={String(job_id)}
-            isBookmarked={isBookmarked}
-            bookmarkedJobs={bookmarks.map((bookmark) => ({
-              ...bookmark,
-              job_id: bookmark.jobPostId,
-            }))}
-            onAddBookmark={handleToggleBookmark}
-            onRemoveBookmark={handleToggleBookmark}
-          />
-          <div className="flex flex-col gap-5">
-            <HeadingRelatedComponent
-              heading="Related Jobs"
-              paragraph="Take a look at the jobs we found that are similar to the job you currently have open"
-            />
-            <JobDetailSuggest
-              listRelatedJob={relatedPost as any[]}
-              bookmarkedJobs={bookmarks.map((bookmark) => ({
-                ...bookmark,
-                job_id: bookmark.jobPostId,
-              }))}
-              onAddBookmark={handleToggleBookmark}
-              onRemoveBookmark={handleToggleBookmark}
-            />
-          </div>
+              <JobDetailComponent
+                onApplyJob={handleApplyJob}
+                jobData={jobData}
+                alreadyJoined={applicantData}
+                validateUserLoading={validateLoading}
+                jobId={Number(job_id)}
+                job_id={String(job_id)}
+                isBookmarked={isBookmarked}
+                bookmarkedJobs={bookmarks.map((bookmark) => ({
+                  ...bookmark,
+                  job_id: bookmark.jobPostId,
+                }))}
+                onAddBookmark={handleToggleBookmark}
+                onRemoveBookmark={handleToggleBookmark}
+              />
+              <div className="flex flex-col gap-5">
+                <HeadingRelatedComponent
+                  heading="Related Jobs"
+                  paragraph="Take a look at the jobs we found that are similar to the job you currently have open"
+                />
+                <JobDetailSuggest
+                  listRelatedJob={relatedPost as any[]}
+                  bookmarkedJobs={bookmarks.map((bookmark) => ({
+                    ...bookmark,
+                    job_id: bookmark.jobPostId,
+                  }))}
+                  onAddBookmark={handleToggleBookmark}
+                  onRemoveBookmark={handleToggleBookmark}
+                />
+              </div>
+            </>
+          )}
         </main>
         <div className="mx-4 mt-20 mb-5">
           <FooterComponent pageRole={"jobhunter"} />
