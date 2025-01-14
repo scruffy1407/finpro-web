@@ -71,12 +71,21 @@ export const navItemConfig: Record<UserRole, NavigationItem[]> = {
     { name: "Explore Companies", href: "/company", icon: Building2 },
   ],
   company: [
-    { name: "Job List", href: "/post-job", icon: FileText },
-    { name: "Test Template", href: "/candidates", icon: Users },
+    { name: "Job List", href: "/dashboard/company", icon: FileText },
+    { name: "Test Template", href: "/preSelectionDashboard", icon: Users },
   ],
   developer: [
-    { name: "Dashboard", href: "/post-job", icon: FileText },
-    { name: "Manage Assessment", href: "/candidates", icon: Users },
+    {
+      name: "Dashboard Analytics",
+      href: "/developer/analytics",
+      icon: FileText,
+    },
+    {
+      name: "Manage Assessment",
+      href: "/assessmentTestDashboard",
+      icon: Users,
+    },
+    { name: "User List", href: "/developer/manage-user", icon: Users },
   ],
   default: [
     { name: "Find Jobs", href: "/jobs", icon: Briefcase },

@@ -4,6 +4,7 @@ import { AuthHandler } from "@/utils/auth.utils";
 import PreSelectionDashLeft from "@/components/preSelectionComponents/PreSelectionDashLeft";
 import FooterComponent from "@/components/FooterComponent";
 import PreSelectionPost from "@/components/preSelectionComponents/PreSelectionPost";
+import { Navbar } from "@/components/NavigationBar/Navbar";
 
 function AssessmentDashboard() {
   const authHandler = new AuthHandler();
@@ -11,13 +12,7 @@ function AssessmentDashboard() {
 
   return (
     <div className="max-w-screen-xl mx-auto overflow-hidden">
-      <NavbarComponent
-        findJobs="Find Jobs"
-        skillAssessment="Skill Assessment"
-        exploreCompanies="Explore Companies"
-        loginJobHunter="Login"
-        loginCompanies="Login as Recruiter"
-      />
+      <Navbar pageRole={"company"} />
 
       <div className="mt-10">
         <div className="flex w-auto ">
@@ -33,7 +28,7 @@ function AssessmentDashboard() {
       </div>
 
       <div className="mt-20">
-        <FooterComponent />
+        <FooterComponent pageRole={"company"} />
       </div>
     </div>
   );
