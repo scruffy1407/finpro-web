@@ -1,7 +1,7 @@
 export function formatNumber(number: number): string {
   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
-export function calculateAge(dob) {
+export function calculateAge(dob: string) {
   const today = new Date();
   const birthDate = new Date(dob);
 

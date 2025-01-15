@@ -222,10 +222,7 @@ export class AuthHandler {
     }
   }
 
-  authorizeUser(
-    pagePermission?: "jobhunter" | "company" | "developer",
-    compare?: string,
-  ) {
-    AuthorizeUser(pagePermission, compare);
+  authorizeUser(pagePermission?: "jobhunter" | "company" | "developer") {
+    AuthorizeUser(pagePermission);
   }
 }

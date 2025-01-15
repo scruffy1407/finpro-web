@@ -120,7 +120,7 @@ const JobApplicationSuccess = () => {
       </div>
 
       <div className="mx-4 mt-20 mb-5">
-        <FooterComponent />
+        <FooterComponent pageRole={"jobhunter"} />
       </div>
     </>
   );
