@@ -23,7 +23,7 @@ function Index() {
     email: "",
     password: "",
     user_role: UserRole.DEVELOPER,
-    callback: router.query.callback || "",
+    callback: (router.query.callback as string) || "",
   });
 
   const [btnDisable, setBtnDisable] = useState(false);
