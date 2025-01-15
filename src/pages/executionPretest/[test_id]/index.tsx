@@ -6,6 +6,8 @@ import { useRouter } from "next/router";
 import axios from "axios";
 import Cookies from "js-cookie";
 import LoadingLoader from "@/components/LoadingLoader";
+import { AuthHandler } from "@/utils/auth.utils";
+
 
 interface TestData {
   message: string;
@@ -24,6 +26,9 @@ export default function ExecutionPretest() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const accessToken = Cookies.get("accessToken");
+  const authHandler = new AuthHandler();
+  const pagePermission = "jobhunter";
+  authHandler.authorizeUser(pagePermission);
 
   const jobId = router.query.job_id ? String(router.query.job_id) : ""; // Extract job_id from the query string
 

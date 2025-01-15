@@ -2,11 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import Cookies from "js-cookie";
 import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
 import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
 import ConfirmDelete from "@/components/Modal/ConfirmDelete";
 import Link from "next/link";
-import { AppDispatch, RootState } from "@/store";
+import LoadingLoader from "../LoadingLoader";
 
 import {
 	Popover,
@@ -20,12 +19,10 @@ interface PreSelectionTestProps {
 	test_name: string;
 	passing_grade: number;
 	duration: number;
-	_count: { testQuestions: number }; // Add _count with testQuestions field
+	_count: { testQuestions: number };
 }
 
 function PreSelectionPost() {
-	const dispatch = useDispatch<AppDispatch>();
-
 	const accessToken = Cookies.get("accessToken");
 	const [preSelectionTest, setPreSelectionTests] = useState<
 		PreSelectionTestProps[]
@@ -39,8 +36,11 @@ function PreSelectionPost() {
 		passingGrade: 50,
 		duration: 30,
 	});
+	const [loading, setLoading] = useState(true); // Add loading state
 
 	const fetchPreSelectionTests = async () => {
+		setLoading(true);
+
 		try {
 			const response = await axios.get(
 				`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/company/viewpretest`,
@@ -55,6 +55,8 @@ function PreSelectionPost() {
 			}
 		} catch (error) {
 			console.error("Error fetching pre-selection tests:", error);
+		} finally {
+			setLoading(false);
 		}
 	};
 
@@ -164,8 +166,11 @@ function PreSelectionPost() {
 			}
 		}
 	};
-
-	return (
+	return loading ? (
+		<div className="flex justify-center align-middle">
+			<LoadingLoader />
+		</div>
+	) : (
 		<div className="space-y-4">
 			{preSelectionTest.length > 0 ? (
 				preSelectionTest.map((test) => (

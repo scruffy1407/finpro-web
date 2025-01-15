@@ -33,6 +33,7 @@ import Cookies from "js-cookie";
 import axios from "axios";
 import VerifyBanner from "@/components/VerifyBanner";
 import { toast } from "sonner";
+import Header from "@/components/Header";
 
 const JobPostPage: React.FC = () => {
   const authHandler = new AuthHandler();
@@ -156,75 +157,84 @@ const JobPostPage: React.FC = () => {
   };
 
   return (
-    <main>
-      <Navbar pageRole={"jobhunter"} />
+    <>
+      <Header>
+        <title>Explore Jobs</title>
+        <meta
+          name="description"
+          content={`Discover 1000+ jobs available posted by top company`}
+        />
+      </Header>
+      <main>
+        <Navbar pageRole={"jobhunter"} />
 
-      {isLoggedIn && !isVerified && <VerifyBanner />}
-      <section
-        className={`flex flex-col gap-10 px-4 max-w-screen-xl mx-auto ${!isVerified && isLoggedIn ? "mt-0" : "mt-5"}`}
-      >
-        <div className={"flex flex-col gap-4"}>
-          <HeroJobListPageComponent />
-          <SelectionJobsComponents />
-        </div>
-        <div className={"flex flex-col gap-8"}>
-          {loading ? (
-            <ListSkeleton
-              ListItemComponent={JobPostComponentSkeleton}
-              numberItem={16}
-              className={"gap-6 grid grid-cols-3"}
-            />
-          ) : (
-            <JobListMappingComponent
-              jobPosts={jobPosts}
-              bookmarkedJobs={bookmarks.map((bookmark) => ({
-                ...bookmark,
-                job_id: bookmark.jobPostId,
-              }))}
-              onAddBookmark={handleToggleBookmark}
-              onRemoveBookmark={handleToggleBookmark}
-            />
-          )}
+        {isLoggedIn && !isVerified && <VerifyBanner />}
+        <section
+          className={`flex flex-col gap-10 px-4 max-w-screen-xl mx-auto ${!isVerified && isLoggedIn ? "mt-0" : "mt-5"}`}
+        >
+          <div className={"flex flex-col gap-4"}>
+            <HeroJobListPageComponent />
+            <SelectionJobsComponents />
+          </div>
+          <div className={"flex flex-col gap-8"}>
+            {loading ? (
+              <ListSkeleton
+                ListItemComponent={JobPostComponentSkeleton}
+                numberItem={16}
+                className={"gap-6 grid grid-cols-3"}
+              />
+            ) : (
+              <JobListMappingComponent
+                jobPosts={jobPosts}
+                bookmarkedJobs={bookmarks.map((bookmark) => ({
+                  ...bookmark,
+                  job_id: bookmark.jobPostId,
+                }))}
+                onAddBookmark={handleToggleBookmark}
+                onRemoveBookmark={handleToggleBookmark}
+              />
+            )}
 
-          <Pagination>
-            <PaginationContent>
-              <PaginationPrevious
-                onClick={() => handlePageChange(currentPage - 1)}
-                className={
-                  currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
-                }
-              >
-                Previous
-              </PaginationPrevious>
+            <Pagination>
+              <PaginationContent>
+                <PaginationPrevious
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  className={
+                    currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
+                  }
+                >
+                  Previous
+                </PaginationPrevious>
 
-              {/* Page numbers */}
-              {[...Array(totalPages)].map((_, index) => (
-                <PaginationItem key={index}>
-                  <PaginationLink
-                    onClick={() => handlePageChange(index + 1)}
-                    isActive={currentPage === index + 1}
-                  >
-                    {index + 1}
-                  </PaginationLink>
-                </PaginationItem>
-              ))}
+                {/* Page numbers */}
+                {[...Array(totalPages)].map((_, index) => (
+                  <PaginationItem key={index}>
+                    <PaginationLink
+                      onClick={() => handlePageChange(index + 1)}
+                      isActive={currentPage === index + 1}
+                    >
+                      {index + 1}
+                    </PaginationLink>
+                  </PaginationItem>
+                ))}
 
-              <PaginationNext
-                onClick={() => handlePageChange(currentPage + 1)}
-                className={
-                  currentPage === totalPages
-                    ? "opacity-50 cursor-not-allowed"
-                    : ""
-                }
-              >
-                Next
-              </PaginationNext>
-            </PaginationContent>
-          </Pagination>
-        </div>
-        <FooterComponent pageRole={"jobhunter"} />
-      </section>
-    </main>
+                <PaginationNext
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  className={
+                    currentPage === totalPages
+                      ? "opacity-50 cursor-not-allowed"
+                      : ""
+                  }
+                >
+                  Next
+                </PaginationNext>
+              </PaginationContent>
+            </Pagination>
+          </div>
+          <FooterComponent pageRole={"jobhunter"} />
+        </section>
+      </main>
+    </>
   );
 };
 

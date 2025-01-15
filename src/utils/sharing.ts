@@ -37,5 +37,4 @@ export async function shareToSocialMedia(
 }
 
 function trackShareEvent(platform: SharePlatform, jobTitle: string) {
-  console.log(`Job shared on ${platform}: ${jobTitle}`);
 }
