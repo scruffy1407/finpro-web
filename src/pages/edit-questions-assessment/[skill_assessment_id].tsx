@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { Button } from "@/components/ui/button";
-
+import { AuthHandler } from "@/utils/auth.utils";
 
 interface Question {
 	questionId: number;
@@ -16,6 +16,9 @@ interface Question {
 }
 
 const EditQuestions = () => {
+	const authHandler = new AuthHandler();
+	const pagePermission = "company";
+	authHandler.authorizeUser(pagePermission);
 	const router = useRouter();
 	const accessToken = Cookies.get("accessToken");
 	const { skill_assessment_id } = router.query; // Get skill_assessment_id from the URL

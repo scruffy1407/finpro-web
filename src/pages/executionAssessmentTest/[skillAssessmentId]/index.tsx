@@ -5,6 +5,8 @@ import { Scroll, CheckCircle } from "lucide-react";
 import { useRouter } from "next/router";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { AuthHandler } from "@/utils/auth.utils";
+
 
 interface SkillAssessmentData {
 	message: string;
@@ -17,6 +19,10 @@ interface SkillAssessmentData {
 }
 
 export default function ExecutionAssessmentTest() {
+	  const authHandler = new AuthHandler();
+	  const pagePermission = "jobhunter";
+	  authHandler.authorizeUser(pagePermission);
+	
 	const router = useRouter();
 	const [skillAssessmentData, setSkillAssessmentData] =
 		useState<SkillAssessmentData | null>(null);
