@@ -1,21 +1,56 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+	background-color: #f0f9ff;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+h1,
+h2,
+h3 {
+	font-family: Tahoma, sans-serif;
+}
+p,
+span,a,label {
+  font-family: "Inter", sans-serif;
+}
+
+button {
+  font-family: "Inter", sans-serif;
+}
+
+button {
+	font-family: "Inter", sans-serif;
+
+}
+
+.my-custom-bullet-list {
+	list-style-type: disc; /* Standard bullet list */
+	margin-left: 1.5rem;
+  }
+
+  .my-custom-ordered-list {
+	list-style-type: decimal; /* Ordered list with numbers */
+	margin-left: 1.5rem;
+  }
+
+  .my-custom-blockquote {
+	border-left: 4px solid #ddd; /* Add a left border to distinguish the blockquote */
+	padding-left: 1rem; /* Add some padding to the left */
+	margin: 1rem 0; /* Add margin above and below */
+	font-style: italic; /* Optionally, italicize the text */
+	color: #555; /* Change the text color */
+  }
+  
+  .my-custom-blockquote p {
+	margin: 0; /* Remove default paragraph margin inside the blockquote */
+  }
+
+/* Override the inline style `display: table` */
+.custom-scroll > div > div {
+	display: block !important; /* Change 'table' to 'flex' or 'block' */
+	min-width: auto; /* Adjust as needed */
 }
