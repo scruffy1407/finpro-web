@@ -16,21 +16,6 @@ const formatCurrency = (value: number): string => {
   }).format(value);
 };
 
-interface JobDetailsResponse {
-  job_id: number;
-  job_title: string;
-  job_type: string;
-  job_experience_min: number;
-  job_experience_max: number;
-  salary_show: boolean;
-  salary_min: number;
-  salary_max: number;
-  job_space: string;
-  selection_text_active: boolean;
-  company: {
-    logo: string;
-  };
-}
 interface PendingState {
   actionLoading: boolean;
   actionDisable: boolean;
@@ -143,6 +128,7 @@ export const getApplicantData = createAsyncThunk(
         return [];
       }
     } catch (e) {
+      console.error(e);
       return [];
     }
   },
@@ -179,6 +165,8 @@ export const handleStatusChange = createAsyncThunk(
         };
       }
     } catch (e) {
+      console.error(e);
+
       toast.error("Failed to update status, Please refresh your browser");
       return {
         applicantId: applicantId,
@@ -211,6 +199,8 @@ export const handleEditInterview = createAsyncThunk(
       const response = await companyUtils.updateInterview(token, interviewData);
       return response.data;
     } catch (e) {
+      console.error(e);
+
       toast.error("Failed to update schedule, Please refresh your browser");
       return [];
     }

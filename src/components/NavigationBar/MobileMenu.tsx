@@ -23,11 +23,7 @@ interface MobileMenuProps {
   pageRole: UserRole;
 }
 
-export function MobileMenu({
-  isOpen,
-  onOpenChange,
-  pageRole,
-}: MobileMenuProps) {
+export function MobileMenu({ isOpen, onOpenChange }: MobileMenuProps) {
   const userRole = useSelector((state: RootState) => state.auth.user_role);
   const userName = useSelector((state: RootState) => state.auth.name);
   const userPhoto = useSelector((state: RootState) => state.auth.photo);

@@ -1,7 +1,7 @@
 import { LoginAuth, RegisterAuth } from "@/models/auth.model";
 import api from "@/pages/api/api";
 import AuthorizeUser from "@/utils/authorizePage";
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import Cookies from "js-cookie";
 import { toast } from "sonner";
 

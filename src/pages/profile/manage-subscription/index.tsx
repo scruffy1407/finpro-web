@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { JobStatus } from "@/models/applicant.model";
 import { PaymentHandler } from "@/utils/payment.utils";
 import Cookies from "js-cookie";
 import { AuthHandler } from "@/utils/auth.utils";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { Navbar } from "@/components/NavigationBar/Navbar";
-import { format } from "date-fns";
 import { formatNumber } from "@/utils/formater.utils";
 
 interface SubscriptionProps {
@@ -32,7 +30,7 @@ function Index() {
     const response = await paymentHandler.getTransaction(token);
     const mappedData: SubscriptionProps[] = [];
 
-    response.data.map((transaction) => {
+    response.data.map((transaction: any) => {
       mappedData.push({
         amount: transaction.transaction_amount,
         orderId: transaction.invoice_transaction,

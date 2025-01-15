@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
+
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useDispatch, useSelector } from "react-redux";

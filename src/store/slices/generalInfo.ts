@@ -127,7 +127,7 @@ export const handleGetUseLocation = createAsyncThunk(
       const response = await locationHandler.getUserLocation(cityId);
       return response.data;
     } catch (e) {
-      console.error(e)
+      console.error(e);
       return {};
     }
   },
@@ -146,6 +146,8 @@ export const handleGetProvince = createAsyncThunk(
       );
       return mappedProvinces;
     } catch (e) {
+      console.error(e);
+
       return [];
     }
   },
@@ -164,6 +166,8 @@ export const handleGetcity = createAsyncThunk(
       );
       return mappedCity;
     } catch (e) {
+      console.error(e);
+
       return [];
     }
   },
@@ -183,6 +187,8 @@ export const updateUserGeneralInfo = createAsyncThunk(
         return null; // Handle API errors
       }
     } catch (error) {
+      console.error(error);
+
       return null; // Handle API errors
     }
   },
@@ -201,6 +207,8 @@ export const getGeneralInfo = createAsyncThunk(
         return [];
       }
     } catch (e) {
+      console.error(e);
+
       return [];
     }
   },
@@ -291,12 +299,12 @@ const generalInfoSlice = createSlice({
         state.pendingState.actionLoading = true;
         state.pendingState.actionDisable = true;
       })
-      .addCase(updateUserGeneralInfo.fulfilled, (state, action) => {
+      .addCase(updateUserGeneralInfo.fulfilled, (state) => {
         toast.success("Successfully updated user information");
         state.pendingState.actionLoading = false;
         state.pendingState.actionDisable = false;
       })
-      .addCase(updateUserGeneralInfo.rejected, (state, action) => {
+      .addCase(updateUserGeneralInfo.rejected, (state) => {
         state.pendingState.actionLoading = false;
         state.pendingState.actionDisable = false;
         toast.error("Sorry, failed to update information. please try again");
@@ -305,7 +313,6 @@ const generalInfoSlice = createSlice({
 });
 
 export const {
-  validateField,
   handleProvinceChange,
   handleCityChange,
   handleUpdateInputChange,

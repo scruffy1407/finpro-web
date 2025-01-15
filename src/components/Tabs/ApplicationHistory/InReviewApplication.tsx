@@ -18,7 +18,7 @@ interface statusProps extends TabsContentProps {
   activeTab: string;
 }
 
-function StatusTab({ activeTab, value }: statusProps) {
+function StatusTab({ value }: statusProps) {
   const userApplication = new UserApplication();
   const token = Cookies.get("accessToken");
   const [initialLoading, setInitialLoading] = useState(true);
@@ -87,8 +87,9 @@ function StatusTab({ activeTab, value }: statusProps) {
       value={value}
     >
       <div className="flex flex-col gap-4 ">
-        {listApplicant.map((applicant) => (
+        {listApplicant.map((applicant, key: number) => (
           <ApplicationHistoryCard
+            key={key}
             applicationId={applicant.applicationId}
             status={applicant.status}
             applyDate={applicant.applyDate}

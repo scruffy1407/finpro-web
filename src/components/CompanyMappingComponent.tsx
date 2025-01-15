@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import CompanyComponent, { CompanyShortProps } from "./CompanyComponent";
-import { dummyCompanies } from "@/utils/datadummy";
-import { setPaginationData } from "@/store/slices/companySearchSlice";
 import { CompanyUtils } from "@/utils/company.utils";
 import ListSkeleton from "@/components/listSkeleton";
 import CompanyCardSkeleton from "@/components/Skeleton/CompanyCard.skeleton";
@@ -35,7 +33,6 @@ function CompanyMappingComponent() {
     });
     setCompanyList(companyList);
     // Update pagination state in Redux
-    const { totalJobPosts, totalPages } = response.data;
     setIsLoading(false);
   }
 

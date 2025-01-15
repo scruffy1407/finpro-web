@@ -1,21 +1,15 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/store";
 import { refreshUserToken, validateUserToken } from "@/store/slices/authSlice";
 
-function AuthorizeUser(
-  pagePermission?: "jobhunter" | "company" | "developer",
-  owned?: string, // comparison data
-) {
+function AuthorizeUser(pagePermission?: "jobhunter" | "company" | "developer") {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const initialRender = useRef(true);
 
-  const { isLoggedIn, user_role, name } = useSelector(
-    (state: RootState) => state.auth,
-  );
+  const { isLoggedIn } = useSelector((state: RootState) => state.auth);
 
   async function handleAuthrorize() {
     // Check the user have token or not when it access the page
@@ -42,6 +36,8 @@ function AuthorizeUser(
         await dispatch(validateUserToken(accessToken as string));
       }
     } catch (e: unknown) {
+      console.error(e);
+
       router.push("/");
       return;
     }

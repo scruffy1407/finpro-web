@@ -53,7 +53,8 @@ function UploadImage({ image }: Props) {
           "Failed to update image, make sure its JPG or PNG and Max Size is 2 MB",
         );
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
+      console.error(error);
       toast.error(
         "Failed to update image, make sure its JPG or PNG and Max Size is 2 MB",
       );

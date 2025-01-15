@@ -27,21 +27,16 @@ interface CompletionData {
   endDate: string; // endDate is in ISO format
 }
 
-// skill_assessment_name String
-// skill_badge           String
-// passing_grade         Int      @default(75)
-// duration              Int      @default(30)
 function Asessmentcard({
   assessmentName,
   passingGrade,
   duration,
   badge,
   skillAssessmentId,
-  takeTest,
 }: AssessmentCardProps) {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const [callBackPath, setcallBackPath] = useState<string>("");
+  const [callBackPath] = useState<string>("");
   const jobHunterId = useSelector((state: RootState) => state.auth.innerId);
   const userRole = useSelector((state: RootState) => state.auth.user_role);
 

@@ -9,8 +9,6 @@ import LoadingLoader from "@/components/LoadingLoader";
 import { AuthHandler } from "@/utils/auth.utils";
 import Header from "@/components/Header";
 
-type PaymentStatus = "pending" | "settlement" | "error";
-
 function Payment() {
   // Using dummy data instead of database
   const authHandler = new AuthHandler();

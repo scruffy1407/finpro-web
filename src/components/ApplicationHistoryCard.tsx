@@ -19,7 +19,6 @@ export interface ApplicationHistoryCardProps {
 }
 
 function ApplicationHistoryCard({
-  applicationId,
   jobTitle,
   jobType,
   status,

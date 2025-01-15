@@ -1,25 +1,12 @@
-import axios, { InternalAxiosRequestConfig } from "axios";
+import axios from "axios";
 import { job } from "@/utils/axiosInterface";
 import { location } from "@/utils/axiosInterface";
-import Cookies from "js-cookie";
 
 const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const api = axios.create({
   baseURL,
 });
-const applySub = axios.create({});
-
-interface GetJobPosts {
-  page: number;
-  limit: number;
-  job_title?: string;
-  categoryId?: number;
-  jobType?: string;
-  jobSpace?: string;
-  dateRange?: string;
-  sortorder?: string;
-}
 
 export async function getJobNewLp() {
   const response = await job.get("jobNewLp");

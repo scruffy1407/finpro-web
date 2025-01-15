@@ -11,9 +11,6 @@ import Cookies from "js-cookie";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store";
 import { useRouter } from "next/router";
-import { AxiosResponse } from "axios";
-import ModalContainer from "@/components/Modal/ModalContainer";
-import VerifyEmailModal from "@/components/Modal/VerifyEmailModal";
 import { openModalAction } from "@/store/slices/ModalSlice";
 
 export default function ConfirmationCard({ plan }: { plan: SubscriptionPlan }) {

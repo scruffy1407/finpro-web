@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import { Navbar } from "@/components/NavigationBar/Navbar";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import StatusTab from "@/components/Tabs/ApplicationHistory/InReviewApplication";
 import { JobApplicationStatus } from "@/models/applicant.model";
 import { Info } from "lucide-react";

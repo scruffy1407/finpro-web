@@ -1,10 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import ButtonComponent from "./ButtonComponent";
 import AsyncSelect from "react-select/async";
-import { locationOptions } from "@/utils/datadummy";
-import { LocationOption, LocationOptionReal } from "@/utils/interface";
+import { LocationOptionReal } from "@/utils/interface";
 import { searchLocation } from "@/pages/api/api";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store";
