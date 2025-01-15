@@ -4,6 +4,7 @@ import Cookies from "js-cookie";
 import axios from "axios";
 import { useRouter } from "next/router";
 import Router from "next/router";
+import LoadingLoader from "../LoadingLoader";
 
 // Define form data type
 interface FormData {
@@ -23,7 +24,7 @@ const CreateAssessmentTestForm: React.FC<CreateAssessmentTestFormProps> = ({
 	setShowForm,
 }) => {
 	const router = useRouter();
-
+	const [loading, setLoading] = useState(false); // Add loading state
 	const [formData, setFormData] = useState<FormData>({
 		skill_assessment_name: "",
 		skill_badge: null,
@@ -58,8 +59,8 @@ const CreateAssessmentTestForm: React.FC<CreateAssessmentTestFormProps> = ({
 		if (formData.skill_badge) form.append("image", formData.skill_badge); // Key updated to 'image'
 		form.append("passing_grade", formData.passing_grade.toString());
 		form.append("duration", formData.duration.toString());
-
 		try {
+			setLoading(true);
 			const accessToken = Cookies.get("accessToken");
 			const response = await axios.post(
 				`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/dev/createassessment`,
@@ -85,6 +86,8 @@ const CreateAssessmentTestForm: React.FC<CreateAssessmentTestFormProps> = ({
 			}
 		} catch (error) {
 			console.error("Error creating assessment test:", error);
+		} finally {
+			setLoading(true);
 		}
 	};
 
@@ -162,7 +165,7 @@ const CreateAssessmentTestForm: React.FC<CreateAssessmentTestFormProps> = ({
 									type="submit"
 									className="bg-blue-500 text-white px-4 py-2 rounded-md"
 								>
-									Create Assessment Test
+									{loading ? <LoadingLoader /> : "Create Assessment Test"}
 								</Button>
 								<Button
 									type="button"

@@ -88,6 +88,7 @@ function AssessmentDashPost() {
 		if (!selectedTest) return;
 
 		try {
+			setLoading(true);
 			// Create a FormData object
 			const formData = new FormData();
 			formData.append(
@@ -132,19 +133,20 @@ function AssessmentDashPost() {
 							: test
 					)
 				);
-
+				setLoading(false)
 				setEditFormOpen(false); // Close the modal
 			}
 		} catch (error) {
 			console.error("Error updating test:", error);
 			alert("Failed to update the test. Please try again.");
-		}
+		} 
 	};
 
 	const handleDelete = async () => {
 		if (!selectedTest) return;
 
 		try {
+			setLoading(true)
 			const response = await axios.put(
 				`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/dev/delete/assessmenttest/${selectedTest.skill_assessment_id}`,
 				{},
@@ -162,6 +164,7 @@ function AssessmentDashPost() {
 					)
 				);
 				setDialogOpen(false);
+				setLoading(false)
 			}
 		} catch (error) {
 			console.error("Error deleting test:", error);
@@ -228,7 +231,7 @@ function AssessmentDashPost() {
 										className="w-full"
 										onClick={() => handleEdit(test)}
 									>
-										Edit Test
+										{loading ? <LoadingLoader /> : "Edit Test"}
 									</Button>
 
 									{/* Safely access skillAssessmentQuestion */}
@@ -258,7 +261,7 @@ function AssessmentDashPost() {
 											setDialogOpen(true);
 										}}
 									>
-										Delete Test
+										{loading ? <LoadingLoader /> : "Delete Test"}
 									</Button>
 								</PopoverContent>
 							</Popover>
