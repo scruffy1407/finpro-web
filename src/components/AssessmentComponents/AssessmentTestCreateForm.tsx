@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import Cookies from "js-cookie";
 import axios from "axios";
-import { useRouter } from "next/router";
 import LoadingLoader from "../LoadingLoader";
 
 // Define form data type
