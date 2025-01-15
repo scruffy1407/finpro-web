@@ -185,7 +185,8 @@ export const handleSetInterview = createAsyncThunk(
         interviewData,
       );
       return response.data;
-    } catch (e) {
+    } catch (e: unknown) {
+      console.error(e);
       toast.error("Failed to set schedule, Please refresh your browser");
       return [];
     }
