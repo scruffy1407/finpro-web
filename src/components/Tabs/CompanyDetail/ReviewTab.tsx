@@ -45,7 +45,7 @@ function ReviewTab({ value, data, isLoading }: ReviewListProps) {
           </div>
 
           <div className="grid lg:grid-cols-2 gap-4 overflow-hidden">
-            {data.map((review, key: number) => {
+            {data?.map((review, key: number) => {
               return (
                 <ReviewComponent
                   key={key}
