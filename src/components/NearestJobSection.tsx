@@ -47,7 +47,7 @@ function NearestJobSection({ hasLocation }: NearestProps) {
     try {
       const token = Cookies.get("accessToken");
       if (!token) {
-        console.error("Token is missing from cookies.");
+        toast.error("Please login as Job Hunter to add bookmark");
         return;
       }
       if (user_role !== "jobhunter") {

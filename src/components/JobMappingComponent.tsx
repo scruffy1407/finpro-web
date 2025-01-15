@@ -14,6 +14,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import ListSkeleton from "@/components/listSkeleton";
 import JobPostComponentSkeleton from "@/components/JobPostSkeleton";
+import { toast } from "sonner";
 
 enum JobType {
   fulltime = "Full Time",
@@ -51,10 +52,13 @@ const JobPostSection: React.FC = () => {
           job_id: job.job_id,
           job_title: job.job_title,
           companyName: job.company.company_name || "Undisclosed Name",
-          company_province: job.company.company_province || "Undisclosed Location" ,
+          company_province:
+            job.company.company_province || "Undisclosed Location",
           company_city: job.company.company_city || "Undisclosed Location",
           logo: job.company.logo,
-          jobType: job.job_type ? [JobType[job.job_type as keyof typeof JobType]] : [],
+          jobType: job.job_type
+            ? [JobType[job.job_type as keyof typeof JobType]]
+            : [],
           jobSpace: JobSpace[job.job_space as keyof typeof JobSpace],
           created_at: job.created_at,
           salaryMin: parseInt(job.salary_min, 10),
