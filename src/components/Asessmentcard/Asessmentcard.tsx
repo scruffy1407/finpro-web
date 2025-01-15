@@ -57,7 +57,7 @@ function Asessmentcard({
       if (isLoggedIn && token) {
         try {
           const response = await axios.get<{ data: CompletionData[] }>(
-            `http://localhost:8000/api/dev/getcompletionByJobHunterId/${jobHunterId}`,
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/dev/getcompletionByJobHunterId/${jobHunterId}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,

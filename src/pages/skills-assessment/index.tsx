@@ -64,7 +64,7 @@ function Index() {
     try {
       setIsLoading(true);
       const response = await axios.get(
-        `http://localhost:8000/api/dev/getassessmenttest`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/dev/getassessmenttest`,
         {
           params: {
             offset: reset ? 0 : offset,

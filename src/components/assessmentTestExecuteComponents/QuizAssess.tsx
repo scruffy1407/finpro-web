@@ -94,7 +94,7 @@ export default function Quiz() {
       const token = Cookies.get("accessToken");
       try {
         const response = await axios.get(
-          `http://localhost:8000/api/dev/getassessmentquest/${skillAssessmentId}`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/dev/getassessmentquest/${skillAssessmentId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -219,7 +219,7 @@ export default function Quiz() {
 
     try {
       const response = await axios.put(
-        `http://localhost:8000/api/dev/updateassessmentanswer`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/dev/updateassessmentanswer`,
         submission,
         {
           headers: {

@@ -11,14 +11,17 @@ import FormEditEducation from "@/components/Form/FormEditEducation";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store";
 import { closeModalAction, openModalAction } from "@/store/slices/ModalSlice";
-import { EducationDegreeResult } from "@/models/educationDegree";
+import {
+  EducationDegreeResult,
+  EducationDegreeType,
+} from "@/models/educationDegree";
 import Cookies from "js-cookie";
 import ConfirmDelete from "@/components/Modal/ConfirmDelete";
 import { deleteEducation } from "@/store/slices/EducationSlice";
 
 interface EducationProps {
   educationId: number;
-  educationDegree: string;
+  educationDegree: EducationDegreeType;
   educationName: string;
   description: string;
   educationDate: string | Date;

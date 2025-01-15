@@ -56,7 +56,7 @@ const PreSelectionTestCreateForm: React.FC<CreatePreSelectionFormProps> = ({
 
       // Send the POST request
       await axios.post(
-        "http://localhost:8000/api/company/createpretest",
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/company/createpretest`,
         requestBody,
         {
           headers: {
