@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import CompanyComponent, { CompanyShortProps } from "./CompanyComponent";
-import { dummyCompanies } from "@/utils/datadummy";
-import { setPaginationData } from "@/store/slices/companySearchSlice";
 import { CompanyUtils } from "@/utils/company.utils";
 import ListSkeleton from "@/components/listSkeleton";
 import CompanyCardSkeleton from "@/components/Skeleton/CompanyCard.skeleton";
@@ -23,19 +21,30 @@ function CompanyMappingComponent() {
       8,
     );
     const companyList: CompanyShortProps[] = [];
-    response?.data?.listCompany.map((company: any) => {
-      companyList.push({
-        companyId: company.company_id,
-        companyName: company.company_name,
-        logo: company.logo,
-        jobsOpen: company._count.jobPost,
-        companyCity: company.company_city,
-        companyProvince: company.company_province,
-      });
-    });
+    response?.data?.listCompany.map(
+      (company: {
+        _count: {
+          jobPost: number;
+        };
+        company_id: string;
+        company_name: string;
+        logo: string;
+        jobsOpen: number;
+        company_city: string;
+        company_province: string;
+      }) => {
+        companyList.push({
+          companyId: company.company_id,
+          companyName: company.company_name,
+          logo: company.logo,
+          jobsOpen: company._count.jobPost,
+          companyCity: company.company_city,
+          companyProvince: company.company_province,
+        });
+      },
+    );
     setCompanyList(companyList);
     // Update pagination state in Redux
-    const { totalJobPosts, totalPages } = response.data;
     setIsLoading(false);
   }
 

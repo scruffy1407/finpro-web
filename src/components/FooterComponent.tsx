@@ -1,13 +1,9 @@
 import React from "react";
 import Image from "next/image";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store";
 import Link from "next/link";
 import { UserRole } from "@/components/NavigationBar/navigation";
 
 function FooterComponent({ pageRole }: { pageRole: UserRole }) {
-  const userRole = useSelector((state: RootState) => state.auth.user_role);
-
   const roleConfig: Record<
     UserRole,
     { logo: string; navbarItems: { label: string; href: string }[] }

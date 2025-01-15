@@ -12,16 +12,14 @@ import { useRouter } from "next/router";
 function SectionJoinApplicant({
   applicationId,
   applicationStatus,
-  resume,
-  jobHunterId,
   createdAt,
- jobId
+  jobId,
 }: JobApplication) {
   const dispatch = useDispatch<AppDispatch>();
 
   const createdDate = new Date(createdAt);
-  const formattedDate = format(createdDate, "EEE, d MMM yyyy")
- const router = useRouter();
+  const formattedDate = format(createdDate, "EEE, d MMM yyyy");
+  const router = useRouter();
 
   const displayText = () => {
     switch (applicationStatus) {
@@ -59,8 +57,8 @@ function SectionJoinApplicant({
               "text-sm text-neutral-600 text-center p-4 bg-white rounded-2xl"
             }
           >
-            Your application is rejected by the company, don't worry let's
-            explore other jobs{" "}
+            {`Your application is rejected by the company, don't worry let's
+            explore other jobs`}
             <Link
               href={"/jobs"}
               className={"underline cursor-pointer text-blue-500"}
@@ -82,7 +80,9 @@ function SectionJoinApplicant({
             <Button
               onClick={() =>
                 // dispatch(openModalAction("applyJobModalWaitingSubmission"))
-                router.push(`/executionPretestQuiz/${jobId}?applicationId=${applicationId}`)
+                router.push(
+                  `/executionPretestQuiz/${jobId}?applicationId=${applicationId}`,
+                )
               }
               variant={"primary"}
               size={"default"}

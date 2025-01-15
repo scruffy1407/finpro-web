@@ -60,11 +60,11 @@ const JobApplicantDetail: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const { applicantList, pendingState } = useSelector(
-    (state: RootState) => state.applicantList
+    (state: RootState) => state.applicantList,
   );
   const [jobDetails, setJobDetails] = useState<JobDetailsResponse | null>(null);
   const [selectedView, setSelectedView] = useState<ViewSelection>(
-    ViewSelection.AllApplicant
+    ViewSelection.AllApplicant,
   );
   const router = useRouter();
   const { jobId } = router.query;
@@ -77,7 +77,7 @@ const JobApplicantDetail: React.FC = () => {
     }).format(value);
   };
 
-  const handleSelectChange = (value: any) => {
+  const handleSelectChange = (value: ViewSelection) => {
     setSelectedView(value);
   };
 
@@ -90,7 +90,7 @@ const JobApplicantDetail: React.FC = () => {
           jobId: Number(jobId),
           token: accessToken as string,
           fetchType: selectedView,
-        })
+        }),
       );
     }
   }, [jobId, router, isLoggedIn, selectedView]);
@@ -109,7 +109,7 @@ const JobApplicantDetail: React.FC = () => {
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },
-          }
+          },
         );
         if (response.data.success) {
           setJobDetails(response.data.data);

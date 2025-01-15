@@ -18,7 +18,7 @@ interface statusProps extends TabsContentProps {
   activeTab: string;
 }
 
-function StatusTab({ activeTab, value }: statusProps) {
+function StatusTab({ value }: statusProps) {
   const userApplication = new UserApplication();
   const token = Cookies.get("accessToken");
   const [initialLoading, setInitialLoading] = useState(true);
@@ -42,18 +42,27 @@ function StatusTab({ activeTab, value }: statusProps) {
     );
 
     const mappedData: ApplicationHistoryCardProps[] = [];
-    response.data.map((application) => {
-      mappedData.push({
-        applicationId: application.application_id,
-        status: application.application_status,
-        applyDate: format(application.created_at, "dd, MMM yyyy"),
-        jobSpace: application.jobPost.job_space,
-        jobTitle: application.jobPost.job_title,
-        jobType: application.jobPost.job_type,
-        resumeLink: application.resume,
-        expectedSalary: application.expected_salary,
-      });
-    });
+    response.data.map(
+      (application: {
+        application_id: string;
+        application_status: string;
+        created_at: string | number | Date;
+        jobPost: { job_space: string; job_title: string; job_type: string };
+        resume: string;
+        expected_salary: number;
+      }) => {
+        mappedData.push({
+          applicationId: application.application_id,
+          status: application.application_status,
+          applyDate: format(application.created_at, "dd, MMM yyyy"),
+          jobSpace: application.jobPost.job_space,
+          jobTitle: application.jobPost.job_title,
+          jobType: application.jobPost.job_type,
+          resumeLink: application.resume,
+          expectedSalary: application.expected_salary,
+        });
+      },
+    );
 
     setLoadMore(response.data.length < 6);
     setListApplicant([...listApplicant, ...mappedData]);
@@ -87,8 +96,9 @@ function StatusTab({ activeTab, value }: statusProps) {
       value={value}
     >
       <div className="flex flex-col gap-4 ">
-        {listApplicant.map((applicant) => (
+        {listApplicant.map((applicant, key: number) => (
           <ApplicationHistoryCard
+            key={key}
             applicationId={applicant.applicationId}
             status={applicant.status}
             applyDate={applicant.applyDate}

@@ -45,7 +45,7 @@ function FormEditInterview({
     interviewId: interviewId,
   });
 
-  async function submitEditInterview(e: any) {
+  async function submitEditInterview(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const token = Cookies.get("accessToken");
     if (!token) {

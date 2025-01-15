@@ -45,7 +45,7 @@ function FormEducation() {
     dispatch(handleNewInputChange({ name, value }));
   }
 
-  async function handleSubmitData(e: any) {
+  async function handleSubmitData(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     await dispatch(
       addNewEducation({

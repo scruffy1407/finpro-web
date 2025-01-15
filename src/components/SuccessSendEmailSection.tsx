@@ -34,12 +34,15 @@ function SuccessSendEmailSection({ email }: SuccessProps) {
                 Sending to your email
               </h2>
               <p className={`text-neutral-600 leading-[120%]`}>
-                We're searching for your ipsum account that linked to
-                <strong> {email}</strong>, We're on the case.
+                {`We're searching for your ipsum account that linked to`}
+                <strong>
+                  {email}
+                </strong>, {`We're on the case.`}
                 <br />
-                <br /> If it's there, you'll receive an email with instructions
+                <br />
+                {`If it's there, you'll receive an email with instructions
                 shortly. Otherwise, feel free to double-check the email you
-                entered or your spam folder in a few minutes.
+                entered or your spam folder in a few minutes.`}
               </p>
             </div>
 

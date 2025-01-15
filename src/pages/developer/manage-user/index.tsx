@@ -44,6 +44,22 @@ export interface JobHunter {
   jobHunterSubscription: JobHunterSubscription;
 }
 
+interface JobHunterSubscriptionRes {
+  job_hunter_subscription_id: number; // Assuming this is a string
+  subscription_active: boolean; // Boolean indicating if the subscription is active
+  subscriptionId: number; // Subscription ID
+  subscription_end_date: string; // ISO 8601 date string
+  subscription_start_date: string; // ISO 8601 date string
+}
+
+interface UserRes {
+  email: string; // User email
+  gender: "male" | "female" | null; // Assuming gender can also be null
+  name: string; // User name
+  photo: string | null; // Nullable photo URL
+  jobHunterSubscription: JobHunterSubscriptionRes; // Nested subscription data
+}
+
 function Index() {
   const authHandler = new AuthHandler();
   authHandler.authorizeUser("developer");
@@ -86,7 +102,7 @@ function Index() {
       );
 
       const userList: JobHunter[] = [];
-      response?.data?.listUser.map((user: any) => {
+      response?.data?.listUser.map((user: UserRes) => {
         userList.push({
           email: user.email,
           gender: user.gender,
@@ -107,7 +123,7 @@ function Index() {
       setUserList(userList);
       setIsLoading(false);
     } catch (e) {
-      console.error(e)
+      console.error(e);
       toast.error(
         "Error happen on our side, please refresh your browser or try to re-login",
       );

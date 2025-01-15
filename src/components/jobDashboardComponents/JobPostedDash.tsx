@@ -34,9 +34,6 @@ export interface JobPostDashRequest {
 interface BackendError {
   error: string;
 }
-interface DeleteJobPostResponse {
-  message: string;
-}
 
 function JobPostedDash() {
   const router = useRouter();
@@ -49,9 +46,7 @@ function JobPostedDash() {
   const [selectedJobId, setSelectedJobId] = useState<number | null>(null);
   const token = Cookies.get("accessToken");
 
-  const { isLoggedIn, pendingState } = useSelector(
-    (state: RootState) => state.auth,
-  );
+  const { isLoggedIn } = useSelector((state: RootState) => state.auth);
 
   const { currentModalId, editId } = useSelector(
     (state: RootState) => state.modalController,
@@ -139,7 +134,10 @@ function JobPostedDash() {
     return `${(salary / 1000000).toFixed(1)} jt`;
   };
 
-  const handleSearch = async (searchParams: any) => {
+  const handleSearch = async (searchParams: {
+    jobTitle?: string;
+    sortOrder?: string;
+  }) => {
     try {
       const { jobTitle, sortOrder } = searchParams;
       const response = await getJobPostDash({

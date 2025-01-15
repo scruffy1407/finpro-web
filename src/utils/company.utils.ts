@@ -100,7 +100,7 @@ export class CompanyUtils {
     currentPage?: number,
     limit?: number,
   ) {
-    let queryString = `?page=${currentPage}&limit=${limit || 12}&companyName=${companyName || ""}&companyCity=${companyLocation}`;
+    const queryString = `?page=${currentPage}&limit=${limit || 12}&companyName=${companyName || ""}&companyCity=${companyLocation}`;
 
     try {
       const response = await api.get(`/api/company/company${queryString}`);
@@ -123,7 +123,7 @@ export class CompanyUtils {
         },
       });
       return response.status === 200;
-    } catch (e) {
+    } catch (e: unknown) {
       return false;
     }
   }

@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import ListSkeleton from "@/components/listSkeleton";
 import JobPostComponentSkeleton from "@/components/JobPostSkeleton";
 import { toast } from "sonner";
+import { Job } from "@/components/JobMappingComponent";
 
 interface NearestProps {
   hasLocation: boolean;
@@ -39,7 +40,7 @@ function NearestJobSection({ hasLocation }: NearestProps) {
   const router = useRouter();
   const [jobList, setJobList] = useState<JobPostProps[]>([]);
   const bookmarks = useSelector(
-    (state: RootState) => state.bookmarks.bookmarks
+    (state: RootState) => state.bookmarks.bookmarks,
   );
   const { user_role } = useSelector((state: RootState) => state.auth);
 
@@ -56,21 +57,21 @@ function NearestJobSection({ hasLocation }: NearestProps) {
       }
 
       const existingBookmark = bookmarks.find(
-        (bookmark) => bookmark.jobPostId === jobPostId
+        (bookmark) => bookmark.jobPostId === jobPostId,
       );
 
       if (existingBookmark) {
         await axios.post(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/applyjob/bookmark/remove`,
           { wishlist_id: existingBookmark.wishlist_id },
-          { headers: { Authorization: `Bearer ${token}` } }
+          { headers: { Authorization: `Bearer ${token}` } },
         );
         dispatch(removeBookmark(existingBookmark.wishlist_id));
       } else {
         const response = await axios.post(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/applyjob/bookmark`,
           { jobPostId },
-          { headers: { Authorization: `Bearer ${token}` } }
+          { headers: { Authorization: `Bearer ${token}` } },
         );
         dispatch(addBookmark(response.data.bookmark));
       }
@@ -93,7 +94,7 @@ function NearestJobSection({ hasLocation }: NearestProps) {
       // Parse JSON string from the API response
       const location = JSON.parse(lastLocation);
       const response = await getNearestJob(location?.lat, location?.lng);
-      const mappedData = response?.data.map((job: any) => ({
+      const mappedData = response?.data.map((job: Job) => ({
         job_id: job.job_id,
         job_title: job.job_title,
         companyName: job.company.company_name || "Undisclosed Name",
@@ -111,10 +112,13 @@ function NearestJobSection({ hasLocation }: NearestProps) {
         salaryShow: job.salary_show,
         experienceMin: job.job_experience_min,
         experienceMax: job.job_experience_max,
-      }))
+      }));
       setJobList(mappedData);
       setIsLoading(false);
-    } catch (e) {}
+    } catch (e) {
+      console.error(e);
+      toast.error("Something Went Wrong, please refresh your browser");
+    }
   }
 
   useEffect(() => {
@@ -143,7 +147,7 @@ function NearestJobSection({ hasLocation }: NearestProps) {
         ) : jobList && jobList.length > 0 ? (
           jobList.map((jobPost: JobPostProps, index: number) => {
             const isBookmarked = bookmarks.some(
-              (bookmark) => bookmark.jobPostId === Number(jobPost.job_id)
+              (bookmark) => bookmark.jobPostId === Number(jobPost.job_id),
             );
             return (
               <div

@@ -55,7 +55,7 @@ interface JobDetailProps {
   jobData: JobData;
   validateUserLoading: boolean;
   alreadyJoined: null | JobApplication;
-  jobId ?: number;
+  jobId?: number;
   onApplyJob: () => void;
   job_id: string;
   bookmarkedJobs: Bookmark[];
@@ -79,15 +79,15 @@ export default function JobDetailComponent({
   job_id,
 }: JobPostComponentProps) {
   const router = useRouter();
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
   const { pendingState } = useSelector((state: RootState) => state.generalInfo);
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const [remainingTime, setRemainingTime] = useState<string | null>(null);
 
-  const handleShare = (platform: string) => {
-    console.log(`Shared on ${platform}`);
-  };
+  // const handleShare = (platform: string) => {
+  //   console.log(`Shared on ${platform}`);
+  // };
+
+  const handleShare = () => {};
 
   const formatSalary = (salary: number) => {
     return `${(salary / 1000000).toFixed(1)} jt`;
@@ -402,7 +402,7 @@ export default function JobDetailComponent({
               createdAt={alreadyJoined.createdAt}
               jobHunterId={alreadyJoined.jobHunterId}
               resume={alreadyJoined.resume}
-              jobId = {jobId}
+              jobId={jobId}
             />
           ) : (
             ""

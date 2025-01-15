@@ -14,6 +14,28 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import ListSkeleton from "@/components/listSkeleton";
 import JobPostComponentSkeleton from "@/components/JobPostSkeleton";
+import { toast } from "sonner";
+
+interface Company {
+  company_name?: string;
+  company_province?: string;
+  company_city?: string;
+  logo?: string;
+}
+
+export interface Job {
+  job_id: string; // Assuming job_id is a string
+  job_title: string;
+  company: Company; // Nested Company object
+  job_type?: string; // Optional, since you're checking its existence
+  job_space: string; // JobSpace key (enum)
+  created_at: string; // Assuming this is a date string
+  salary_min: string; // Parsing this as integer later
+  salary_max: string; // Parsing this as integer later
+  salary_show: boolean; // Assuming boolean based on its usage
+  job_experience_min: string; // Parsing this as integer later
+  job_experience_max: string; // Parsing this as integer later
+}
 
 enum JobType {
   fulltime = "Full Time",
@@ -47,14 +69,17 @@ const JobPostSection: React.FC = () => {
       setIsLoading(true);
       try {
         const response = await getJobNewLp();
-        const mappedData = response.map((job: any) => ({
+        const mappedData = response.map((job: Job) => ({
           job_id: job.job_id,
           job_title: job.job_title,
           companyName: job.company.company_name || "Undisclosed Name",
-          company_province: job.company.company_province || "Undisclosed Location" ,
+          company_province:
+            job.company.company_province || "Undisclosed Location",
           company_city: job.company.company_city || "Undisclosed Location",
           logo: job.company.logo,
-          jobType: job.job_type ? [JobType[job.job_type as keyof typeof JobType]] : [],
+          jobType: job.job_type
+            ? [JobType[job.job_type as keyof typeof JobType]]
+            : [],
           jobSpace: JobSpace[job.job_space as keyof typeof JobSpace],
           created_at: job.created_at,
           salaryMin: parseInt(job.salary_min, 10),

@@ -17,6 +17,7 @@ function ListSkeleton({
     <div className={`${className}`}>
       {Array.from({ length: numberItem }).map((_, index) => (
         <div
+          key={index}
           className={`${setShrink ? "flex-shrink-0 w-fit snap-start bg-white rounded-xl hover:shadow-lg  lg:w-full" : ""}`}
         >
           <ListItemComponent key={index} />

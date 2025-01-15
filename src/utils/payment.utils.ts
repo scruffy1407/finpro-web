@@ -1,5 +1,4 @@
 import api from "@/pages/api/api";
-import { AxiosError } from "axios";
 
 export class PaymentHandler {
   isValidOrderString(orderString: string): boolean {
@@ -29,7 +28,7 @@ export class PaymentHandler {
       } else {
         return response;
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       return err;
     }
   }
@@ -56,7 +55,7 @@ export class PaymentHandler {
       } else {
         return response;
       }
-    } catch (e: any) {
+    } catch (e: unknown) {
       return e;
     }
   }
@@ -74,6 +73,7 @@ export class PaymentHandler {
         return [];
       }
     } catch (e) {
+      console.error(e);
       return [];
     }
   }

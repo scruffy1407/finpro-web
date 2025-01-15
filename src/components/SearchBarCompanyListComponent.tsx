@@ -1,23 +1,18 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import ButtonComponent from "./ButtonComponent";
 import AsyncSelect from "react-select/async";
-import { locationOptions } from "@/utils/datadummy";
-import { LocationOption, LocationOptionReal } from "@/utils/interface";
+import { LocationOptionReal } from "@/utils/interface";
 import { searchLocation } from "@/pages/api/api";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store";
 import { setCompanySearch } from "@/store/slices/companySearchSlice";
 
-const customStyles = {
-  control: (provided: any) => ({
-    ...provided,
-    borderRadius: "10px",
-    padding: "1px", // Adjust the value for the border radius
-  }),
-};
-// data.ts
+interface LocationOption {
+  value: string; // Unique identifier
+  label: string; // Displayed label
+}
 
 interface SearchProps {
   handleSearch: () => void;
@@ -34,10 +29,12 @@ function SearchBarCompanyListComponent({ handleSearch }: SearchProps) {
     try {
       const response = await searchLocation();
       setLocations(
-        response.data.data.map((location: any) => ({
-          label: location.name,
-          value: location.city_id,
-        })),
+        response.data.data.map(
+          (location: { name: string; city_id: number }) => ({
+            label: location.name,
+            value: location.city_id,
+          }),
+        ),
       );
     } catch (error) {
       console.error("Error fetching locations:", error);
@@ -45,7 +42,7 @@ function SearchBarCompanyListComponent({ handleSearch }: SearchProps) {
   };
 
   // Handle location changes
-  const handleLocationChange = (selectedOption: any) => {
+  const handleLocationChange = (selectedOption: LocationOption | null) => {
     if (selectedOption) {
       dispatch(
         setCompanySearch({
@@ -107,8 +104,8 @@ function SearchBarCompanyListComponent({ handleSearch }: SearchProps) {
           defaultOptions
           loadOptions={loadOptions}
           placeholder="Search Location"
-          styles={customStyles} // Apply custom styles here
           onChange={handleLocationChange}
+          className={"rounded-2xl"}
           isClearable={true}
         />
       </div>

@@ -24,6 +24,16 @@ import { Navbar } from "@/components/NavigationBar/Navbar";
 import ListSkeleton from "@/components/listSkeleton";
 import CompanyCardSkeleton from "@/components/Skeleton/CompanyCard.skeleton";
 import VerifyBanner from "@/components/VerifyBanner";
+interface Company {
+  company_id: string; // Assuming this is a string
+  company_name: string; // Name of the company
+  logo: string; // Logo can be nullable if it's not always present
+  _count: {
+    jobPost: number; // Count of job postings
+  };
+  company_city: string; // City where the company is located
+  company_province: string; // Province where the company is located
+}
 
 const CompanyPage: React.FC = () => {
   const companyUtls = new CompanyUtils();
@@ -57,7 +67,7 @@ const CompanyPage: React.FC = () => {
       currentPage,
     );
     const companyList: CompanyShortProps[] = [];
-    response.data.listCompany.map((company: any) => {
+    response.data.listCompany.map((company: Company) => {
       companyList.push({
         companyId: company.company_id,
         companyName: company.company_name,

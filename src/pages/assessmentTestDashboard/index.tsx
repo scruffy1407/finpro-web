@@ -1,5 +1,4 @@
 import React from "react";
-import NavbarComponent from "@/components/NavbarComponent";
 import { AuthHandler } from "@/utils/auth.utils";
 import AssessmentDashLeft from "@/components/AssessmentComponents/AssessmentDashLeft";
 import FooterComponent from "@/components/FooterComponent";

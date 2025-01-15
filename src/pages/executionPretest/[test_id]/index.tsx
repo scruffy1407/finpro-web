@@ -112,11 +112,11 @@ export default function ExecutionPretest() {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       if (response.status === 200) {
-        const { resultPreSelection, application } = response.data;
+        const { resultPreSelection } = response.data;
 
         // Extract jobHunterId and applicationId from the API response
         const applicationId = resultPreSelection.applicationId;
@@ -146,7 +146,7 @@ export default function ExecutionPretest() {
 
         if (status === 400) {
           setError(
-            "Bad Request: Invalid Skill Assessment ID or missing parameters. You may be accessing an invalid URL."
+            "Bad Request: Invalid Skill Assessment ID or missing parameters. You may be accessing an invalid URL.",
           );
           setIsLoading(false);
         } else {
