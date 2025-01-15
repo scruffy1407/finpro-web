@@ -42,7 +42,7 @@ function StatusTab({ value }: statusProps) {
     );
 
     const mappedData: ApplicationHistoryCardProps[] = [];
-    response.data.map((application) => {
+    response.data.map((application: any) => {
       mappedData.push({
         applicationId: application.application_id,
         status: application.application_status,
