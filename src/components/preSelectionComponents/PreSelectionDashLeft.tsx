@@ -8,7 +8,7 @@ import axios from "axios";
 function PreSelectionDashLeft() {
   const accessToken = Cookies.get("accessToken");
   const [showForm, setShowForm] = useState(false);
-  const [setPreSelectionTests] = useState<any[]>([]);
+  const [, setPreSelectionTests] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchPreSelectionTests = async () => {
