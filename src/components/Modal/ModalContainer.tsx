@@ -1,5 +1,5 @@
 import React from "react";
-import "../../styles/globals.css"; // Import your custom styles
+// import "../../styles/globals.css"; // Import your custom styles
 
 export interface ModalProps {
   title: string; // Added title prop
