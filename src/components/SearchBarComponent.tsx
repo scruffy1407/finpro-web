@@ -54,10 +54,10 @@ function SearchBarComponent({ onSearch }: SearchBarProps) {
   // Local state for input values
   const [localJobTitle, setLocalJobTitle] = useState<string>(jobTitle || "");
   const [localCategoryId, setLocalCategoryId] = useState<string>(
-    categoryId || ""
+    categoryId || "",
   );
   const [localCompanyCity, setLocalCompanyCity] = useState<string>(
-    companyCity || ""
+    companyCity || "",
   );
 
   // Fetch categories and locations on mount
@@ -79,7 +79,7 @@ function SearchBarComponent({ onSearch }: SearchBarProps) {
           response.data.data.map((location: any) => ({
             label: location.name,
             value: location.city_id,
-          }))
+          })),
         );
       } catch (error) {
         console.error("Error fetching locations:", error);
@@ -125,7 +125,7 @@ function SearchBarComponent({ onSearch }: SearchBarProps) {
     return new Promise<LocationOptionReal[]>((resolve) => {
       setTimeout(() => {
         const filteredCities = locations.filter((location) =>
-          location.label.toLowerCase().includes(inputValue.toLowerCase())
+          location.label.toLowerCase().includes(inputValue.toLowerCase()),
         );
         resolve(filteredCities);
       }, 500);
