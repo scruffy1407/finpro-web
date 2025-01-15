@@ -56,7 +56,9 @@ function Index() {
         }
         // ADD DATA TO CERTIFICATE
       }
-    } catch (e) {}
+    } catch (e: unknown) {
+      console.error(e);
+    }
   }
   useEffect(() => {
     setIsDisable(inputValue === "");

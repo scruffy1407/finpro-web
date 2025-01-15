@@ -1,9 +1,9 @@
-import { createLinkedInShareUrl } from '@/utils/platforms/linkedin';
-import { createFacebookShareUrl } from '@/utils/platforms/facebook';
-import { createTwitterShareUrl } from '@/utils/platforms/twitter';
-import { createWhatsAppShareUrl } from '@/utils/platforms/whatsapp';
+import { createLinkedInShareUrl } from "@/utils/platforms/linkedin";
+import { createFacebookShareUrl } from "@/utils/platforms/facebook";
+import { createTwitterShareUrl } from "@/utils/platforms/twitter";
+import { createWhatsAppShareUrl } from "@/utils/platforms/whatsapp";
 
-export type SharePlatform = 'linkedin' | 'facebook' | 'twitter' | 'whatsapp';
+export type SharePlatform = "linkedin" | "facebook" | "twitter" | "whatsapp";
 
 interface ShareData {
   jobTitle: string;
@@ -14,27 +14,27 @@ interface ShareData {
 
 export async function shareToSocialMedia(
   platform: SharePlatform,
-  shareData: ShareData
+  shareData: ShareData,
 ): Promise<void> {
-  let shareUrl = '';
+  let shareUrl = "";
 
   switch (platform) {
-    case 'linkedin':
+    case "linkedin":
       shareUrl = createLinkedInShareUrl(shareData);
       break;
-    case 'facebook':
+    case "facebook":
       shareUrl = createFacebookShareUrl(shareData);
       break;
-    case 'twitter':
+    case "twitter":
       shareUrl = createTwitterShareUrl(shareData);
       break;
-    case 'whatsapp':
+    case "whatsapp":
       shareUrl = createWhatsAppShareUrl(shareData);
       break;
   }
-  trackShareEvent(platform, shareData.jobTitle);
-  window.open(shareUrl, '_blank', 'width=600,height=400');
+  // trackShareEvent(platform, shareData.jobTitle);
+  window.open(shareUrl, "_blank", "width=600,height=400");
 }
 
-function trackShareEvent(platform: SharePlatform, jobTitle: string) {
-}
+// function trackShareEvent(platform: SharePlatform, jobTitle: string) {
+// }

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import NavbarComponent from "@/components/NavbarComponent";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { reviewResponse } from "@/models/company.model";
@@ -121,7 +120,8 @@ function Index() {
         const message = response.data.message;
         toast.error(message);
       }
-    } catch (e) {
+    } catch (e: unknown) {
+      console.error(e);
       toast.error(
         "Something went wrong, cannot create your review. Please try again or refresh your browser",
       );

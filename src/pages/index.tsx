@@ -20,7 +20,7 @@ function Home() {
   const authHandler = new AuthHandler();
   authHandler.authorizeUser();
   const [location, setLocation] = useState<GeolocationCoordinates | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [, setError] = useState<string | null>(null);
   const router = useRouter;
   const { isVerified, isLoggedIn } = useSelector(
     (state: RootState) => state.auth,

@@ -2,7 +2,6 @@ import React from "react";
 import { PageHeader } from "@/components/Subscription/Header/PageHeader";
 import { PricingSection } from "@/components/Subscription/Pricing/PricingSection";
 import { SupportSection } from "@/components/Subscription/Support/SupportSection";
-import NavbarComponent from "@/components/NavbarComponent";
 import FooterComponent from "@/components/FooterComponent";
 import { AuthHandler } from "@/utils/auth.utils";
 import ModalContainer from "@/components/Modal/ModalContainer";

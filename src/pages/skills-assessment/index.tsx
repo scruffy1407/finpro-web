@@ -10,13 +10,11 @@ import { AppDispatch, RootState } from "@/store";
 import ModalContainer from "@/components/Modal/ModalContainer";
 import { closeModalAction, openModalAction } from "@/store/slices/ModalSlice";
 import { useRouter } from "next/router";
-import { SkillAssessmentUtils } from "@/utils/skillAssessment.utils";
 import LoadingLoader from "@/components/LoadingLoader";
 import Image from "next/image";
 import axios from "axios";
 import VerifyBanner from "@/components/VerifyBanner";
 import FooterComponent from "@/components/FooterComponent";
-import VerifyEmailModal from "@/components/Modal/VerifyEmailModal";
 import Header from "@/components/Header";
 
 // DUMMY
@@ -26,13 +24,12 @@ function Index() {
   const authHandler = new AuthHandler();
   authHandler.authorizeUser();
   const dispatch = useDispatch<AppDispatch>();
-  const skillAsessmentUtils = new SkillAssessmentUtils();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [assessmentData, setAssessmentData] = useState<AssessmentCardProps[]>(
     [],
   );
   const [hasMore, setHasMore] = useState<boolean>(true); // For pagination
-  const [error, setError] = useState<string | null>(null);
+  const [, setError] = useState<string | null>(null);
   const [callBackPath, setcallBackPath] = useState<string>("");
   const { isLoggedIn, subscriptionId, isVerified } = useSelector(
     (state: RootState) => state.auth,

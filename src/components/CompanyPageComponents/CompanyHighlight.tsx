@@ -1,6 +1,5 @@
 import React from "react";
 import Image from "next/image";
-import ButtonComponent from "../ButtonComponent";
 import { Button } from "@/components/ui/button";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store";

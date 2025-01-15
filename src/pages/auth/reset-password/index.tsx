@@ -36,7 +36,8 @@ function ResetPassword() {
       } else {
         router.push("/");
       }
-    } catch (err) {
+    } catch (err: unknown) {
+      console.error(err);
       setIsLoading(false);
       router.push("/login");
     }
@@ -46,10 +47,12 @@ function ResetPassword() {
     const listPath = (location.pathname + location.search)
       .substr(1)
       .includes("token");
-    !listPath ? router.push("/") : null;
-
+    if (!listPath) {
+      router.push("/");
+    }
     const token = router.query.token as string;
     if (!initialRender.current) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       (token as string) ? validateResetToken(token) : null;
     }
 
@@ -73,6 +76,7 @@ function ResetPassword() {
         toast.error("Something went wrong, please try again");
       }
     } catch (e) {
+      console.error(e);
       setIsLoading(false);
       toast.error("Something went wrong, please try again");
     }

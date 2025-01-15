@@ -1,6 +1,5 @@
 import React from "react";
 import Image from "next/image";
-import { calculateAverageRating } from "@/utils/jobs.utils";
 import {
   Popover,
   PopoverContent,

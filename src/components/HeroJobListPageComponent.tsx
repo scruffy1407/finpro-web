@@ -1,6 +1,5 @@
 import React from "react";
 import SearchBarComponent from "./SearchBarComponent";
-import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { setSearchQuery } from "@/store/slices/searchQuerySlice";
 
