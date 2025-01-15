@@ -3,8 +3,13 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { Button } from "@/components/ui/button";
+import { AuthHandler } from "@/utils/auth.utils";
 
 const AddQuestions = () => {
+	const authHandler = new AuthHandler();
+	const pagePermission = "company";
+	authHandler.authorizeUser(pagePermission);
+
 	const router = useRouter();
 	const accessToken = Cookies.get("accessToken");
 
