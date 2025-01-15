@@ -17,6 +17,7 @@ import axios from "axios";
 import VerifyBanner from "@/components/VerifyBanner";
 import FooterComponent from "@/components/FooterComponent";
 import VerifyEmailModal from "@/components/Modal/VerifyEmailModal";
+import Header from "@/components/Header";
 
 // DUMMY
 
@@ -50,7 +51,7 @@ function Index() {
       dispatch(openModalAction("needToLoginModal"));
       return;
     }
-    
+
     if (!isVerified) {
       dispatch(openModalAction("needToVerifyModal"));
       return;
@@ -130,6 +131,13 @@ function Index() {
 
   return (
     <>
+      <Header>
+        <title>Skill Assessment | Test your skills</title>
+        <meta
+          name="description"
+          content={`Discover your strengths and areas for improvement. Take our quick and easy skill assessment today.`}
+        />
+      </Header>
       <ModalContainer
         isOpen={currentModalId === "needToLoginModal"}
         onClose={handleCloseModal}

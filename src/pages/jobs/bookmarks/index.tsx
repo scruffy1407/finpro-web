@@ -13,6 +13,7 @@ import Cookies from "js-cookie";
 import { AuthHandler } from "@/utils/auth.utils";
 import { Navbar } from "@/components/NavigationBar/Navbar";
 import { toast } from "sonner";
+import Header from "@/components/Header";
 
 const BookmarkPage: React.FC = () => {
   const authHandler = new AuthHandler();
@@ -62,7 +63,7 @@ const BookmarkPage: React.FC = () => {
         toast.error("Please login as Job Hunter to add bookmark");
         return;
       }
-        
+
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/applyjob/bookmark`,
         { jobPostId },
@@ -96,23 +97,29 @@ const BookmarkPage: React.FC = () => {
   };
 
   return (
-    <div className="mt-5 mx-4">
-      <Navbar pageRole={"jobhunter"} />
+    <>
+      <Header>
+        <title>Bookmarks Jobs</title>
+        <meta name="description" content={`List of jobs that you save`} />
+      </Header>
+      <div className="mt-5 mx-4">
+        <Navbar pageRole={"jobhunter"} />
 
-      <div className="mx-auto">
-        <div className="max-w-screen-xl mx-auto bg-white mt-5 rounded-xl px-4 md:px-0">
-          <h1 className="ml-4 font-bold text-4xl py-6">Job Bookmarks</h1>
+        <div className="mx-auto">
+          <div className="max-w-screen-xl mx-auto bg-white mt-5 rounded-xl px-4 md:px-0">
+            <h1 className="ml-4 font-bold text-4xl py-6">Job Bookmarks</h1>
+          </div>
         </div>
+        <div className="w-full mt-5 mb-10">
+          <BookmarkJobListMappingComponent
+            jobPosts={validBookmarks}
+            onRemoveBookmark={handleRemoveBookmark}
+            onAddBookmark={handleAddBookmark}
+          />
+        </div>
+        <FooterComponent pageRole={"jobhunter"} />
       </div>
-      <div className="w-full mt-5 mb-10">
-        <BookmarkJobListMappingComponent
-          jobPosts={validBookmarks}
-          onRemoveBookmark={handleRemoveBookmark}
-          onAddBookmark={handleAddBookmark}
-        />
-      </div>
-      <FooterComponent pageRole={"jobhunter"} />
-    </div>
+    </>
   );
 };
 

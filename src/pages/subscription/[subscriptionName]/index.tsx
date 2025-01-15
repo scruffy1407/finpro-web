@@ -10,6 +10,7 @@ import { AppDispatch, RootState } from "@/store";
 import VerifyEmailModal from "@/components/Modal/VerifyEmailModal";
 import ModalContainer from "@/components/Modal/ModalContainer";
 import { Button } from "@/components/ui/button";
+import Header from "@/components/Header";
 
 export default function ConfirmationPage() {
   // Using dummy data instead of database
@@ -51,6 +52,13 @@ export default function ConfirmationPage() {
 
   return plan ? (
     <>
+      <Header>
+        <title>Subscribe {plan.title} Plan</title>
+        <meta
+          name="description"
+          content={`Get full Pathway experience by subscribe to our package, get free unlimited generated CV and Skill Assessment`}
+        />
+      </Header>
       <ModalContainer
         isOpen={currentModalId === "needToVerifyModal"}
         onClose={handleCloseModal}

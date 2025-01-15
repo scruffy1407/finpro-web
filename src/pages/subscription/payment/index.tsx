@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
@@ -7,6 +7,7 @@ import { PaymentHandler } from "@/utils/payment.utils";
 import Cookies from "js-cookie";
 import LoadingLoader from "@/components/LoadingLoader";
 import { AuthHandler } from "@/utils/auth.utils";
+import Header from "@/components/Header";
 
 type PaymentStatus = "pending" | "settlement" | "error";
 
@@ -247,9 +248,18 @@ function Payment() {
   };
 
   return (
-    <div className="min-h-screen max-w-2xl mx-auto flex flex-col justify-center items-center">
-      {isLoading ? LoadingLoader() : renderContent()}
-    </div>
+    <>
+      <Header>
+        <title>Subscription Payment</title>
+        <meta
+          name="description"
+          content={`Subscribe & paid to our subscription`}
+        />
+      </Header>
+      <div className="min-h-screen max-w-2xl mx-auto flex flex-col justify-center items-center">
+        {isLoading ? LoadingLoader() : renderContent()}
+      </div>
+    </>
   );
 }
 

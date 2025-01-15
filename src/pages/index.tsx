@@ -14,6 +14,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import Cookies from "js-cookie";
 import NearestJobSection from "@/components/NearestJobSection";
+import Header from "@/components/Header";
 
 function Home() {
   const authHandler = new AuthHandler();
@@ -55,49 +56,61 @@ function Home() {
   }, []);
 
   return (
-    <div className="overflow-hidden">
-      <Navbar pageRole={"jobhunter"} />
+    <>
+      <Header>
+        <title>Pathway | Begin your search here</title>
+        <meta
+          name="description"
+          content={`At Pathway, we're dedicated to connecting you with the right
+            opportunities. Whether you're looking to hire top talent or
+            take the next step in your career, we're here to help you
+            bridge the gap. Explore, connect, and grow with us.`}
+        />
+      </Header>
+      <div className="overflow-hidden">
+        <Navbar pageRole={"jobhunter"} />
 
-      {isLoggedIn && !isVerified && <VerifyBanner />}
+        {isLoggedIn && !isVerified && <VerifyBanner />}
 
-      <main
-        className={`flex flex-col gap-16 px-4 max-w-screen-xl mx-auto ${!isVerified && isLoggedIn ? "mt-0" : "mt-5"}`}
-      >
-        <section className={"flex flex-col gap-10"}>
-          <HeroComponent />
+        <main
+          className={`flex flex-col gap-16 px-4 max-w-screen-xl mx-auto ${!isVerified && isLoggedIn ? "mt-0" : "mt-5"}`}
+        >
+          <section className={"flex flex-col gap-10"}>
+            <HeroComponent />
 
-          <MarqueeComponent />
-        </section>
+            <MarqueeComponent />
+          </section>
 
-        <section className={"w-full flex flex-col gap-5"}>
-          <HeadingComponent
-            heading="We found Jobs near you!"
-            paragraph="Explore opportunities tailored to your location and discover the perfect match for your next career move"
-            onClick={() => router.push("/jobs")}
-          />
-          <JobMappingComponent />
-          <Button variant={"outline"} className={" w-full md:hidden"}>
-            Explore More
-          </Button>
-        </section>
+          <section className={"w-full flex flex-col gap-5"}>
+            <HeadingComponent
+              heading="We found Jobs near you!"
+              paragraph="Explore opportunities tailored to your location and discover the perfect match for your next career move"
+              onClick={() => router.push("/jobs")}
+            />
+            <JobMappingComponent />
+            <Button variant={"outline"} className={" w-full md:hidden"}>
+              Explore More
+            </Button>
+          </section>
 
-        <NearestJobSection hasLocation={location !== null} />
+          <NearestJobSection hasLocation={location !== null} />
 
-        <section className={"w-full flex flex-col gap-5"}>
-          <HeadingComponent
-            heading="This could be your next company"
-            paragraph="Explore our partner companies and discover exciting job openings available for you right now."
-            onClick={() => router.push("/company")}
-          />
-          <CompanyMappingComponent />
-          <Button variant={"outline"} className={" w-full md:hidden"}>
-            Explore More
-          </Button>
-        </section>
+          <section className={"w-full flex flex-col gap-5"}>
+            <HeadingComponent
+              heading="This could be your next company"
+              paragraph="Explore our partner companies and discover exciting job openings available for you right now."
+              onClick={() => router.push("/company")}
+            />
+            <CompanyMappingComponent />
+            <Button variant={"outline"} className={" w-full md:hidden"}>
+              Explore More
+            </Button>
+          </section>
 
-        <FooterComponent pageRole={"jobhunter"} />
-      </main>
-    </div>
+          <FooterComponent pageRole={"jobhunter"} />
+        </main>
+      </div>
+    </>
   );
 }
 
