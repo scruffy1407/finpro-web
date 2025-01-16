@@ -4,14 +4,17 @@ import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import PreSelectionTestCreateForm from "./PreSelectionTestCreateForm";
 import axios from "axios";
+import LoadingLoader from "../LoadingLoader";
 
 function PreSelectionDashLeft() {
   const accessToken = Cookies.get("accessToken");
   const [showForm, setShowForm] = useState(false);
   const [, setPreSelectionTests] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchPreSelectionTests = async () => {
+      setLoading(true);
       try {
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/company/viewpretest`,
@@ -19,7 +22,7 @@ function PreSelectionDashLeft() {
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },
-          },
+          }
         );
         const data = response.data;
         if (data.message === "Pre-selection tests fetched successfully") {
@@ -27,6 +30,8 @@ function PreSelectionDashLeft() {
         }
       } catch (error) {
         console.error("Error fetching pre-selection tests:", error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchPreSelectionTests();
@@ -45,7 +50,7 @@ function PreSelectionDashLeft() {
 
       <div className="flex flex-col gap-3">
         <Button variant="primary" onClick={() => setShowForm(true)}>
-          Create Test
+          {loading ? <LoadingLoader /> : "Create Test"}
         </Button>
 
         <PreSelectionTestCreateForm

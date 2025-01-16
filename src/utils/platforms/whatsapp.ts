@@ -11,6 +11,9 @@ interface WhatsAppShareData {
     jobTitle,
     companyName,
   }: WhatsAppShareData): string {
-    const text = customMessage || `Check out this ${jobTitle} position at ${companyName}!`;
-    return `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}%20${encodeURIComponent(jobUrl)}`;
-  }
+    const messageWithDetails = customMessage
+    ? `${customMessage} [${jobTitle}] [${companyName}]`
+    : `Check out this ${jobTitle} position at ${companyName}!`;
+  
+  return `https://api.whatsapp.com/send?text=${encodeURIComponent(messageWithDetails)}%20${encodeURIComponent(jobUrl)}`;
+}

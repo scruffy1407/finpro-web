@@ -79,6 +79,7 @@ export default function JobDetailComponent({
   job_id,
 }: JobPostComponentProps) {
   const router = useRouter();
+  const jobUrl = `${window.location.origin}${router.asPath}`;
   const { pendingState } = useSelector((state: RootState) => state.generalInfo);
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const [remainingTime, setRemainingTime] = useState<string | null>(null);
@@ -451,7 +452,7 @@ export default function JobDetailComponent({
             <ShareButton
               jobTitle={jobData?.job_title || "Job Title"}
               companyName={jobData?.company?.company_name || "Company Name"}
-              jobUrl={router.pathname}
+              jobUrl={jobUrl}
               onShare={handleShare}
             />
           </div>

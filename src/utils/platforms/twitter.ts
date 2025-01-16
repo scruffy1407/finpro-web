@@ -11,6 +11,9 @@ interface TwitterShareData {
     jobTitle,
     companyName,
   }: TwitterShareData): string {
-    const text = customMessage || `Check out this ${jobTitle} position at ${companyName}!`;
-    return `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(jobUrl)}`;
-  }
+    const messageWithDetails = customMessage
+    ? `${customMessage} [${jobTitle}] [${companyName}]`
+    : `Check out this ${jobTitle} position at ${companyName}!`;
+  
+  return `https://twitter.com/intent/tweet?text=${encodeURIComponent(messageWithDetails)}&url=${encodeURIComponent(jobUrl)}`;
+}

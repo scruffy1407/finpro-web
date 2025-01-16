@@ -81,7 +81,7 @@ const JobPostSection: React.FC = () => {
     try {
       const token = Cookies.get("accessToken");
       if (!token) {
-        console.error("Token is missing from cookies.");
+        toast.error("You need to be logged in to add bookmark");
         return;
       }
       if (user_role !== "jobhunter") {

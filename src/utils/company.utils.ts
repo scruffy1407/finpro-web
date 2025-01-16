@@ -10,11 +10,14 @@ export class CompanyUtils {
     try {
       const response = await api.get(
         `/api/company/company-detail/${companyId}`,
+        {
+          validateStatus: (status) => status < 500,
+        },
       );
       if (response.status === 200) {
         return response.data;
       } else {
-        return {};
+        return response.data;
       }
     } catch (e) {
       return e;

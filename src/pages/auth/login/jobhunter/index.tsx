@@ -18,7 +18,7 @@ function JobHunterLogin() {
   const router = useRouter();
 
   const { isLoggedIn, error, callback } = useSelector(
-    (state: RootState) => state.auth
+    (state: RootState) => state.auth,
   );
 
   const [loginForm, setLoginForm] = useState<{
@@ -53,7 +53,7 @@ function JobHunterLogin() {
         error as null,
         router,
         dispatch,
-        callback || ""
+        callback || "",
       );
     }
   }, [isLoggedIn, error, router, callback, dispatch]);
@@ -65,16 +65,13 @@ function JobHunterLogin() {
       ) : (
         <section className="w-full p-4 md:p-0 md:h-screen md:flex md:w-full">
           <div className="hidden md:min-w[350px] md:relative md:max-w-[35%] md:h-full md:p-8 md:flex md:items-end">
-            <Link href="/">
-              <Image
-                src="/loginAsset/USERLOGIN.webp"
-                alt="Image of Laptop"
-                width={654.72}
-                height={1000}
-                className="absolute top-0 left-0 h-full w-full object-cover cursor-pointer"
-              />
-            </Link>
-
+            <Image
+              src="/loginAsset/USERLOGIN.webp"
+              alt="Image of Laptop"
+              width={654.72}
+              height={1000}
+              className="absolute top-0 left-0 h-full w-full object-cover cursor-pointer"
+            />
             <div className="w-full rounded-2xl bg-gray-100/13 backdrop-blur-sm p-4">
               <h2 className="text-xl text-white font-bold mb-3">
                 Discover 50K+ Jobs and 300+ Companies
@@ -87,13 +84,15 @@ function JobHunterLogin() {
           <div className="w-full md:w-[65%] md:p-12 md:flex md:items-center">
             <div className="bg-white p-6 md:w-full md:max-w-[500px] md:p-8 md:rounded-3xl">
               <div className="flex items-center justify-between w-full mb-12">
-                <Image
-                  src={"/logo/MainLogo.svg"}
-                  alt="main-logo"
-                  width={100}
-                  height={200}
-                  className="h-6"
-                />
+                <Link href={"/"}>
+                  <Image
+                    src={"/logo/MainLogo.svg"}
+                    alt="main-logo"
+                    width={100}
+                    height={200}
+                    className="h-6"
+                  />
+                </Link>
                 <Link
                   href={`/auth/login/company`}
                   className="text-xs underline text-neutral-950 hover:text-blue-500 md:text-sm"

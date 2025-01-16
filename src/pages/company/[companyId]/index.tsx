@@ -79,16 +79,21 @@ function CompanyPage() {
       const response = await companyUtils.getCompanyPageDetail(
         Number(companyId),
       );
+      if (
+        response.status === 400 &&
+        response.message === "Something went wrong, failed to find company"
+      ) {
+        router.push("/404");
+        return;
+      }
       const companyDetail: companyDetailResponse = response.data;
-
       setCompanyInfo(companyDetail);
       setJobList(companyDetail.listJob);
       setReviewList(companyDetail.listReview);
       setAvgReview(calculateAverageRating(companyDetail.listReview));
+      setIsLoading(false);
     } catch (error) {
       console.error("Failed to fetch company data:", error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -168,10 +173,10 @@ function CompanyPage() {
       ) : (
         <section className="w-full flex flex-col gap-4 md:flex-row md:gap-6 px-4 mt-4">
           <CompanyHighlight
-            logo={companyInfo?.logo || ""}
-            companyName={companyInfo?.companyName || ""}
+            logo={companyInfo?.logo || null}
+            companyName={companyInfo?.companyName || null}
             companyIndustry={getCompanyIndustryLabel(
-              companyInfo?.companyIndustry || "Unknown"
+              companyInfo?.companyIndustry || "Unknown",
             )}
             ratingScore={avgReview}
             ratingAmount={reviewList.length}
@@ -209,13 +214,13 @@ function CompanyPage() {
               totalJob={companyInfo?.listJob.length as number}
               lastPostJob={
                 jobList[0]?.created_at
-                  ? new Date(jobList[0].created_at).toISOString()
-                  : "N/A" // Fallback value
+                  ? new Date(jobList[0]?.created_at).toISOString()
+                  : null // Fallback value
               }
             />
             <JobListTab
               value="jobs"
-              data={jobList.map((job) => ({
+              data={jobList?.map((job) => ({
                 ...job,
                 isBookmarked: bookmarks.some(
                   (bookmark) => bookmark.jobPostId === job.job_id,

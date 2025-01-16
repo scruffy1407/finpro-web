@@ -9,6 +9,7 @@ import {
   UserRound,
   Building,
   BookmarkCheck,
+  ListCheck,
 } from "lucide-react";
 import { LucideIcon } from "lucide-react";
 
@@ -82,7 +83,7 @@ export const navItemConfig: Record<UserRole, NavigationItem[]> = {
     {
       name: "Manage Assessment",
       href: "/assessmentTestDashboard",
-      icon: Users,
+      icon: ListCheck,
     },
     { name: "User List", href: "/developer/manage-user", icon: Users },
   ],
@@ -109,7 +110,7 @@ export const dropDownItemConfig: Record<UserRole, NavigationItem[]> = {
     { name: "Saved Jobs", href: "/jobs/bookmarks", icon: BookmarkCheck },
     {
       name: "My Transaction",
-      href: "/profile/user/manage-subscription",
+      href: "/profile/manage-subscription",
       icon: FileBadge,
     },
   ],
@@ -137,24 +138,28 @@ export const MobileNavigation: Record<UserRole, NavigationItem[]> = {
   jobhunter: [
     { name: "Find Jobs", href: "/jobs", icon: Briefcase },
     { name: "Skill Assessment", href: "/skills-assessment", icon: Brain },
-    { name: "Explore Companies", href: "/companies", icon: Building2 },
+    { name: "Explore Companies", href: "/company", icon: Building2 },
   ],
   company: [
-    { name: "Find Jobs", href: "/jobs", icon: Briefcase },
-    { name: "Skill Assessment", href: "/assessment", icon: Brain },
-    { name: "Explore Companies", href: "/companies", icon: Building2 },
-    { name: "Post a Job", href: "/post-job", icon: FileText },
-    { name: "Candidates", href: "/candidates", icon: Users },
-    { name: "Company Profile", href: "/company-profile", icon: Building },
+    { name: "Job List", href: "/dashboard/company", icon: FileText },
+    { name: "Test Template", href: "/preSelectionDashboard", icon: Users },
   ],
   developer: [
-    { name: "Find Jobs", href: "/jobs", icon: Briefcase },
-    { name: "Skill Assessment", href: "/skills-assessment", icon: Brain },
-    { name: "Explore Companies", href: "/companies", icon: Building2 },
+    {
+      name: "Dashboard Analytics",
+      href: "/developer/analytics",
+      icon: FileText,
+    },
+    {
+      name: "Manage Assessment",
+      href: "/assessmentTestDashboard",
+      icon: ListCheck,
+    },
+    { name: "User List", href: "/developer/manage-user", icon: Users },
   ],
   default: [
     { name: "Find Jobs", href: "/jobs", icon: Briefcase },
     { name: "Skill Assessment", href: "/skills-assessment", icon: Brain },
-    { name: "Explore Companies", href: "/companies", icon: Building2 },
+    { name: "Explore Companies", href: "/company", icon: Building2 },
   ],
 };

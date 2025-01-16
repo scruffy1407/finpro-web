@@ -68,19 +68,27 @@ function JobDetail() {
       setIsLoading(true);
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/company/jobDetails/${job_id}`,
+        {
+          validateStatus: (status) => status < 500,
+        },
       );
-
       if (response.status === 200) {
         setJobData(response.data.jobPostDetail);
         setRelatedPost(response.data.relatedJobPosts);
         setIsLoading(false);
+      } else if (
+        response.status === 400 &&
+        response.data.message === "Invalid jobId"
+      ) {
+        router.push("/404");
       } else {
         setJobData(null);
         setRelatedPost(null);
         setIsLoading(false);
       }
     } catch (err) {
-      console.error("Error fetching job details:", err);
+      toast.error("Failed to get job information, please refresh your browser");
+      console.error("Failed to get job information", err);
     }
   };
 

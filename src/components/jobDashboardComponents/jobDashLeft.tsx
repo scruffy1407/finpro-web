@@ -5,6 +5,7 @@ import { RootState } from "@/store";
 import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import CreateJobForm from "./jobCreateForm";
+import LoadingLoader from "../LoadingLoader";
 
 interface Metrics {
   jobActiveCount: number;
@@ -14,7 +15,7 @@ interface Metrics {
 
 function JobDashLeft({}) {
   const { isLoggedIn, pendingState } = useSelector(
-    (state: RootState) => state.auth,
+    (state: RootState) => state.auth
   );
   const accessToken = Cookies.get("accessToken");
   const [metrics, setMetrics] = useState<Metrics | null>(null);
@@ -29,7 +30,7 @@ function JobDashLeft({}) {
             headers: {
               Authorization: `Bearer ${accessToken}`, // Replace with actual token
             },
-          },
+          }
         );
         const data = await response.json();
         setMetrics(data.metrics);
@@ -76,7 +77,7 @@ function JobDashLeft({}) {
             </div>
             <div>
               <p className="text-sm text-neutral-600">
-                {metrics ? metrics.jobActiveCount : "Loading..."}
+                {metrics ? metrics.jobActiveCount : <LoadingLoader />}
               </p>
             </div>
           </div>
@@ -86,7 +87,7 @@ function JobDashLeft({}) {
             </div>
             <div>
               <p className="text-sm text-neutral-600">
-                {metrics ? metrics.jobCompleteCount : "Loading..."}
+                {metrics ? metrics.jobCompleteCount : <LoadingLoader />}
               </p>
             </div>
           </div>
@@ -97,7 +98,7 @@ function JobDashLeft({}) {
             <div>
               {" "}
               <p className="text-sm text-neutral-600">
-                {metrics ? metrics.jobCompleteCount : "Loading..."}
+                {metrics ? metrics.jobCompleteCount : <LoadingLoader />}
               </p>
             </div>
           </div>

@@ -4,6 +4,7 @@ import Cookies from "js-cookie";
 import { getCategories } from "@/pages/api/api";
 import { RichTextEditor } from "./richTextEditor";
 import axios from "axios";
+import LoadingLoader from "../LoadingLoader";
 
 interface UpdateJobFormProps {
   number_applicants: number;
@@ -85,7 +86,7 @@ const JobEditForm: React.FC<UpdateJobFormProps> = ({
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
-        },
+        }
       );
       const data = await response.json();
       if (data.message === "Pre-selection tests fetched successfully") {
@@ -115,7 +116,7 @@ const JobEditForm: React.FC<UpdateJobFormProps> = ({
         setLoading(true);
 
         const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/company/jobDetails/${job_id}`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/company/jobDetails/${job_id}`
         );
         const jobPostDetail = response.data.jobPostDetail;
         setFormData((prevFormData) => ({
@@ -152,7 +153,7 @@ const JobEditForm: React.FC<UpdateJobFormProps> = ({
   const handleInputChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >,
+    >
   ) => {
     const target = e.target;
 
@@ -257,6 +258,7 @@ const JobEditForm: React.FC<UpdateJobFormProps> = ({
       selection_test_active: formData.selection_test_active,
     };
     try {
+      setLoading(true);
       const response = await axios.put(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/company/job/${job_id}`,
         transformedData,
@@ -265,7 +267,7 @@ const JobEditForm: React.FC<UpdateJobFormProps> = ({
             "Content-Type": "application/json",
             Authorization: `Bearer ${accessToken}`,
           },
-        },
+        }
       );
 
       if (response.status === 200) {
@@ -278,6 +280,8 @@ const JobEditForm: React.FC<UpdateJobFormProps> = ({
     } catch (error) {
       console.error("Error updating job:", error);
       alert("An error occurred while updating the job.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -285,7 +289,9 @@ const JobEditForm: React.FC<UpdateJobFormProps> = ({
     <div className="fixed inset-0 bg-gray-800 bg-opacity-20 flex justify-center items-center">
       <div className="bg-white p-6 rounded-md shadow-md w-full max-w-2xl transition-opacity duration-500 opacity-100 max-h-[90vh] overflow-y-auto">
         {loading ? (
-          <div>Loading job details...</div>
+          <div className="flex justify-center align-middle">
+            <LoadingLoader />
+          </div>
         ) : (
           <>
             <h2 className="text-2xl font-bold mb-4">Update Job</h2>

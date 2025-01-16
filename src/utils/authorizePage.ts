@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,61 +8,63 @@ import { refreshUserToken, validateUserToken } from "@/store/slices/authSlice";
 function AuthorizeUser(pagePermission?: "jobhunter" | "company" | "developer") {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
+  const initialRender = useRef(true);
 
-  const { isLoggedIn } = useSelector((state: RootState) => state.auth);
+  const { isLoggedIn, user_role } = useSelector(
+    (state: RootState) => state.auth,
+  );
 
-  async function handleAuthrorize() {
-    // Check the user have token or not when it access the page
-    const accessToken = Cookies.get("accessToken");
-    const refreshToken = Cookies.get("refreshToken");
-
-    if (!accessToken) {
-      if (!refreshToken) {
-        if (pagePermission) {
-          router.push("/auth/login/jobhunter");
-          return;
-        } else {
-          return;
-        }
-      } else {
-        await dispatch(refreshUserToken(refreshToken as string));
-        const newAccessToken = Cookies.get("accessToken"); // get the newest token
-        await dispatch(validateUserToken(newAccessToken as string));
-      }
-      return;
-    }
+  const handleAuthorization = async () => {
     try {
-      if (!isLoggedIn) {
-        await dispatch(validateUserToken(accessToken as string));
+      const accessToken = Cookies.get("accessToken");
+      const refreshToken = Cookies.get("refreshToken");
+
+      // // No tokens, redirect to login
+      // if (!accessToken && !refreshToken) {
+      //   router.push("/auth/login/jobhunter");
+      //   return;
+      // }
+
+      // Refresh token exists, get a new access token
+      if (!accessToken && refreshToken) {
+        await dispatch(refreshUserToken(refreshToken));
+        const newAccessToken = Cookies.get("accessToken");
+        if (newAccessToken) {
+          await dispatch(validateUserToken(newAccessToken));
+        } else {
+          throw new Error("Failed to refresh access token.");
+        }
+        return;
       }
-    } catch (e: unknown) {
-      console.error(e);
 
-      router.push("/");
-      return;
+      // Access token exists, validate it
+      if (accessToken && !isLoggedIn) {
+        await dispatch(validateUserToken(accessToken));
+      }
+    } catch (error) {
+      console.error("Authorization error:", error);
+      router.push("/auth/login/jobhunter");
     }
-    // Change any to a valid user response interface
-  }
-  useEffect(() => {
-    handleAuthrorize();
-  }, [router]);
+  };
 
-  // useEffect(() => {
-  //   if (!initialRender.current) {
-  //     if (!isLoggedIn) {
-  //       router.push("/");
-  //       return;
-  //     }
-  //     if (pagePermission) {
-  //       if (user_role !== pagePermission) {
-  //         router.push("/");
-  //         return;
-  //       }
-  //     }
-  //     return;
-  //   }
-  //   initialRender.current = false;
-  // }, [isLoggedIn]);
+  useEffect(() => {
+    const authorize = async () => {
+      if (!isLoggedIn) {
+        await handleAuthorization();
+      }
+
+      // Check role permissions
+      if (pagePermission && user_role !== pagePermission) {
+        console.log("tes");
+        router.push("/");
+      }
+    };
+
+    if (initialRender.current) {
+      initialRender.current = false;
+      authorize();
+    }
+  }, [isLoggedIn, pagePermission, user_role, router]);
 }
 
 export default AuthorizeUser;

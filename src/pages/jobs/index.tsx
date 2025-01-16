@@ -181,7 +181,9 @@ const JobPostPage: React.FC = () => {
               <ListSkeleton
                 ListItemComponent={JobPostComponentSkeleton}
                 numberItem={16}
-                className={"gap-6 grid grid-cols-3"}
+                className={
+                  "gap-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3"
+                }
               />
             ) : (
               <JobListMappingComponent

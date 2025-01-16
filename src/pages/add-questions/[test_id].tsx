@@ -4,6 +4,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { Button } from "@/components/ui/button";
 import { AuthHandler } from "@/utils/auth.utils";
+import LoadingLoader from "@/components/LoadingLoader";
 
 const AddQuestions = () => {
 	const authHandler = new AuthHandler();
@@ -25,9 +26,12 @@ const AddQuestions = () => {
 			correct_answer: "",
 		},
 	]);
+	const [loadingFetch, setLoadingFetch] = useState(false);
+	const [loading, setLoading] = useState(false);
 
 	// Fetch test details
 	useEffect(() => {
+		setLoadingFetch(true);
 		const fetchTestDetails = async () => {
 			if (!test_id) return; // Wait until test_id is available
 			try {
@@ -71,6 +75,8 @@ const AddQuestions = () => {
 					// If the error is not from Axios
 					alert("Unexpected error occurred. Please try again.");
 				}
+			} finally {
+				setLoadingFetch(false);
 			}
 		};
 		fetchTestDetails();
@@ -112,6 +118,7 @@ const AddQuestions = () => {
 		}
 
 		try {
+			setLoading(true);
 			const response = await axios.post(
 				`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/company/createtest/${test_id}`,
 				{ questions },
@@ -128,6 +135,8 @@ const AddQuestions = () => {
 		} catch (error) {
 			console.error("Error submitting questions:", error);
 			alert("Failed to submit questions.");
+		} finally {
+			setLoading(false);
 		}
 	};
 
@@ -142,11 +151,15 @@ const AddQuestions = () => {
 		router.push("/preSelectionDashboard"); // Navigate back to the homepage or another page
 	};
 
-	return (
+	return loadingFetch ? (
+		<div className="flex justify-center align-middle w-screen h-screen">
+			<LoadingLoader />
+		</div>
+	) : (
 		<div className="p-6 max-w-3xl mx-auto bg-white shadow rounded-md">
 			<h1 className="text-2xl font-bold mb-6">Questions Form</h1>
 			<h1 className="text-xl mb-6">
-				Pre-selection Test Title: {testName || "Loading..."}
+				Pre-selection Test Title: {testName || "Loading... Pre Selection Test Name"}
 			</h1>
 			<form onSubmit={handleSubmit} className="space-y-6">
 				{questions.map((question, index) => (
@@ -214,7 +227,7 @@ const AddQuestions = () => {
 						type="submit"
 						className="bg-green-500 text-white px-4 py-2 rounded-xl"
 					>
-						Submit Questions
+						{loading ? <LoadingLoader /> : "Submit Questions"}
 					</button>
 					<Button variant="outline" onClick={handleCancel}>
 						Cancel Creation

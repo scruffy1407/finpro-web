@@ -10,6 +10,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import VerifyEmailModal from "@/components/Modal/VerifyEmailModal";
+import ForbiddenCompanyAction from "@/components/Modal/ForbiddenCompanyAction";
 
 export interface AssessmentCardProps {
   assessmentName: string;
@@ -138,6 +139,12 @@ function Asessmentcard({
       dispatch(openModalAction("needToLoginModal", Number(skillAssessmentId)));
       return;
     }
+    if (userRole !== "jobhunter") {
+      dispatch(
+        openModalAction("forbiddenCompanyAction", Number(skillAssessmentId)),
+      );
+      return;
+    }
     if (!isVerified) {
       dispatch(openModalAction("needToVerifyModal", Number(skillAssessmentId)));
       return;
@@ -171,6 +178,15 @@ function Asessmentcard({
 
   return (
     <>
+      <ModalContainer
+        isOpen={
+          currentModalId === "forbiddenCompanyAction" &&
+          editId === Number(skillAssessmentId)
+        }
+        onClose={handleCloseModal}
+      >
+        <ForbiddenCompanyAction />
+      </ModalContainer>
       <ModalContainer
         isOpen={
           currentModalId === "needToVerifyModal" &&

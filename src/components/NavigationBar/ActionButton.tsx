@@ -14,7 +14,7 @@ function ActionButton() {
         Login
       </Button>
       <Button
-        onClick={() => router.push("auth/register/company")}
+        onClick={() => router.push("/auth/register/company")}
         variant={"ghost"}
         size={"sm"}
       >

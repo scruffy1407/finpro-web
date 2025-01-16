@@ -9,8 +9,8 @@ import ModalContainer from "@/components/Modal/ModalContainer";
 import { closeModalAction, openModalAction } from "@/store/slices/ModalSlice";
 
 interface CompanyHighlight {
-  logo: string;
-  companyName: string;
+  logo: string | null;
+  companyName: string | null;
   companyIndustry: string;
   ratingScore: number;
   ratingAmount: number;
@@ -66,7 +66,7 @@ function CompanyHighlight({
         <div className={"flex flex-col gap-5 items-start"}>
           <Image
             className="h-12 w-12"
-            src={logo}
+            src={logo as string}
             alt="pic"
             width={200}
             height={200}

@@ -6,6 +6,14 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { Navbar } from "@/components/NavigationBar/Navbar";
 import { formatNumber } from "@/utils/formater.utils";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 interface SubscriptionProps {
   orderDate?: string;
@@ -89,40 +97,30 @@ function Index() {
         <p className={"text-sm text-neutral-600 mb-10"}>
           Track all your latest subscriptions
         </p>
-
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead>
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-bold  text-neutral-600 uppercase tracking-wider bg-gray-50 rounded-tl-xl">
-                Order
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-bold  text-neutral-600 uppercase tracking-wider bg-gray-50">
-                Subscription
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-bold  text-neutral-600 uppercase tracking-wider bg-gray-50">
-                Amount
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-bold  text-neutral-600 uppercase tracking-wider bg-gray-50">
-                Payment Link
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-bold  text-neutral-600 uppercase tracking-wider bg-gray-50 rounded-tr-xl">
-                Status
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+        <div className={"w-full overflow-x-auto"}></div>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Order</TableHead>
+              <TableHead>Subscription</TableHead>
+              <TableHead>Amount</TableHead>
+              <TableHead>Payment Link</TableHead>
+              <TableHead>Status</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {listPayment.map((transaction) => (
-              <tr key={transaction.orderId} className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">
+              <TableRow key={transaction.orderId}>
+                <TableCell className="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">
                   {transaction.orderId}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                </TableCell>
+                <TableCell className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   {transaction.subscriptionName} Plan
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                </TableCell>
+                <TableCell className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   Rp {formatNumber(transaction.amount)}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                </TableCell>
+                <TableCell className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   {transaction.paymentLink ? (
                     <a
                       href={transaction.paymentLink}
@@ -133,14 +131,14 @@ function Index() {
                   ) : (
                     "Link not available"
                   )}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
+                </TableCell>
+                <TableCell className="px-6 py-4 whitespace-nowrap">
                   {renderStatus(transaction.statusPayment)}
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </section>
     </>
   );

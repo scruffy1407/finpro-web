@@ -16,7 +16,7 @@ enum CompanySize {
 interface companyInfoProps extends TabsContentProps {
   data: companyDetailResponse | undefined;
   totalJob: number;
-  lastPostJob: string;
+  lastPostJob: string | null;
 }
 
 function CompanyInfoTab({
@@ -47,7 +47,7 @@ function CompanyInfoTab({
               <div>
                 <p className={`text-sm mb-1 text-neutral-400`}>Company Size</p>
                 <p className="text-sm font-bold text-neutral-950">
-                {getCompanySizeLabel(data?.companySize || "Unknown")}
+                  {getCompanySizeLabel(data?.companySize || "Unknown")}
                 </p>
               </div>
             </div>
