@@ -8,14 +8,16 @@ import Cookies from "js-cookie";
 import LoadingLoader from "@/components/LoadingLoader";
 import { AuthHandler } from "@/utils/auth.utils";
 import Header from "@/components/Header";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 
 function Payment() {
   // Using dummy data instead of database
   const authHandler = new AuthHandler();
   const pagePermission = "jobhunter";
   authHandler.authorizeUser(pagePermission);
-
   const paymentHandler = new PaymentHandler();
+  const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
@@ -77,10 +79,10 @@ function Payment() {
   }
 
   useEffect(() => {
-    if (orderId) {
+    if (orderId && isLoggedIn) {
       handleValidatePayment();
     }
-  }, [orderId]);
+  }, [orderId, isLoggedIn]);
 
   const renderContent = () => {
     if (

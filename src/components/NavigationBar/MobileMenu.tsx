@@ -106,7 +106,11 @@ export function MobileMenu({ isOpen, onOpenChange }: MobileMenuProps) {
                   </div>
                 </div>
                 {subsId === 1 ? (
-                  <Button className="w-full mt-4" size="sm">
+                  <Button
+                    onClick={() => router.push("/subscription")}
+                    className="w-full mt-4"
+                    size="sm"
+                  >
                     Upgrade Plan
                   </Button>
                 ) : null}
