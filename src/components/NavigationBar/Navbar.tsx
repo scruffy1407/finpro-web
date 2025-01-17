@@ -96,6 +96,14 @@ export function Navbar({ pageRole }: { pageRole: UserRole }) {
                       >
                         Go to dashboard company
                       </Button>
+                    ) : userRole === "developer" ? (
+                      <Button
+                        variant={"outline"}
+                        size={"sm"}
+                        onClick={() => router.push("/developer/analytics")}
+                      >
+                        Back to Dashboard
+                      </Button>
                     ) : (
                       <ProfileMenu logout={handleLogout} />
                     )
@@ -224,14 +232,6 @@ export function Navbar({ pageRole }: { pageRole: UserRole }) {
                         onClick={() => router.push("/dashboard/company")}
                       >
                         Go to dashboard company
-                      </Button>
-                    ) : userRole === "developer" ? (
-                      <Button
-                        variant={"outline"}
-                        size={"sm"}
-                        onClick={() => router.push("/developer/analytics")}
-                      >
-                        Back to Dashboard
                       </Button>
                     ) : (
                       <ProfileMenu logout={handleLogout} />
