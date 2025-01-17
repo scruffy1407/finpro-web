@@ -87,7 +87,7 @@ export class CompanyUtils {
       );
       if (response.status === 200) {
         // Check for 200 instead of 201
-        return response;
+        return response.status;
       } else {
         return response.data.message;
       }

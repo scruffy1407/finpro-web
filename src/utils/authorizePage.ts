@@ -54,8 +54,8 @@ function AuthorizeUser(pagePermission?: "jobhunter" | "company" | "developer") {
       }
 
       // Check role permissions
-      if (pagePermission && user_role !== pagePermission) {
-        console.log("tes");
+      if (isLoggedIn && pagePermission && user_role !== pagePermission) {
+        console.log(pagePermission, user_role);
         router.push("/");
       }
     };

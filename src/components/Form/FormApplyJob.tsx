@@ -90,14 +90,12 @@ const FormJobApplication = ({
       } else {
         response = await companyUtils.applyJob(token as string, applyJobData);
       }
-      if (response === 201) {
+      if (response === 201 || response === 200) {
         toast.success("Application sent successfully");
         router.push(
           `${process.env.NEXT_PUBLIC_API_CLIENT_URL}/jobdetail/apply-success?job=${jobId}&apply=true`,
         );
         dispatch(closeModalAction());
-        setIsLoading(false);
-        setIsDisable(false);
       } else {
         toast.error(response.data?.message || "Submission failed");
         setIsLoading(false);
@@ -108,7 +106,6 @@ const FormJobApplication = ({
       toast.error(
         "Failed to submit your application, please try again or refresh your browser",
       );
-    } finally {
       setIsLoading(false);
       setIsDisable(false);
     }
