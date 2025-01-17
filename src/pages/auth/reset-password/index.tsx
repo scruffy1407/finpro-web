@@ -70,7 +70,7 @@ function ResetPassword() {
       );
       if (response === 200) {
         toast.success("Password successfully updated, Let's login");
-        router.push("/auth/login");
+        router.push("/auth/login/jobhunter");
       } else {
         setIsLoading(false);
         toast.error("Something went wrong, please try again");

@@ -14,7 +14,7 @@ function SuccessSendEmailSection({ email }: SuccessProps) {
           <div className="flex flex-col gap-6 w-full mb-12">
             <Link className={`cursor-pointer`} href="/">
               <Image
-                src={"/LogoIpsum.svg"}
+                src={"/logo/MainLogo.svg"}
                 alt="main-logo"
                 width={100}
                 height={200}
@@ -34,7 +34,7 @@ function SuccessSendEmailSection({ email }: SuccessProps) {
                 Sending to your email
               </h2>
               <p className={`text-neutral-600 leading-[120%]`}>
-                We're searching for your ipsum account that linked to
+                We're searching for your Pathway account that linked to
                 <strong> {email}</strong>, We're on the case.
                 <br />
                 <br /> If it's there, you'll receive an email with instructions
@@ -45,7 +45,7 @@ function SuccessSendEmailSection({ email }: SuccessProps) {
 
             <Link
               className={`text-center text-neutral-950 text-sm font-semibold`}
-              href={"/auth/login"}
+              href={"/auth/login/jobhunter"}
             >
               Back to login page
             </Link>

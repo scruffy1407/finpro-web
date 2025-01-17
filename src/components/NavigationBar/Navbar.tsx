@@ -24,7 +24,7 @@ export function Navbar({ pageRole }: { pageRole: UserRole }) {
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
   const pendingState = useSelector(
-    (state: RootState) => state.auth.pendingState,
+    (state: RootState) => state.auth.pendingState
   );
 
   const navigationUpdate = navItemConfig[pageRole];
@@ -213,7 +213,6 @@ export function Navbar({ pageRole }: { pageRole: UserRole }) {
                 </div>
 
                 {/* Desktop Profile Menu */}
-
                 <div className="hidden md:flex md:items-center">
                   {pendingState.dataLoading ? (
                     <ProfileSkeleton />
@@ -225,6 +224,14 @@ export function Navbar({ pageRole }: { pageRole: UserRole }) {
                         onClick={() => router.push("/dashboard/company")}
                       >
                         Go to dashboard company
+                      </Button>
+                    ) : userRole === "developer" ? (
+                      <Button
+                        variant={"outline"}
+                        size={"sm"}
+                        onClick={() => router.push("/developer/analytics")}
+                      >
+                        Back to Dashboard
                       </Button>
                     ) : (
                       <ProfileMenu logout={handleLogout} />

@@ -172,7 +172,19 @@ export default function JobDetailComponent({
               </p>
             </div>
             <div className="flex justify-center items-center md:hidden">
-              <ButtonComponent type="ButtonBookmark" container="Bookmarks" />
+              <ButtonComponent
+                type="ButtonBookmark"
+                isBookmarked={isBookmarked}
+                onClickBookmark={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  if (isBookmarked) {
+                    onRemoveBookmark(Number(job_id));
+                  } else {
+                    onAddBookmark(Number(job_id));
+                  }
+                }}
+              />{" "}
             </div>
           </div>
           <h2 className="font-bold text-2xl">{jobData?.job_title}</h2>
@@ -190,12 +202,21 @@ export default function JobDetailComponent({
               </div>
             ) : (
               <div className="flex flex-col justify-center gap-2 items-start md:items-end">
-                <div className="flex gap-6">
+                <div className="w-full flex gap-6">
                   <div className="items-center justify-center hidden md:flex">
                     <ButtonComponent
                       type="ButtonBookmark"
-                      container="Bookmarks"
-                    />
+                      isBookmarked={isBookmarked}
+                      onClickBookmark={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        if (isBookmarked) {
+                          onRemoveBookmark(Number(job_id));
+                        } else {
+                          onAddBookmark(Number(job_id));
+                        }
+                      }}
+                    />{" "}
                   </div>
                   {validateUserLoading ? (
                     <div
@@ -231,7 +252,7 @@ export default function JobDetailComponent({
           )
         ) : (
           <div className="flex flex-col justify-center gap-2 items-start md:items-end">
-            <div className="flex gap-6">
+            <div className="w-full flex gap-6">
               <div className="items-center justify-center hidden md:flex">
                 <ButtonComponent
                   type="ButtonBookmark"

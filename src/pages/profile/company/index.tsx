@@ -3,7 +3,7 @@ import { AuthHandler } from "@/utils/auth.utils";
 import Image from "next/image";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CompanyTab from "@/components/Tabs/ProfileCompany/CompanyTab"
-import SecurityTab from "@/components/Tabs/ProfileUser/SecurityTab";
+// import SecurityTab from "@/components/Tabs/ProfileUser/SecurityTab";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store";
 import ModalContainer from "@/components/Modal/ModalContainer";
@@ -98,15 +98,15 @@ function CompanyProfilePage() {
               >
                 Account
               </TabsTrigger>
-              <TabsTrigger
+              {/* <TabsTrigger
                 className="px-4 py-2 rounded-2xl border data-[state=active]:bg-sky-50 data-[state=active]:border-blue-600"
                 value="security"
               >
                 Security
-              </TabsTrigger>
+              </TabsTrigger> */}
             </TabsList>
             <CompanyTab value={"account"} />
-            <SecurityTab value={"security"} />
+            {/* <SecurityTab value={"security"} /> */}
           </Tabs>
         </div>
       </section>

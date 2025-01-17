@@ -272,7 +272,7 @@ function Asessmentcard({
           "p-4 flex flex-col justify-between gap-4 items-center bg-white rounded-2xl sm:flex-row w-full"
         }
       >
-        <div className={"flex gap-4 items-center"}>
+        <div className={"w-full flex gap-4 items-center"}>
           <Image
             src={badge}
             alt={`assessmentName-badge`}

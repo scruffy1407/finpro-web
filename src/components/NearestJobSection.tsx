@@ -39,7 +39,7 @@ function NearestJobSection({ hasLocation }: NearestProps) {
   const router = useRouter();
   const [jobList, setJobList] = useState<JobPostProps[]>([]);
   const bookmarks = useSelector(
-    (state: RootState) => state.bookmarks.bookmarks,
+    (state: RootState) => state.bookmarks.bookmarks
   );
   const { user_role } = useSelector((state: RootState) => state.auth);
 
@@ -56,21 +56,21 @@ function NearestJobSection({ hasLocation }: NearestProps) {
       }
 
       const existingBookmark = bookmarks.find(
-        (bookmark) => bookmark.jobPostId === jobPostId,
+        (bookmark) => bookmark.jobPostId === jobPostId
       );
 
       if (existingBookmark) {
         await axios.post(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/applyjob/bookmark/remove`,
           { wishlist_id: existingBookmark.wishlist_id },
-          { headers: { Authorization: `Bearer ${token}` } },
+          { headers: { Authorization: `Bearer ${token}` } }
         );
         dispatch(removeBookmark(existingBookmark.wishlist_id));
       } else {
         const response = await axios.post(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/applyjob/bookmark`,
           { jobPostId },
-          { headers: { Authorization: `Bearer ${token}` } },
+          { headers: { Authorization: `Bearer ${token}` } }
         );
         dispatch(addBookmark(response.data.bookmark));
       }
@@ -129,8 +129,8 @@ function NearestJobSection({ hasLocation }: NearestProps) {
   return hasLocation ? (
     <section className={`w-full flex flex-col gap-5`}>
       <HeadingComponent
-        heading="Jobs Near you"
-        paragraph="Explore our partner companies and discover exciting job openings available for you right now."
+        heading="We found Jobs near you!"
+        paragraph="Explore opportunities tailored to your location and discover the perfect match for your next career move"
         onClick={() => router.push("/jobs")}
       />
 
@@ -145,7 +145,7 @@ function NearestJobSection({ hasLocation }: NearestProps) {
         ) : jobList && jobList.length > 0 ? (
           jobList.map((jobPost: JobPostProps, index: number) => {
             const isBookmarked = bookmarks.some(
-              (bookmark) => bookmark.jobPostId === Number(jobPost.job_id),
+              (bookmark) => bookmark.jobPostId === Number(jobPost.job_id)
             );
             return (
               <div

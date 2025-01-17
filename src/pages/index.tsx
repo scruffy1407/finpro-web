@@ -15,6 +15,8 @@ import { RootState } from "@/store";
 import Cookies from "js-cookie";
 import NearestJobSection from "@/components/NearestJobSection";
 import Header from "@/components/Header";
+import { useSearchParams } from "next/navigation";
+import { toast } from "sonner";
 
 function Home() {
   const authHandler = new AuthHandler();
@@ -23,8 +25,9 @@ function Home() {
   const [, setError] = useState<string | null>(null);
   const router = useRouter;
   const { isVerified, isLoggedIn } = useSelector(
-    (state: RootState) => state.auth,
+    (state: RootState) => state.auth
   );
+  const searchParams = useSearchParams();
 
   const getLocation = () => {
     if (!navigator.geolocation) {
@@ -47,13 +50,23 @@ function Home() {
       },
       (err) => {
         setError(err.message);
-      },
+      }
     );
   };
 
   useEffect(() => {
     getLocation();
   }, []);
+
+  useEffect(() => {
+    const failedLogin = searchParams.get("FAILED_LOGIN_GOOGLE");
+    if (failedLogin === "true") {
+      toast.error(
+        "This email is already registered, Please login without google sign-in"
+      );
+      router.push("/auth/login/jobhunter");
+    }
+  }, [searchParams]);
 
   return (
     <>
@@ -83,12 +96,16 @@ function Home() {
 
           <section className={"w-full flex flex-col gap-5"}>
             <HeadingComponent
-              heading="We found Jobs near you!"
-              paragraph="Explore opportunities tailored to your location and discover the perfect match for your next career move"
+              heading="Check Out Our Latest Job Opportunity!"
+              paragraph="Stay ahead with the newest job listings and find your next career step today."
               onClick={() => router.push("/jobs")}
             />
             <JobMappingComponent />
-            <Button variant={"outline"} className={" w-full md:hidden"}>
+            <Button
+              variant={"outline"}
+              className={" w-full md:hidden"}
+              onClick={() => router.push("/jobs")}
+            >
               Explore More
             </Button>
           </section>
@@ -102,7 +119,11 @@ function Home() {
               onClick={() => router.push("/company")}
             />
             <CompanyMappingComponent />
-            <Button variant={"outline"} className={" w-full md:hidden"}>
+            <Button
+              variant={"outline"}
+              className={" w-full md:hidden"}
+              onClick={() => router.push("/company")}
+            >
               Explore More
             </Button>
           </section>

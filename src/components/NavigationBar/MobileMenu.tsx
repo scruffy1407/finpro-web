@@ -105,14 +105,23 @@ export function MobileMenu({ isOpen, onOpenChange }: MobileMenuProps) {
                     {userRole === "jobhunter" ? subsPlan() : null}
                   </div>
                 </div>
-                {subsId === 1 ? (
-                  <Button
-                    onClick={() => router.push("/subscription")}
-                    className="w-full mt-4"
-                    size="sm"
-                  >
-                    Upgrade Plan
-                  </Button>
+                {userRole === "jobhunter" ? (
+                  subsId === 1 ? (
+                    <>
+                      <div className="p-2">
+                        <div className="flex items-center justify-between gap-2">
+                          <p className="text-sm font-medium">{subsPlan()}</p>
+                          <Button
+                            onClick={() => router.push("/subscription")}
+                            variant="outline"
+                            size="sm"
+                          >
+                            Upgrade
+                          </Button>
+                        </div>
+                      </div>
+                    </>
+                  ) : null
                 ) : null}
               </div>
             ) : null}

@@ -45,7 +45,7 @@ function ForgotPassword() {
               <div className="flex items-center justify-between w-full mb-12">
                 <Link className={`cursor-pointer`} href="/">
                   <Image
-                    src={"/LogoIpsum.svg"}
+                    src={"/logo/MainLogo.svg"}
                     alt="main-logo"
                     width={100}
                     height={200}
@@ -100,7 +100,7 @@ function ForgotPassword() {
 
                 <Link
                   className={`text-center text-neutral-950 text-sm font-semibold`}
-                  href={"/auth/login"}
+                  href={"/auth/login/jobhunter"}
                 >
                   Back to login page
                 </Link>
