@@ -17,7 +17,7 @@ interface Question {
 
 const EditQuestions = () => {
   const authHandler = new AuthHandler();
-  const pagePermission = "company";
+  const pagePermission = "developer";
   authHandler.authorizeUser(pagePermission);
   const router = useRouter();
   const accessToken = Cookies.get("accessToken");

@@ -18,6 +18,7 @@ export interface AssessmentCardProps {
   passingGrade: number;
   duration: number;
   skillAssessmentId: string;
+  skillAssessmentIdUnq: string
   takeTest?: () => void;
 }
 
@@ -34,6 +35,7 @@ function Asessmentcard({
   duration,
   badge,
   skillAssessmentId,
+  skillAssessmentIdUnq,
 }: AssessmentCardProps) {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
@@ -161,7 +163,7 @@ function Asessmentcard({
     } else {
       // Proceed to the assessment test if not completed or failed
       if (skillAssessmentId) {
-        router.push(`/executionAssessmentTest/${skillAssessmentId}`);
+        router.push(`/executionAssessmentTest/${skillAssessmentIdUnq}`);
       } else {
         console.error("Skill Assessment ID is undefined");
       }
@@ -300,9 +302,9 @@ function Asessmentcard({
           <Button
             onClick={() => {
               // Logic to continue the test, e.g., navigating to the test in progress
-              if (skillAssessmentId) {
+              if (skillAssessmentIdUnq) {
                 router.push(
-                  `/executionAssessmentTestQuiz/${skillAssessmentId}`,
+                  `/executionAssessmentTestQuiz/${skillAssessmentIdUnq}`,
                 );
               } else {
                 console.error("Skill Assessment ID is undefined");

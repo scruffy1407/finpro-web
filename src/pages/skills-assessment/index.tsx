@@ -81,7 +81,8 @@ function Index() {
           badge: item.skill_badge,
           passingGrade: item.passing_grade,
           duration: item.duration,
-          skillAssessmentId: item.skill_assessment_id, // Ensure that this ID is included
+          skillAssessmentId: item.skill_assessment_id,
+          skillAssessmentIdUnq : item.skill_assessment_unique_id,
         }));
 
         setAssessmentData((prev) =>
@@ -245,6 +246,7 @@ function Index() {
                       duration={data.duration}
                       badge={data.badge}
                       skillAssessmentId={data.skillAssessmentId}
+                      skillAssessmentIdUnq = {data.skillAssessmentIdUnq}
                       takeTest={handleClick}
                     />
                   );

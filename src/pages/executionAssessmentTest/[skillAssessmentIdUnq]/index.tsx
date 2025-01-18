@@ -14,6 +14,7 @@ interface SkillAssessmentData {
   message: string;
   data: {
     skillAssessmentId: number;
+	sillAssessmentIdUnq : number;
     skill_assessment_name: string;
     passing_grade: number;
     duration: number;
@@ -33,25 +34,27 @@ export default function ExecutionAssessmentTest() {
     (state: RootState) => state.auth,
   );
 
-  const skillAssessmentId = router.query.skillAssessmentId
-    ? String(router.query.skillAssessmentId)
+  const skillAssessmentIdUnq = router.query.skillAssessmentIdUnq
+    ? String(router.query.skillAssessmentIdUnq)
     : "";
+	console.log("This is SkillAssessmentIdUnq")
+	console.log(skillAssessmentIdUnq)
 
   useEffect(() => {
     const fetchSkillAssessmentData = async () => {
       // Ensure the skillAssessmentId is available before making the request
-      if (!router.isReady || !router.query.skillAssessmentId) {
+      if (!router.isReady || !router.query.skillAssessmentIdUnq) {
         setError("Skill Assessment ID is required");
         return;
       }
 
       // Extract skillAssessmentId directly from router.query
-      const skillAssessmentId = Array.isArray(router.query.skillAssessmentId)
-        ? router.query.skillAssessmentId[0].trim()
-        : String(router.query.skillAssessmentId).trim();
+      const skillAssessmentIdUnq = Array.isArray(router.query.skillAssessmentIdUnq)
+        ? router.query.skillAssessmentIdUnq[0].trim()
+        : String(router.query.skillAssessmentIdUnq).trim();
 
       // Ensure the skillAssessmentId is valid before making the request
-      if (!skillAssessmentId) {
+      if (!skillAssessmentIdUnq) {
         setError("Invalid Skill Assessment ID.");
         return;
       }
@@ -60,7 +63,7 @@ export default function ExecutionAssessmentTest() {
         const token = accessToken;
 
         // Call the new API using the skillAssessmentId
-        const apiUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/jobhunter/getskillassessmentbyid/${skillAssessmentId}`;
+        const apiUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/jobhunter/getskillassessmentbyid/${skillAssessmentIdUnq}`;
         const response = await axios.get(apiUrl, {
           headers: {
             Authorization: `Bearer ${token}`, // Add Bearer token in the headers
@@ -126,7 +129,7 @@ export default function ExecutionAssessmentTest() {
     try {
       const token = accessToken;
       // Call the new API to join the assessment
-      const apiUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/dev/joinassessment/${skillAssessmentId}`;
+      const apiUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/dev/joinassessment/${skillAssessmentIdUnq}`;
       const response = await axios.post(
         apiUrl,
         {},
@@ -139,7 +142,7 @@ export default function ExecutionAssessmentTest() {
 
       if (response.status === 200 || response.status === 201) {
         // Redirect to the quiz page after successful API call
-        router.push(`/executionAssessmentTestQuiz/${skillAssessmentId}`);
+        router.push(`/executionAssessmentTestQuiz/${skillAssessmentIdUnq}`);
       } else {
         setError(`Unexpected response status: ${response.status}`);
       }

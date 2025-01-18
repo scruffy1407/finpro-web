@@ -8,7 +8,7 @@ import LoadingLoader from "@/components/LoadingLoader";
 
 const AddQuestions = () => {
 	const authHandler = new AuthHandler();
-	const pagePermission = "company";
+	const pagePermission = "developer";
 	authHandler.authorizeUser(pagePermission);
 	const router = useRouter();
 

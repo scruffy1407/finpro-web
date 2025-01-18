@@ -20,6 +20,7 @@ type QuizState = {
   answers: { [key: string]: string };
   score: number;
   skillAssessmentId: number | null;
+  skillAssessmentIdUnq : number | null;
   jobHunterId: number;
 };
 export interface QuestionAssess {
@@ -43,7 +44,7 @@ export default function Quiz() {
 
   const { toast } = useToast();
   const router = useRouter();
-  const skillAssessmentId = router.query.skillAssessmentId;
+  const skillAssessmentIdUnq = router.query.skillAssessmentIdUnq;
 
   const [quizState, setQuizState] = useState<QuizState>({
     currentQuestionIndex: 0,
@@ -51,41 +52,43 @@ export default function Quiz() {
     score: 0,
     jobHunterId: jobHunterId || 0,
     skillAssessmentId: testConfig.data.preSelectionTest.test_id,
+    skillAssessmentIdUnq : testConfig.data.preSelectionTest.test_id_unique
   });
   const [questions, setQuestions] = useState<QuestionAssess[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [, setDuration] = useState(0);
+  const [, setSkillAssessIdUnq] = useState<number | null>(null);
   const [, setSkillAssessId] = useState<number | null>(null);
   const [, setHunterId] = useState<number | null>(null);
 
   useEffect(() => {
-    if (jobHunterId && skillAssessmentId) {
+    if (jobHunterId && skillAssessmentIdUnq) {
       setQuizState((prev) => ({
         ...prev,
         jobHunterId,
-        skillAssessmentId: Number(skillAssessmentId),
+        skillAssessmentIdUnq: Number(skillAssessmentIdUnq),
       }));
       setIsLoading(false);
     }
-  }, [jobHunterId, skillAssessmentId]);
+  }, [jobHunterId, skillAssessmentIdUnq]);
 
   useEffect(() => {
-    if (skillAssessmentId) {
+    if (skillAssessmentIdUnq) {
       setHunterId(Number(jobHunterId));
-      setSkillAssessId(Number(skillAssessmentId));
+      setSkillAssessIdUnq(Number(skillAssessmentIdUnq));
 
       setQuizState((prev) => ({
         ...prev,
         jobHunterId: Number(jobHunterId),
-        skillAssessmentId: Number(skillAssessmentId),
+        skillAssessmentId: Number(skillAssessmentIdUnq),
       }));
     }
-  }, [skillAssessmentId]);
+  }, [skillAssessmentIdUnq]);
 
   useEffect(() => {
     const fetchAssessmentQuestions = async () => {
-      if (!skillAssessmentId) {
+      if (!skillAssessmentIdUnq) {
         setError("Skill Assessment ID is missing in the URL.");
         setLoading(false);
         return;
@@ -94,7 +97,7 @@ export default function Quiz() {
       const token = Cookies.get("accessToken");
       try {
         const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/dev/getassessmentquest/${skillAssessmentId}`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/dev/getassessmentquest/${skillAssessmentIdUnq}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -105,10 +108,13 @@ export default function Quiz() {
         if (response.status === 200) {
           setQuestions(response.data.questions);
           setDuration(response.data.duration);
+          setSkillAssessId(quizState.skillAssessmentId)
           setQuizState((prev) => {
             const updatedState = { ...prev, testId: response.data.testId };
             return updatedState;
           });
+          console.log("QuizState")
+          console.log(quizState)
           setError(null);
         } else {
           setError(`Unexpected response status: ${response.status}`);
@@ -127,7 +133,7 @@ export default function Quiz() {
     };
 
     fetchAssessmentQuestions();
-  }, [skillAssessmentId]);
+  }, [skillAssessmentIdUnq]);
 
   const currentQuestion = questions[quizState.currentQuestionIndex] || {};
 
@@ -217,6 +223,9 @@ export default function Quiz() {
       answers: formattedAnswers,
     };
 
+    console.log("This is submission")
+    console.log(submission)
+
     try {
       const response = await axios.put(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/dev/updateassessmentanswer`,
@@ -294,7 +303,7 @@ export default function Quiz() {
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-background to-muted p-4">
       <div className="w-full max-w-2xl mb-4">
         <QuizTimerAssess
-          skillAssessmentId={quizState.skillAssessmentId ?? 0}
+          skillAssessmentIdUnq={Number(skillAssessmentIdUnq)}
           onTimeUp={() => {
             toast({
               title: "Time's Up!",
