@@ -69,18 +69,17 @@ function JobPostedDash() {
         toast.error(response.message);
       }
     } catch (error) {
-      // Debug: Log the error caught
       console.error("Error deleting job post:", error);
 
       if (axios.isAxiosError(error) && error.response?.data) {
         const backendError = error.response.data as BackendError;
         if (backendError.error) {
-          alert(backendError.error);
+          toast.error(backendError.error);
           return;
         }
       }
 
-      alert("Failed to delete the job post. Please try again later.");
+      toast.error("Failed to delete the job post. Please try again later.");
     } finally {
       setLoadingState(false);
       setDialogOpen(false);

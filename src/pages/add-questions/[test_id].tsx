@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 import { Button } from "@/components/ui/button";
 import { AuthHandler } from "@/utils/auth.utils";
 import LoadingLoader from "@/components/LoadingLoader";
+import { toast } from "sonner";
 
 const AddQuestions = () => {
 	const authHandler = new AuthHandler();
@@ -50,30 +51,30 @@ const AddQuestions = () => {
 						// The request was made, and the server responded with a status code
 						const status = error.response.status;
 						if (status === 400) {
-							alert(
-								"Bad Request:Test Edit Failed or you want to try to access invalid URL"
+							toast.error(
+								"Bad Request: Test Edit Failed or you want to try to access invalid URL"
 							);
 						} else if (status === 401) {
-							alert("Unauthorized: Please log in to continue.");
+							toast.error("Unauthorized: Please log in to continue.");
 						} else if (status === 403) {
-							alert(
+							toast.error(
 								"Forbidden: You don't have permission to perform this action."
 							);
 						} else {
-							alert(
+							toast.error(
 								`Error: ${error.response.data.error || "An error occurred."}`
 							);
 						}
 					} else if (error.request) {
 						// The request was made, but no response was received
-						alert("No response from the server. Please try again later.");
+						toast.error("No response from the server. Please try again later.");
 					} else {
 						// Something went wrong in setting up the request
-						alert("Error in request setup. Please try again.");
+						toast.error("Error in request setup. Please try again.");
 					}
 				} else {
 					// If the error is not from Axios
-					alert("Unexpected error occurred. Please try again.");
+					toast.error("Unexpected error occurred. Please try again.");
 				}
 			} finally {
 				setLoadingFetch(false);
@@ -106,14 +107,14 @@ const AddQuestions = () => {
 				},
 			]);
 		} else {
-			alert("You cannot add more than 25 questions.");
+			toast.error("You cannot add more than 25 questions.");
 		}
 	};
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		if (questions.length !== 25) {
-			alert("You must have exactly 25 questions.");
+			toast.error("You must have exactly 25 questions.");
 			return;
 		}
 
@@ -129,12 +130,12 @@ const AddQuestions = () => {
 				}
 			);
 			if (response.data.message) {
-				alert(response.data.message);
+				toast.success(response.data.message);
 				router.push("/preSelectionDashboard"); // Navigate back to the homepage or another page
 			}
 		} catch (error) {
 			console.error("Error submitting questions:", error);
-			alert("Failed to submit questions.");
+			toast.error("Failed to submit questions.");
 		} finally {
 			setLoading(false);
 		}

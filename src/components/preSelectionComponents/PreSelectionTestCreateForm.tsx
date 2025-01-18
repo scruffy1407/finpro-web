@@ -5,6 +5,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import LoadingLoader from "../LoadingLoader";
+import { toast } from "sonner";
 
 interface CreatePreSelectionFormProps {
 	showForm: boolean;
@@ -44,9 +45,8 @@ const PreSelectionTestCreateForm: React.FC<CreatePreSelectionFormProps> = ({
 
 		try {
 			setLoading(true);
-			// Ensure accessToken is available
 			if (!accessToken) {
-				alert("Authorization token is missing. Please log in.");
+				toast.error("Authorization token is missing. Please log in.");
 				return;
 			}
 
@@ -69,7 +69,7 @@ const PreSelectionTestCreateForm: React.FC<CreatePreSelectionFormProps> = ({
 					},
 				}
 			);
-			alert("Test created successfully!");
+			toast.success("Test created successfully!");
 			// Optionally reset the form
 			setFormData({
 				test_name: "",
@@ -84,7 +84,7 @@ const PreSelectionTestCreateForm: React.FC<CreatePreSelectionFormProps> = ({
 				"An error occurred while creating the pre-selection test:",
 				error
 			);
-			alert("An error occurred. Please try again.");
+			toast.error("An error occurred. Please try again.");
 		} finally {
 			setLoading(false);
 		}

@@ -14,6 +14,7 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { AuthHandler } from "@/utils/auth.utils";
+import { toast as toasty } from "sonner"
 
 type QuizState = {
   currentQuestionIndex: number;
@@ -113,8 +114,6 @@ export default function Quiz() {
             const updatedState = { ...prev, testId: response.data.testId };
             return updatedState;
           });
-          console.log("QuizState")
-          console.log(quizState)
           setError(null);
         } else {
           setError(`Unexpected response status: ${response.status}`);
@@ -223,9 +222,6 @@ export default function Quiz() {
       answers: formattedAnswers,
     };
 
-    console.log("This is submission")
-    console.log(submission)
-
     try {
       const response = await axios.put(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/dev/updateassessmentanswer`,
@@ -244,23 +240,23 @@ export default function Quiz() {
         const completionStatus = result?.data?.completionStatus;
 
         if (completionStatus === "pass") {
-          alert("Congratulations! You've passed the assessment.");
+          toasty.success("Congratulations! You've passed the assessment.");
         } else if (completionStatus === "failed") {
-          alert("Assessment Failed. Try again in the next due time.");
+          toasty.error("Assessment Failed. Try again in the next due time.");
         } else {
-          alert("Unexpected completion status. Please try again.");
+          toasty.error("Unexpected completion status. Please try again.");
         }
         router.push("/skills-assessment");
       } else {
-        alert(`Unexpected response: ${response.status}`);
+        toasty.error(`Unexpected response: ${response.status}`);
       }
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
-        alert(
+        toasty.error(
           error.response.data.message || "Failed to submit the assessment.",
         );
       } else {
-        alert("An unexpected error occurred during submission.");
+        toasty.error("An unexpected error occurred during submission.");
       }
     } finally {
       Cookies.remove("quizAnswers");

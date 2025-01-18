@@ -5,6 +5,7 @@ import { getCategories } from "@/pages/api/api";
 import { RichTextEditor } from "./richTextEditor";
 import axios from "axios";
 import LoadingLoader from "../LoadingLoader";
+import { toast } from "sonner";
 
 interface UpdateJobFormProps {
   number_applicants: number;
@@ -217,7 +218,7 @@ const JobEditForm: React.FC<UpdateJobFormProps> = ({
     e.preventDefault();
 
     if (formData.category_id === 0) {
-      alert("Please select a category.");
+      toast.warning("Please select a category.");
       return;
     }
 
@@ -225,7 +226,7 @@ const JobEditForm: React.FC<UpdateJobFormProps> = ({
       formData.salary_max !== null &&
       formData.salary_max < formData.salary_min
     ) {
-      alert("Salary Max must be greater than Salary Min.");
+      toast.warning("Salary Max must be greater than Salary Min.");
       return;
     }
 
@@ -233,14 +234,14 @@ const JobEditForm: React.FC<UpdateJobFormProps> = ({
       formData.job_experience_max !== null &&
       formData.job_experience_max < formData.job_experience_min
     ) {
-      alert("Job Experience Max must be greater than Job Experience Min.");
+      toast.warning("Job Experience Max must be greater than Job Experience Min.");
       return;
     }
 
     const currentDate = new Date();
     const selectedDate = new Date(formData.expired_date);
     if (selectedDate <= currentDate) {
-      alert("Expired Date must be in the future.");
+      toast.warning("Expired Date must be in the future.");
       return;
     }
 
@@ -271,15 +272,15 @@ const JobEditForm: React.FC<UpdateJobFormProps> = ({
       );
 
       if (response.status === 200) {
-        alert("Job updated successfully!");
+        toast.success("Job updated successfully!");
         closeModal();
       } else {
         console.error("Error:");
-        alert("Failed to update job.");
+        toast.error("Failed to update job.");
       }
     } catch (error) {
       console.error("Error updating job:", error);
-      alert("An error occurred while updating the job.");
+      toast.error("An error occurred while updating the job.");
     } finally {
       setLoading(false);
     }

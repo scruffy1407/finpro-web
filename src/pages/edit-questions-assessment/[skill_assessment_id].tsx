@@ -4,6 +4,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { Button } from "@/components/ui/button";
 import { AuthHandler } from "@/utils/auth.utils";
+import { toast } from "sonner";
 
 interface Question {
   questionId: number;
@@ -67,11 +68,11 @@ const EditQuestions = () => {
             "Questions data is missing or not an array:",
             questions,
           );
-          alert("Failed to load questions. Invalid response format.");
+          toast.error("Failed to load questions. Invalid response format.");
         }
       } catch (error) {
         console.error("Error fetching test details:", error);
-        alert("Failed to fetch test details.");
+       toast.error("Failed to fetch test details.");
       }
     };
     fetchTestDetails();
@@ -123,14 +124,14 @@ const EditQuestions = () => {
         },
       );
       if (response.status === 200) {
-        alert("Test questions updated successfully!");
+        toast.success("Test questions updated successfully!");
         router.push("/assessmentTestDashboard");
       } else {
-        alert(`Error: ${response.data.error || "Unknown error occurred"}`);
+        toast.error(`Error: ${response.data.error || "Unknown error occurred"}`);
       }
     } catch (error) {
       console.error("Error updating questions:", error);
-      alert("Failed to update questions.");
+      toast.error("Failed to update questions.");
     }
   };
 

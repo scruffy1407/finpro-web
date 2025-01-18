@@ -4,6 +4,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { Button } from "@/components/ui/button";
 import { AuthHandler } from "@/utils/auth.utils";
+import { toast } from "sonner";
 
 interface Question {
 	questionId: number; // Updated to match the API's field naming
@@ -64,30 +65,30 @@ const EditQuestions = () => {
 						// The request was made, and the server responded with a status code
 						const status = error.response.status;
 						if (status === 400) {
-							alert(
-								"Bad Request:Test Edit Failed or you want to try to access invalid URL"
+							toast.error(
+								"Bad Request: Test Edit Failed or you want to try to access invalid URL"
 							);
 						} else if (status === 401) {
-							alert("Unauthorized: Please log in to continue.");
+							toast.error("Unauthorized: Please log in to continue.");
 						} else if (status === 403) {
-							alert(
+							toast.error(
 								"Forbidden: You don't have permission to perform this action."
 							);
 						} else {
-							alert(
+							toast.error(
 								`Error: ${error.response.data.error || "An error occurred."}`
 							);
 						}
 					} else if (error.request) {
 						// The request was made, but no response was received
-						alert("No response from the server. Please try again later.");
+						toast.error("No response from the server. Please try again later.");
 					} else {
 						// Something went wrong in setting up the request
-						alert("Error in request setup. Please try again.");
+						toast.error("Error in request setup. Please try again.");
 					}
 				} else {
 					// If the error is not from Axios
-					alert("Unexpected error occurred. Please try again.");
+					toast.error("Unexpected error occurred. Please try again.");
 				}
 			}
 		};
@@ -135,10 +136,10 @@ const EditQuestions = () => {
 				}
 			);
 			if (response.status === 200) {
-				alert("Test questions updated successfully!");
+				toast.success("Test questions updated successfully!");
 				router.push("/preSelectionDashboard"); // Navigate back to the homepage or another page
 			} else {
-				alert(`Error: ${response.data.error || "Unknown error occurred"}`);
+				toast.error(`Error: ${response.data.error || "Unknown error occurred"}`);
 			}
 		} catch (error) {
 			if (axios.isAxiosError(error)) {
@@ -146,28 +147,28 @@ const EditQuestions = () => {
 					const status = error.response.status;
 					// Handle 400 error (Bad Request)
 					if (status === 400) {
-						alert("Bad Request: Please check your input and try again.");
+						toast.error("Bad Request: Please check your input and try again.");
 					} else if (status === 401) {
-						alert("Unauthorized: Please log in to continue.");
+						toast.error("Unauthorized: Please log in to continue.");
 					} else if (status === 403) {
-						alert(
+						toast.error(
 							"Forbidden: You don't have permission to perform this action."
 						);
 					} else {
-						alert(
+						toast.error(
 							`Error: ${error.response.data.error || "An error occurred."}`
 						);
 					}
 				} else if (error.request) {
 					// The request was made, but no response was received
-					alert("No response from the server. Please try again later.");
+					toast.error("No response from the server. Please try again later.");
 				} else {
 					// Something went wrong in setting up the request
-					alert("Error in request setup. Please try again.");
+					toast.error("Error in request setup. Please try again.");
 				}
 			} else {
 				// If the error is not from Axios
-				alert("Unexpected error occurred. Please try again.");
+				toast.error("Unexpected error occurred. Please try again.");
 			}
 		}
 	};

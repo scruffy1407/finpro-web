@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import Cookies from "js-cookie";
 import axios from "axios";
 import LoadingLoader from "../LoadingLoader";
+import { toast } from "sonner";
 
 // Define form data type
 interface FormData {
@@ -75,14 +76,16 @@ const CreateAssessmentTestForm: React.FC<CreateAssessmentTestFormProps> = ({
         response.data.message &&
         response.data.message === "Assessment test created successfully!"
       ) {
-        alert("Assessment test created");
+        toast.success("Assessment test created");
         window.location.reload();
         setShowForm(false);
       } else {
         console.error("Failed to create assessment test", response.data);
+        toast.error ("Failed to create assessment test")
       }
     } catch (error) {
       console.error("Error creating assessment test:", error);
+      toast.error("Error creating assessment test")
     } finally {
       setLoading(true);
     }

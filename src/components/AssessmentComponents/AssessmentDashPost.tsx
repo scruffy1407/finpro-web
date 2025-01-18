@@ -116,7 +116,7 @@ function AssessmentDashPost() {
       );
 
       if (response.data.message) {
-        alert(response.data.message);
+        toast.success(response.data.message);
 
         // Update the state with the new data
         setAssessmentTests((prev) =>
@@ -139,7 +139,7 @@ function AssessmentDashPost() {
       }
     } catch (error) {
       console.error("Error updating test:", error);
-      alert("Failed to update the test. Please try again.");
+      toast.error("Failed to update the test. Please try again.");
     }
   };
 
@@ -157,7 +157,7 @@ function AssessmentDashPost() {
       );
 
       if (response.data.message) {
-        alert(response.data.message);
+        toast.success(response.data.message);
         setAssessmentTests((prev) =>
           prev.filter(
             (test) =>
@@ -169,7 +169,7 @@ function AssessmentDashPost() {
       }
     } catch (error) {
       console.error("Error deleting test:", error);
-      alert("Failed to delete the test. Please try again.");
+      toast.error("Failed to delete the test. Please try again.");
     }
   };
   return fetchLoading ? (

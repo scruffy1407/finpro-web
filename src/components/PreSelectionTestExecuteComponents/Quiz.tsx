@@ -12,6 +12,7 @@ import Cookies from "js-cookie";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { AuthHandler } from "@/utils/auth.utils";
+import { toast as toasty } from "sonner";
 
 type QuizState = {
   currentQuestionIndex: number;
@@ -227,20 +228,20 @@ export default function Quiz() {
       if (response.status === 200 || response.status === 201) {
         const result = response.data;
         if (result.completionStatus === "pass") {
-          alert("Congratulations! You've passed the test.");
+          toasty.success("Congratulations! You've passed the test.");
         } else if (result.completionStatus === "failed") {
-          alert("Test Failed. Try again in the next due time.");
+          toasty.error("Test Failed. Try again in the next due time.");
         } else {
-          alert("Unexpected completion status received.");
+          toasty.error("Unexpected completion status received.");
         }
       } else {
-        alert(`Unexpected response: ${response.status}`);
+        toasty.error(`Unexpected response: ${response.status}`);
       }
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
-        alert(error.response.data.message || "Failed to submit the quiz.");
+        toasty.error(error.response.data.message || "Failed to submit the quiz.");
       } else {
-        alert("An unexpected error occurred during submission.");
+        toasty.error("An unexpected error occurred during submission.");
       }
     } finally {
       // Remove the saved answers cookies after submission
@@ -343,7 +344,7 @@ export default function Quiz() {
           onTimeUp={() => {
             toast({
               title: "Time's Up!",
-              description: "Your quiz has been automaticalsjuly submitted.",
+              description: "Your quiz has been automatically submitted.",
               variant: "destructive",
             });
             handleTimeUp();

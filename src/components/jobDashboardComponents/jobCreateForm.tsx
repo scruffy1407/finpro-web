@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { getCategories } from "@/pages/api/api";
 import { RichTextEditor } from "./richTextEditor";
 import LoadingLoader from "../LoadingLoader";
+import { toast } from "sonner";
 
 interface CreateJobFormProps {
   showForm: boolean;
@@ -129,7 +130,7 @@ const CreateJobForm: React.FC<CreateJobFormProps> = ({
     e.preventDefault();
 
     if (formData.categoryId === 0) {
-      alert("Please select a category.");
+      toast.warning("Please select a category.");
       return;
     }
 
@@ -137,7 +138,7 @@ const CreateJobForm: React.FC<CreateJobFormProps> = ({
       formData.salary_max !== null &&
       Number(formData.salary_max) < Number(formData.salary_min)
     ) {
-      alert("Salary Max should be greater than Salary Min.");
+      toast.warning("Salary Max should be greater than Salary Min.");
       return;
     }
 
@@ -145,7 +146,7 @@ const CreateJobForm: React.FC<CreateJobFormProps> = ({
       formData.job_experience_max !== null &&
       formData.job_experience_max < formData.job_experience_min
     ) {
-      alert("Job Experience Max should be greater than Job Experience Min.");
+      toast.warning("Job Experience Max should be greater than Job Experience Min.");
       return;
     }
 
@@ -165,7 +166,7 @@ const CreateJobForm: React.FC<CreateJobFormProps> = ({
     };
 
     if (new Date(formData.expired_date) < new Date()) {
-      alert("Expired date cannot be in the past.");
+      toast.warning("Expired date cannot be in the past.");
       return;
     }
 
@@ -184,19 +185,19 @@ const CreateJobForm: React.FC<CreateJobFormProps> = ({
       );
 
       if (response.ok) {
-        alert("Job created successfully!");
+        toast.success("Job created successfully!");
         setShowForm(false);
         setLoading(false);
         window.location.reload();
       } else {
         const errorData = await response.json();
         console.error("Error:", errorData);
-        alert("Failed to create job.");
+        toast.error("Failed to create job.");
         setLoading(false);
       }
     } catch (error) {
       console.error("Error creating job:", error);
-      alert("An error occurred while creating the job.");
+      toast.error("An error occurred while creating the job.");
       setLoading(false);
     }
   };

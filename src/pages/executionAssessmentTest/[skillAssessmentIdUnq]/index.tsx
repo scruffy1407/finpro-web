@@ -37,9 +37,7 @@ export default function ExecutionAssessmentTest() {
   const skillAssessmentIdUnq = router.query.skillAssessmentIdUnq
     ? String(router.query.skillAssessmentIdUnq)
     : "";
-	console.log("This is SkillAssessmentIdUnq")
-	console.log(skillAssessmentIdUnq)
-
+    
   useEffect(() => {
     const fetchSkillAssessmentData = async () => {
       // Ensure the skillAssessmentId is available before making the request
@@ -94,10 +92,10 @@ export default function ExecutionAssessmentTest() {
     };
 
     // Ensure router is ready and we have the skillAssessmentId before attempting to fetch data
-    if (router.isReady && router.query.skillAssessmentId) {
+    if (router.isReady && router.query.skillAssessmentIdUnq) {
       fetchSkillAssessmentData();
     }
-  }, [router.query.skillAssessmentId, router.isReady, accessToken]);
+  }, [router.query.skillAssessmentIdUnq, router.isReady, accessToken]);
 
   if (error) {
     return (

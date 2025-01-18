@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 import { Button } from "@/components/ui/button";
 import { AuthHandler } from "@/utils/auth.utils";
 import LoadingLoader from "@/components/LoadingLoader";
+import { toast } from "sonner";
 
 const AddQuestions = () => {
 	const authHandler = new AuthHandler();
@@ -51,14 +52,14 @@ const AddQuestions = () => {
 				},
 			]);
 		} else {
-			alert("You cannot add more than 25 questions.");
+			toast.error("You cannot add more than 25 questions.");
 		}
 	};
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		if (questions.length !== 25) {
-			alert("You must have exactly 25 questions.");
+			toast.error("You must have exactly 25 questions.");
 			return;
 		}
 
@@ -74,7 +75,7 @@ const AddQuestions = () => {
 				}
 			);
 			if (response.data.message) {
-				alert(response.data.message);
+				toast.success(response.data.message);
 				router.push("/assessmentTestDashboard");
 			}
 		} catch (error: any) {
@@ -82,7 +83,7 @@ const AddQuestions = () => {
 				"Error submitting questions:",
 				error.response?.data || error.message
 			);
-			alert(
+			toast.error(
 				`Failed to submit questions: ${error.response?.data?.message || error.message}`
 			);
 		} finally {

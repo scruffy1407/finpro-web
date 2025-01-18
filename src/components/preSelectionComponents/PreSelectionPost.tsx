@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
 import ConfirmDelete from "@/components/Modal/ConfirmDelete";
 import Link from "next/link";
 import LoadingLoader from "../LoadingLoader";
+import { toast } from "sonner";
 
 import {
   Popover,
@@ -108,7 +109,7 @@ function PreSelectionPost() {
       );
 
       if (response.data.message) {
-        alert(response.data.message);
+        toast.success(response.data.message);
         setPreSelectionTests((prev) =>
           prev.map((test) =>
             test.test_id === selectedTest.test_id
@@ -120,7 +121,7 @@ function PreSelectionPost() {
       }
     } catch (error) {
       console.error("Error updating test:", error);
-      alert("Failed to update the test. Please try again.");
+      toast.error("Failed to update the test. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -141,7 +142,7 @@ function PreSelectionPost() {
         }
       );
 
-      alert(response.data?.message || "Test deleted successfully");
+      toast.success(response.data?.message || "Test deleted successfully");
 
       if (response.data?.message) {
         setPreSelectionTests((prev) =>
@@ -151,24 +152,20 @@ function PreSelectionPost() {
         setDialogOpen(false);
         setSelectedTest(null);
       } else {
-        alert("Unexpected response structure.");
+        toast.error("Unexpected response structure.");
       }
     } catch (error: any) {
-      // Ensure you are handling AxiosError properly
       if (axios.isAxiosError(error)) {
         if (error.response) {
-          // Extract the message from error response
           const message = error.response.data?.message || "An error occurred.";
           console.error("Error deleting test:", message);
-          alert(message); // Show the error message
+          toast.error(message || "Failed to delete the test. Please try again.");
         } else {
-          // Handle case where error.response is not available
-          alert("Network error or no response from the server.");
+          toast.error("Network error or no response from the server.");
         }
       } else {
-        // Handle non-axios errors (if any)
         console.error("Unexpected error:", error);
-        alert("Failed to delete the test. Please try again.");
+        toast.error("Failed to delete the test. Please try again.");
       }
     } finally {
       setLoading(false);

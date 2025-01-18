@@ -7,6 +7,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import LoadingLoader from "@/components/LoadingLoader";
 import { AuthHandler } from "@/utils/auth.utils";
+import { toast } from "sonner";
 
 interface TestData {
 	message: string;
@@ -140,12 +141,10 @@ export default function ExecutionPretest() {
 				const status = error.response.status;
 				console.error("API error response:", error.response?.data); // Log the error response
 
-				// Access the 'error' property directly from the API response
 				const errorMessage =
 					error.response?.data?.error || "An unknown error occurred";
 
-				// Show the error message in the alert
-				alert(errorMessage);
+				toast.error(errorMessage);
 				setIsLoading(false);
 
 				if (status === 400) {
