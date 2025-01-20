@@ -87,8 +87,6 @@ export const ApplicantTable: React.FC<ApplicantTableProps> = ({
     }
   };
 
-  console.log(applicants, "INI APPLICANT FULL")
-
   return (
     <>
       <div className="overflow-x-auto">

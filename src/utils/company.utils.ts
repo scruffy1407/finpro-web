@@ -174,7 +174,6 @@ export class CompanyUtils {
     }
   }
   async getApplicantDetail(applicantId: number, token: string) {
-    console.log(applicantId, "ID DI SERVICE")
     try {
       const response = await api.get(
         `/applyjob/applicant-detail?applicantId=${applicantId}`,

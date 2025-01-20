@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CompanyUtils } from "@/utils/company.utils";
 import Cookies from "js-cookie";
 import LoadingLoader from "@/components/LoadingLoader";
@@ -32,9 +32,6 @@ function ProfileDetail({ applicantId }: ProfileDetailProps) {
   const companyUtils = new CompanyUtils();
   const token = Cookies.get("accessToken");
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const initialRender = useRef<boolean>(true);
-
-  console.log(applicantId, "INI APPLICANT ID 1")
 
   const [detailUser, setDetailUser] = useState<ProfileDetailData>({
     name: "",
@@ -51,7 +48,6 @@ function ProfileDetail({ applicantId }: ProfileDetailProps) {
 
   async function fetchDetailApplicant(applicantId : number) {
     setIsLoading(true);
-    console.log (applicantId, "ID SEBELUM FETCHING RESPONSE")
     const response = await companyUtils.getApplicantDetail(
       applicantId,
       token as string,
@@ -107,13 +103,8 @@ function ProfileDetail({ applicantId }: ProfileDetailProps) {
   const [isSummaryExpanded, setIsSummaryExpanded] = useState(false);
 
   useEffect(() => {
-    console.log("TESTING REL 123 INITIALREN")
-    if (!initialRender.current) {
-      console.log("ABIS INITIALREN")
       fetchDetailApplicant(applicantId);
-    }
-    initialRender.current = false;
-  }, [initialRender.current]);
+  }, []);
 
   const handleSeeMoreClick = () => {
     setIsSummaryExpanded(!isSummaryExpanded);
