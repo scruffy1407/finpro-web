@@ -87,6 +87,8 @@ export const ApplicantTable: React.FC<ApplicantTableProps> = ({
     }
   };
 
+  console.log(applicants, "INI APPLICANT FULL")
+
   return (
     <>
       <div className="overflow-x-auto">
@@ -221,17 +223,6 @@ export const ApplicantTable: React.FC<ApplicantTableProps> = ({
                         ) : (
                           ""
                         )}
-
-                        <div className={"flex items-center gap-4"}>
-                          <p
-                            className={"text-sm text-neutral-600 font-semibold"}
-                          >
-                            Marks as
-                          </p>
-                          <Button variant={"outline"} size={"sm"}>
-                            Completed
-                          </Button>
-                        </div>
                       </div>
                     </>
                   </ModalContainer>

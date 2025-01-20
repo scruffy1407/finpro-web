@@ -138,6 +138,7 @@ function AssessmentDashPost() {
         setEditFormOpen(false); // Close the modal
       }
     } catch (error) {
+      setLoading(false);
       console.error("Error updating test:", error);
       toast.error("Failed to update the test. Please try again.");
     }

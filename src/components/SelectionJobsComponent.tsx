@@ -57,9 +57,6 @@ function SelectionJobsComponents() {
   return (
     <div className=" overflow-x-auto snap-x sm:snap-none flex justify-between gap-10">
       <div className=" flex flex-col-reverse flex-shrink-0 items-center gap-6 snap-start md:flex-row">
-        <div>
-          <p className="text-neutral-500 text-sm">We found 500+ Jobs</p>
-        </div>
         <div className={"flex flex-shrink-0 gap-3"}>
           <div>
             <Select value={localJobType} onValueChange={handleJobTypeChange}>

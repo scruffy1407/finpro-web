@@ -34,6 +34,8 @@ function ProfileDetail({ applicantId }: ProfileDetailProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const initialRender = useRef<boolean>(true);
 
+  console.log(applicantId, "INI APPLICANT ID 1")
+
   const [detailUser, setDetailUser] = useState<ProfileDetailData>({
     name: "",
     dob: "",
@@ -103,7 +105,9 @@ function ProfileDetail({ applicantId }: ProfileDetailProps) {
   const [isSummaryExpanded, setIsSummaryExpanded] = useState(false);
 
   useEffect(() => {
+    console.log("TESTING REL 123 INITIALREN")
     if (!initialRender.current) {
+      console.log("ABIS INITIALREN")
       fetchDetailApplicant();
     }
     initialRender.current = false;
