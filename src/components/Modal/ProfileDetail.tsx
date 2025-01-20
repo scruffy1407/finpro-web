@@ -113,7 +113,7 @@ function ProfileDetail({ applicantId }: ProfileDetailProps) {
       fetchDetailApplicant(applicantId);
     }
     initialRender.current = false;
-  }, []);
+  }, [initialRender.current]);
 
   const handleSeeMoreClick = () => {
     setIsSummaryExpanded(!isSummaryExpanded);
