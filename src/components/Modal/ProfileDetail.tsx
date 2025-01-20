@@ -48,8 +48,10 @@ function ProfileDetail({ applicantId }: ProfileDetailProps) {
     workingHistoryList: [],
     education: [],
   });
-  async function fetchDetailApplicant() {
+
+  async function fetchDetailApplicant(applicantId : number) {
     setIsLoading(true);
+    console.log (applicantId, "ID SEBELUM FETCHING RESPONSE")
     const response = await companyUtils.getApplicantDetail(
       applicantId,
       token as string,
@@ -108,7 +110,7 @@ function ProfileDetail({ applicantId }: ProfileDetailProps) {
     console.log("TESTING REL 123 INITIALREN")
     if (!initialRender.current) {
       console.log("ABIS INITIALREN")
-      fetchDetailApplicant();
+      fetchDetailApplicant(applicantId);
     }
     initialRender.current = false;
   }, []);
