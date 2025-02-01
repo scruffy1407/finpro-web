@@ -8,9 +8,9 @@
 - **Purpose**: Helping job seekers find their ideal job opportunities and assisting companies in finding the best candidates.
 - **Project Duration**: 2 months
 - **Team Members**:
-    - [Farel Darari Deksano](https://linkedin.com/in/farel-darari-deksano) ([GitHub](https://github.com/fareldarari))
-    - [Thomas Pratama](https://linkedin.com/in/thomas-pratama) ([GitHub](https://github.com/thomaspratama))
-    - [Rizky Andiarto](https://linkedin.com/in/rizky-andiarto) ([GitHub](https://github.com/rizkyandiarto))
+    - [Farel Darari Deksano](https://www.linkedin.com/in/fareldeksano/) 
+    - [Thomas Pratama](https://www.linkedin.com/in/thomas-pratama/)
+    - [Rizky Andiarto](https://www.linkedin.com/in/andiartori/)
 
 ## Tech Stack
 
