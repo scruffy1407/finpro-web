@@ -40,19 +40,19 @@ function DisclaimerModal() {
           <DisclamerProfile
             name={"Rizky Andiarto"}
             linkedIn={"https://www.linkedin.com/in/andiartori/"}
-            github={"#"}
+            github={"https://github.com/andiartori"}
             image={"/rizkyProfile.jpeg"}
           />
           <DisclamerProfile
             name={"Farel Darari Deksano"}
             linkedIn={"https://www.linkedin.com/in/fareldeksano/"}
-            github={"#"}
+            github={"https://github.com/digiT000"}
             image={"/farelProfile.jpeg"}
           />
           <DisclamerProfile
             name={"Thomas Pratama"}
             linkedIn={"https://www.linkedin.com/in/thomas-pratama/"}
-            github={"#"}
+            github={"https://github.com/scruffy1407"}
             image={"/thomasProfile.jpeg"}
           />
         </div>
